@@ -1,6 +1,7 @@
 // src/App.jsx
 import { useState } from 'react'
 import AnalysisPanel from './components/AnalysisPanel'
+import DockerCheckPanel from './components/DockerCheckPanel'
 import FileUpload from './components/FileUpload'
 import ResultsPanel from './components/ResultsPanel'
 import './styles/components.css'
@@ -35,33 +36,35 @@ const AnalysisPipelineApp = () => {
   }
 
   return (
-    <div className="analysis-main">
-      {/* {!dockerReady && (
-        <DockerCheckPanel onDockerReady={handleDockerReady} />
-      )} */}
+    <div className='analysis-app'>
+      <div className="analysis-main">
+        {!dockerReady && (
+          <DockerCheckPanel onDockerReady={handleDockerReady} />
+        )}
 
-      {/* Step 1: File Upload */}
-      {/* {dockerReady && !uploadedFiles && ( */}
-      {!uploadedFiles && (
-        <FileUpload onFilesUploaded={handleFilesUploaded} />
-      )}
+        {/* Step 1: File Upload */}
+        {dockerReady && !uploadedFiles && (
+        // {!uploadedFiles && (
+          <FileUpload onFilesUploaded={handleFilesUploaded} />
+        )}
 
-      {/* Step 2: Analysis Panel */}
-      {uploadedFiles && !showResults && (
-        <AnalysisPanel
-          uploadedFiles={uploadedFiles}
-          onAnalysisComplete={handleAnalysisComplete}
-          onReset={resetApp}
-        />
-      )}
+        {/* Step 2: Analysis Panel */}
+        {uploadedFiles && !showResults && (
+          <AnalysisPanel
+            uploadedFiles={uploadedFiles}
+            onAnalysisComplete={handleAnalysisComplete}
+            onReset={resetApp}
+          />
+        )}
 
-      {/* Step 3: Results */}
-      {showResults && analysisResult && (
-        <ResultsPanel
-          result={analysisResult}
-          onReset={resetApp}
-        />
-      )}
+        {/* Step 3: Results */}
+        {showResults && analysisResult && (
+          <ResultsPanel
+            result={analysisResult}
+            onReset={resetApp}
+          />
+        )}
+      </div>
     </div>
   )
 }
