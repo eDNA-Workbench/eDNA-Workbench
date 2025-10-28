@@ -16,8 +16,8 @@ import Navbar from './components/Navbar.jsx';
 
 // import css
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 import './styles/components/Navbar.css';
-// import './App.css';
 // import './styles/components.css'; // Toolkit
 // import './styles/globals.css'; // Toolkit
 // import './styles/themeToggle.css'; // Toolkit
