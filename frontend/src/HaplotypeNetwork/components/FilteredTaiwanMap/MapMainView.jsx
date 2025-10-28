@@ -1,3 +1,4 @@
+
 import React from "react";
 import CityPieChart from "./CityPieChart";
 
@@ -9,6 +10,7 @@ const MapMainView = ({
   imgH,
   filteredCityGeneData,
   cityVisibility,
+  setCityVisibility, // 設定城市可見性的函數
   selectedCity,
   setSelectedCity,
   geneColors,
@@ -16,8 +18,13 @@ const MapMainView = ({
   handleMouseMove,
   decimalToDegreeMinuteWithDir,
   handleExportPNG,
-  mapLoaded
+  mapLoaded,
+  filteredGeneList,
 }) => {
+
+   const filteredGenesSet = new Set(filteredGeneList);
+
+
   return (
     <div style={{ flex: 1, display: "flex", gap: 16, flexDirection: "column" }}>
       {/* 🔼 Export 按鈕放最上方 */}
@@ -42,9 +49,12 @@ const MapMainView = ({
               overflowY: "auto"
             }}
           >
-            <h4>{selectedCity}  Distribution</h4>
+            <h4 style={{ whiteSpace: "nowrap" }}>{selectedCity} Area</h4>
             <ul>
-              {filteredCityGeneData[selectedCity].data.map((g) => (
+              {filteredCityGeneData[selectedCity].data
+               .sort((a, b) => b.value - a.value)
+               .filter((g) => filteredGeneList.includes(g.name))  // 只顯示過濾後的基因
+                .map((g) => (
                 <li
                   key={g.name}
                   style={{ display: "flex", alignItems: "center", gap: 3 }}
@@ -61,7 +71,7 @@ const MapMainView = ({
                 </li>
               ))}
             </ul>
-            <div style={{ marginTop: 6, fontSize: 12, color: "#555" }}>
+            <div style={{ marginTop: 6, fontSize: 20, color: "#555" }}>
               Total quantity: {filteredCityGeneData[selectedCity].totalCount}
             </div>
           </div>
@@ -130,6 +140,10 @@ const MapMainView = ({
                     from &&
                     to &&
                     (from.cx !== to.cx || from.cy !== to.cy);
+
+                  // 根據城市顯示與否來隱藏虛線
+                  if (!cityVisibility[city]) return null;  // 如果城市被隱藏，則不顯示虛線
+
                   return (
                     shouldDraw && (
                      <React.Fragment key={`line-${city}`}>
@@ -161,21 +175,22 @@ const MapMainView = ({
 
             {/* 🔹 餅圖 */}
             {mapLoaded &&
-              Object.entries(filteredCityGeneData).map(([city, chartData]) => (
-                <CityPieChart
-                  key={city}
-                  city={city}
-                  chartData={{
-                    data: chartData.data,
-                    totalCount: chartData.totalCount
-                  }}
-                  geneColors={geneColors}
-                  position={chartData.containerCoordinates} // ✅ 圓心位置
-                  opacity={cityVisibility[city] ? 1 : 1}
-                  onClick={() => setSelectedCity(city)}
-                  isSelected={selectedCity === city}
-                />
-              ))}
+              Object.entries(filteredCityGeneData).map(([city, chartData]) => {
+                const filteredData = chartData.data.filter((g) => filteredGeneList.includes(g.name));
+                if (filteredData.length === 0) return null; // 如果過濾後該城市無基因資料，則不顯示
+                return (
+                  <CityPieChart
+                    key={city}
+                    city={city}
+                    chartData={{ data: filteredData, totalCount: chartData.totalCount }}
+                    geneColors={geneColors}
+                    position={chartData.containerCoordinates}
+                    opacity={cityVisibility[city] ? 1 : 0}
+                    onClick={() => setSelectedCity(city)}
+                    isSelected={selectedCity === city}
+                  />
+                );
+              })}
           </div>
 
           {/* 📍 經緯度顯示 */}
@@ -201,3 +216,4 @@ const MapMainView = ({
 };
 
 export default MapMainView;
+

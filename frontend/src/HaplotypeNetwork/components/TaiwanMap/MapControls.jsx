@@ -1,5 +1,5 @@
 import React from "react";
-import { mapImages } from "/src/HaplotypeNetwork/data/mapImages";
+import { mapImages } from "/frontend/src/HaplotypeNetwork/data/mapImages";
 
 const MapControls = ({
   imgW, imgH,

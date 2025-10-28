@@ -4,7 +4,8 @@ const { runWorker } = require("../utils/workerPromise");
 const storage = require("../services/storageService");
 
 // upload sequences
-router.post("/upload", (req, res) => {
+router.post("/uploadSequences", (req, res) => {
+  
   const { sequences } = req.body;
   if (!sequences || typeof sequences !== "object")
     return res.status(400).json({ error: "Invalid sequences" });
@@ -12,12 +13,12 @@ router.post("/upload", (req, res) => {
   res.json({ message: "Gene sequences uploaded and stored." });
 });
 
-router.get("/", (req, res) => {
+router.get("/Sequences", (req, res) => {
   const sequences = storage.getSequences();
   res.json({ geneNames: Object.keys(sequences), sequences });
 });
 
-router.post("/merge", (req, res) => {
+router.post("/mergeSequences", (req, res) => {
   const { sequences } = req.body;
   if (!sequences || typeof sequences !== "object")
     return res
@@ -103,6 +104,8 @@ router.post("/saveGeneCounts", (req, res) => {
   res.json({ message: "Gene counts saved and normalized successfully" });
 });
 
+
+
 router.get("/counts", (req, res) => {
   res.json({ genes: storage.getGeneCounts() });
 });
@@ -134,3 +137,4 @@ router.get("/formattedCounts", (req, res) => {
 });
 
 module.exports = router;
+

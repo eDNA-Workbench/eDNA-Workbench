@@ -1,31 +1,45 @@
 import { useState, useEffect, useMemo } from "react";
-import { generateCityCoordinates } from "/src/HaplotypeNetwork/data/cityCoordinates3";
+import { generateCityCoordinates } from "/frontend/src/HaplotypeNetwork/data/cityCoordinates3";
 
-export default function useCityGeneData({ cityGeneData, totalCityGeneData, selectedGenes, mapPage, safeImgW, safeImgH, conW, conH }) {
+export default function useCityGeneData({ 
+  cityGeneData, 
+  totalCityGeneData, 
+  FormattedCityGeneData,
+  selectedGenes, 
+  mapPage, 
+  safeImgW, 
+  safeImgH, 
+  conW, 
+  conH 
+}) {
   const [cityCoordinates3, setCityCoordinates3] = useState([]);
   const [selectedCity, setSelectedCity] = useState(null);
 
-  const activeCityGeneData = mapPage === 1 ? totalCityGeneData : cityGeneData;
+  // 根據 mapPage 決定使用哪個 cityGeneData
+  const activeCityGeneData = useMemo(() => {
+    if (mapPage === 2 && FormattedCityGeneData && Object.keys(FormattedCityGeneData).length > 0) {
+      return FormattedCityGeneData; // 若選擇 FormattedCityGeneData，則使用它
+    }
+    return mapPage === 1 ? totalCityGeneData : cityGeneData; // 若為 totalPage，使用 totalCityGeneData，否則使用 cityGeneData
+  }, [cityGeneData, totalCityGeneData, FormattedCityGeneData, mapPage]);
 
   useEffect(() => {
     setCityCoordinates3(generateCityCoordinates(safeImgW, safeImgH, 200, 75));
   }, [safeImgW, safeImgH]);
 
-
-    const RED_LEFT = (safeImgW - 465) / 2;
+  const RED_LEFT = (safeImgW - 465) / 2;
   const RED_RIGHT = RED_LEFT + 465;
   const RED_TOP = (safeImgH - 658.5) / 2;
   const RED_BOTTOM = RED_TOP + 658.5;
 
+  // 用來調整基因座標，避免重疊
   const getNewCoordinates = (originalCoordinates, usedCoordinates) => {
-    // safety: if no pool or missing img dims, just return original
     if (!cityCoordinates3 || cityCoordinates3.length === 0 || !safeImgW || !safeImgH) {
       return originalCoordinates;
     }
     const { cx, cy } = originalCoordinates;
     let availableCoordinates = [];
 
-    // decide candidate pool based on where city sits
     if (cy < safeImgH / 3) {
       availableCoordinates = cityCoordinates3.filter((coord) => coord.cy <= safeImgH / 3);
     } else if (cy > (safeImgH / 3) * 2) {
@@ -60,7 +74,7 @@ export default function useCityGeneData({ cityGeneData, totalCityGeneData, selec
       }
     }
 
-    // sort by distance to original point and pick the first unused
+    // 排序並返回距離原座標最近且未被使用的座標
     const sortedAvailableCoordinates = availableCoordinates
       .map((coord) => ({ coord, distance: Math.hypot(cx - coord.cx, cy - coord.cy) }))
       .sort((a, b) => a.distance - b.distance);
@@ -71,17 +85,20 @@ export default function useCityGeneData({ cityGeneData, totalCityGeneData, selec
       }
     }
 
-    // if none available, return original
+    // 若沒有找到合適的座標，則返回原來的座標
     return originalCoordinates;
   };
 
+  // 過濾 cityGeneData
   const filteredCityGeneData = useMemo(() => {
     if (!activeCityGeneData) return {};
+
     const usedCoordinates = [];
     const originalCoordinatesList = Object.entries(activeCityGeneData).map(([city, content]) => ({
       city,
       coords: { cx: content.coordinates.cx, cy: content.coordinates.cy },
     }));
+
     const offsetX_local = (conW - safeImgW) / 2;
     const offsetY_local = (conH - safeImgH) / 2;
     const adjustLocal = (c) => ({ cx: c.cx + offsetX_local, cy: c.cy + offsetY_local });
@@ -99,7 +116,6 @@ export default function useCityGeneData({ cityGeneData, totalCityGeneData, selec
 
       let finalImgCoords = originalImgCoords;
 
-      // 擠位邏輯
       if (totalCount < 25) {
         const hasNearby = originalCoordinatesList.some((item) => {
           if (item.city === city) return false;

@@ -60,23 +60,25 @@ const MapMainView = ({
               overflowY: "auto"
             }}
           >
-            <h4>{selectedCity}  Distribution</h4>
+            <h4 style={{ whiteSpace: "nowrap" }}>{selectedCity} Area</h4>
             <ul>
-              {filteredCityGeneData[selectedCity].data.map((g) => (
-                <li
-                  key={g.name}
-                  style={{ display: "flex", alignItems: "center", gap: 3 }}
-                >
-                  <div
-                    style={{
-                      width: 14,
-                      height: 14,
-                      borderRadius: "50%",
-                      background: geneColors[g.name] || "#fff7f7ff"
-                    }}
-                  />
-                  {g.name}: {g.value}
-                </li>
+              {filteredCityGeneData[selectedCity].data
+                .sort((a, b) => b.value - a.value)
+                .map((g) => (
+                  <li
+                    key={g.name}
+                    style={{ display: "flex", alignItems: "center", gap: 3 }}
+                  >
+                    <div
+                      style={{
+                        width: 14,
+                        height: 14,
+                        borderRadius: "50%",
+                        background: geneColors[g.name] || "#fff7f7ff"
+                      }}
+                    />
+                    {g.name}: {g.value}
+                  </li>
               ))}
             </ul>
             <div style={{ marginTop: 6, fontSize: 12, color: "#555" }}>
@@ -148,6 +150,9 @@ const MapMainView = ({
                     from &&
                     to &&
                     (from.cx !== to.cx || from.cy !== to.cy);
+
+                    // 根據城市顯示與否來隱藏虛線
+                  if (!cityVisibility[city]) return null;  // 如果城市被隱藏，則不顯示虛線
                   return (
                     shouldDraw && (
                      <React.Fragment key={`line-${city}`}>
@@ -189,7 +194,7 @@ const MapMainView = ({
                   }}
                   geneColors={geneColors}
                   position={chartData.containerCoordinates} // ✅ 圓心位置
-                  opacity={cityVisibility[city] ? 1 : 0.12}
+                  opacity={cityVisibility[city] ? 1 : 0}
                   onClick={() => setSelectedCity(city)}
                   isSelected={selectedCity === city}
                 />

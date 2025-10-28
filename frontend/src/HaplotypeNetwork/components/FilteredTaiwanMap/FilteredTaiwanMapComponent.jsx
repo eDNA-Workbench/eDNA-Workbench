@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 
 import MapControls from "./MapControls";
 import MapMainView from "./MapMainView";
+import GeneList from "./GeneList";
 
 import useMapSettings from "./hooks/useMapSettings";
 import useMouseLatLon from "./hooks/useMouseLatLon";
@@ -14,28 +15,40 @@ const TaiwanMapComponent = ({
   cityGeneData,
   totalCityGeneData,
   geneColors,
-  
   onSelectedGenesChange,
-  cityVisibility = {},
-  onCityVisibilityChange,
   onMapSettingsChange,
-
   selectedGene,
   activeSimilarityGroup,
-  
+   isReduced, 
+   setIsReduced,
 
 }) => {
+  const [searchTerm, setSearchTerm] = useState(""); 
+  
+  const [selectedGenes, setSelectedGenes] = useState([]);
+  const [cityVisibility, setCityVisibility] = useState({});
 
-  const [searchTerm, setSearchTerm] = useState("");
-    const [currentPage, setCurrentPage] = useState(0);
-    const [selectedGenes, setSelectedGenes] = useState([]);
-    const genesPerPage = 50;
+   const [filteredGeneList, setFilteredGeneList] = useState([]);
+
+  const onFilteredGenesChange = (filteredGenes) => {
+    setFilteredGeneList(filteredGenes);
+  };
+
+  // 在此處設置 cityVisibility 的初始狀態
+  useEffect(() => {
+    const initialVisibility = Object.keys(cityGeneData).reduce((acc, city) => {
+      acc[city] = true; // 默認所有城市都顯示
+      return acc;
+    }, {});
+    setCityVisibility(initialVisibility);
+  }, [cityGeneData]);
+
+  const onCityVisibilityChange = (newVisibility) => {
+    setCityVisibility(newVisibility);  // 更新城市可見性
+  };
 
 
-
-
-// 初始化 selectedGenes
-  const allGenes = useMemo(() => (genes || []).map((g) => g.name), [genes]);
+  // 初始化 selectedGenes
   useEffect(() => {
     const allowed = new Set([
       selectedGene,
@@ -48,27 +61,8 @@ const TaiwanMapComponent = ({
     onSelectedGenesChange?.(selectedGenes);
   }, [selectedGenes, onSelectedGenesChange]);
 
-  const filteredGeneList = useMemo(
-    () => allGenes.filter((name) => name.toLowerCase().includes(searchTerm.toLowerCase())),
-    [allGenes, searchTerm]
-  );
 
-  const currentGenes = filteredGeneList.slice(
-    currentPage * genesPerPage,
-    (currentPage + 1) * genesPerPage
-  );
-  const totalPages = Math.max(1, Math.ceil(filteredGeneList.length / genesPerPage));
-
-  const toggleGene = (name) => {
-    setSelectedGenes((prev) =>
-      prev.includes(name) ? prev.filter((g) => g !== name) : [...prev, name]
-    );
-  };
-
-  const handleSelectAll = () => setSelectedGenes(filteredGeneList);
-  const handleClearAll = () => setSelectedGenes([]);
-
-
+  
   // ===== Map Settings =====
   const {
     imgW,
@@ -180,113 +174,65 @@ const TaiwanMapComponent = ({
     </div>
 
     
+    <div style={{ display: "flex", gap: "10px",minWidth: "100%", }}>
+      {/* MapMainView - The main map view on the bottom */}
+      <div
+        style={{
+          minWidth: "60%",
+          flex: 2,
+          background: "#ffffffff",
+          padding: "6px",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+          overflow: "auto",
+          border: "8px solid #e9e4e4ff",
+          borderRadius: "12px",
+        }}
+      >
+        <MapMainView
+          conW={conW}
+          conH={conH}
+          mapImage={mapImage}
+          imgW={safeImgW}
+          imgH={safeImgH}
+          filteredCityGeneData={filteredCityGeneData}
+          cityVisibility={cityVisibility}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+          geneColors={geneColors}
+          latLon={latLon}
+          handleMouseMove={handleMouseMove}
+          decimalToDegreeMinuteWithDir={decimalToDegreeMinuteWithDir}
+          handleExportPNG={handleExportPNG}
+          mapLoaded={mapLoaded}
+           filteredGeneList={filteredGeneList}
+        />
+      </div>
 
-    {/* MapMainView - The main map view on the bottom */}
-    <div
-      style={{
-        minWidth: "100%",
-        flex: 2,
-        background: "#ffffffff",
-        padding: "6px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-        overflow: "auto",
-        border: "8px solid #e9e4e4ff",
-        borderRadius: "12px",
-      }}
-    >
-      <MapMainView
-        conW={conW}
-        conH={conH}
-        mapImage={mapImage}
-        imgW={safeImgW}
-        imgH={safeImgH}
-        filteredCityGeneData={filteredCityGeneData}
-        cityVisibility={cityVisibility}
-        selectedCity={selectedCity}
-        setSelectedCity={setSelectedCity}
-        geneColors={geneColors}
-        latLon={latLon}
-        handleMouseMove={handleMouseMove}
-        decimalToDegreeMinuteWithDir={decimalToDegreeMinuteWithDir}
-        handleExportPNG={handleExportPNG}
-        mapLoaded={mapLoaded}
-      />
-    </div>
-
-
-
-      {/* --- 基因清單 --- */}
-      <div style={{ width: 300 }}>
-        <h4>Select display genes：</h4>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search"
-          className="search-input"
+      {/* GeneList */}
+        <GeneList
+          
+          genes={genes}
+          selectedGene={selectedGene}
+          activeSimilarityGroup={activeSimilarityGroup}
+          selectedGenes={selectedGenes}
+          setSelectedGenes={setSelectedGenes}
+          geneColors={geneColors}
+          searchTerm={searchTerm} 
+          setSearchTerm={setSearchTerm}
+          
+          cityVisibility={cityVisibility}
+          onCityVisibilityChange={onCityVisibilityChange}
+          filteredCityGeneData={filteredCityGeneData}
+          onFilteredGenesChange={onFilteredGenesChange}
+           isReduced={isReduced}
+           setIsReduced={setIsReduced}
         />
 
-        <div className="flex flex-gap-5" style={{ marginBottom: "8px" }}>
-          <button onClick={handleSelectAll}>All</button>
-          <button onClick={handleClearAll}>Clear</button>
-        </div>
-
-        {/* 基因清單 */}
-        <div
-          style={{ maxHeight: "460px", overflowY: "auto", paddingRight: "5px" }}
-        >
-          {currentGenes.map((name) => {
-            const isEnabled =
-              name === selectedGene ||
-              (Array.isArray(activeSimilarityGroup) &&
-                activeSimilarityGroup.includes(name));
-            return (
-              <label
-                key={name}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  opacity: isEnabled ? 1 : 0.4,
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedGenes.includes(name)}
-                  onChange={() => toggleGene(name)}
-                  disabled={!isEnabled}
-                />
-                <span style={{ color: geneColors[name] || "black" }}>{name}</span>
-              </label>
-            );
-          })}
-        </div>
-
-        {/* 分頁控制 */}
-        <div className="pagination-controls" style={{ marginTop: "8px" }}>
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-            disabled={currentPage === 0}
-          >
-            Previous page
-          </button>
-          <span>
-            {" "}
-            {currentPage + 1} / {totalPages}{" "}
-          </span>
-          <button
-            onClick={() =>
-              setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-            }
-            disabled={currentPage >= totalPages - 1}
-          >
-            Next page
-          </button>
-        </div>
-      </div>
+    </div>  
   </div>
 );
 
 };
 
 export default TaiwanMapComponent;
+

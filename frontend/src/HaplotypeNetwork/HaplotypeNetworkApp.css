@@ -76,11 +76,17 @@
 /* 地圖外框 */
 .map-box {
   min-width: 55%;
-  
   flex: 2; /* 平均分配空間，或改 flex:2 / flex:1 調整比例 */
   overflow: auto; /* 內容超出時可以滾動 */
-
 }
+
+/* 地圖外框 */
+.map-Filteredbox {
+  min-width: 70%;
+  flex: 2; /* 平均分配空間，或改 flex:2 / flex:1 調整比例 */
+  overflow: auto; /* 內容超出時可以滾動 */
+}
+
 
 /* 左側的 HaplotypeList  */
 .haplotype-section {
@@ -100,7 +106,8 @@
 .gene-section {
   flex: 1; /* 右側佔比 1 */
   
-  min-width: 40%;
+  min-width: 45%;
+  max-width: 100%;
   background: #ffffff;
   border: 1px solid #ddd;
   border-radius: 12px;

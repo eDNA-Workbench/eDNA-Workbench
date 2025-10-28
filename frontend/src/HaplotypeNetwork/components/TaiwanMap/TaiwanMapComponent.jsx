@@ -12,6 +12,7 @@ const TaiwanMapComponent = ({
   genes,
   cityGeneData,
   totalCityGeneData,
+  FormattedCityGeneData,
   geneColors,
   selectedGenes = [],
   onSelectedGenesChange,
@@ -75,9 +76,14 @@ const TaiwanMapComponent = ({
     if (totalCityGeneData && Object.keys(totalCityGeneData).length > 0) setMapPage(1);
   }, [totalCityGeneData]);
 
+  useEffect(() => {
+    if (FormattedCityGeneData && Object.keys(FormattedCityGeneData).length > 0) setMapPage(2);
+  }, [FormattedCityGeneData]);
+
   const { filteredCityGeneData, selectedCity, setSelectedCity } = useCityGeneData({
     cityGeneData,
     totalCityGeneData,
+    FormattedCityGeneData,
     selectedGenes,
     mapPage,
     safeImgW,

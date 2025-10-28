@@ -1,5 +1,15 @@
 import { useEffect, useRef } from "react";
 
+// 用於將字符串哈希化為數字，生成穩定的色相
+const hashStringToNumber = (str) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash = hash & hash; // 強制轉為 32 位整數
+  }
+  return Math.abs(hash); // 返回正數
+};
+
 export const useGeneTableEffects = ({
   viewMode,
   onViewModeChange,
@@ -10,6 +20,9 @@ export const useGeneTableEffects = ({
   hapColors,
   setHapColors,
   onHapColorsChange,
+
+  onFormattedGenesChange,
+  setFormattedCityGeneData, // 用來設置格式化基因數據的函式
   locations,
   genes,
   onEditGeneCountBulk,
@@ -69,19 +82,30 @@ export const useGeneTableEffects = ({
   useEffect(() => {
     if (viewMode !== "total" || hapHeaders.length === 0) return;
 
-    const colors = Array.from({ length: hapHeaders.length }, (_, i) => `hsl(${(i * 137) % 360}, 70%, 50%)`);
+    // 使用 hap 的名稱生成穩定的顏色
+    const colors = Array.from({ length: hapHeaders.length }, (_, i) => {
+      const seed = hapHeaders[i];  // 根據 hap 名稱生成穩定的色相
+      const hue = (hashStringToNumber(seed) * 137) % 360;  // 哈希值轉為色相
+      const saturation = Math.floor(Math.random() * 51) + 25;  // 隨機飽和度（25%-75%）
+      const lightness = Math.floor(Math.random() * 51) + 25;  // 隨機亮度（25%-75%）
+      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    });
+
     const mapping = {};
     hapHeaders.forEach((hap, idx) => (mapping[hap] = colors[idx]));
 
+    // 檢查顏色是否需要更新
     const isSame =
       Object.keys(mapping).length === Object.keys(hapColors).length &&
       Object.keys(mapping).every((key) => mapping[key] === hapColors[key]);
 
+    // 只在顏色有變化時才更新狀態，避免觸發無限渲染
     if (!isSame) {
-      setHapColors(mapping);
+      setHapColors(mapping); // 只在顏色更新時觸發 setState
       onHapColorsChange?.(mapping);
     }
-  }, [hapHeaders, viewMode, hapColors, setHapColors, onHapColorsChange]);
+  }, [hapHeaders, viewMode, setHapColors, onHapColorsChange]);  // 刪除了 hapColors，不讓其觸發更新
+
 
   // 5️⃣ 更新 genes counts
   useEffect(() => {
@@ -105,7 +129,9 @@ export const useGeneTableEffects = ({
 
   // 6️⃣ Map 座標計算 & 基因資料
   // 更新 Map 座標計算 & 基因資料
-  useEffect(() => {
+
+   useEffect(() => {
+
     if (!locations || locations.length === 0) return;
 
     const cityMap = {};
@@ -122,7 +148,38 @@ export const useGeneTableEffects = ({
       cityMap[loc] = { coordinates: { cx, cy }, genes: [] };
     });
 
-    if (viewMode === "total" && totalTableData.length > 1) {
+    if (viewMode === "formatted") {
+    const formattedCityMap = {}; // 用來儲存格式化後的基因數據
+
+    onFormattedGenesChange.genes.forEach((gene) => {
+     
+
+      locations.forEach((loc) => {
+        const count = gene.cities[loc] || 0; // 從 gene.cities 中獲取對應城市的計數
+       
+
+        if (count > 0) {
+          if (!formattedCityMap[loc]) {
+            // 在這裡加入坐標資料
+            formattedCityMap[loc] = {
+              coordinates: cityMap[loc].coordinates, // 使用之前已設置的城市坐標
+              genes: [],
+            };
+          }
+          formattedCityMap[loc]?.genes.push({
+            name: gene.id,
+            color: onFormattedGenesChange.colors[gene.id] || "#000", // 使用顏色映射
+            value: count,
+          });
+        }
+      });
+    });
+
+    console.log("Formatted City Map:", formattedCityMap);  // 查看填充後的 cityMap
+    setFormattedCityGeneData?.(formattedCityMap); // 傳遞格式化的 cityMap
+  }
+    else if (viewMode === "total" && totalTableData.length > 1) {
+      // 當 viewMode 是 "total" 時，處理原始的基因數據
       const headers = totalTableData[0];
       const rows = totalTableData.slice(1);
       const hapHeaders = headers.slice(2);
@@ -140,7 +197,6 @@ export const useGeneTableEffects = ({
             filterMode === "range" ? percent >= minPercentage && percent <= maxPercentage :
             value > 0 && percent >= 1;
 
-
           if (shouldInclude) {
             cityMap[loc]?.genes.push({
               name: hap,
@@ -153,6 +209,7 @@ export const useGeneTableEffects = ({
 
       setTotalCityGeneData?.(cityMap); // 傳遞過濾後的 cityMap
     } else {
+      // 如果不是 "formatted" 或 "total"，使用原始的 genes 和 locations 更新 cityMap
       genes.forEach((gene) => {
         locations.forEach((loc) => {
           const count = gene.counts?.[loc] || 0;
@@ -168,6 +225,8 @@ export const useGeneTableEffects = ({
 
       setCityGeneData?.(cityMap); // 傳遞未過濾的 cityMap
     }
+
+   
   }, [
     viewMode,
     totalTableData,
@@ -177,7 +236,7 @@ export const useGeneTableEffects = ({
     locations,
     ednaMapping,
     filterMode,
-    minPercentage, // 加入 minPercentage 和 maxPercentage 來觸發更新
+    minPercentage,
     maxPercentage,
     imgW,
     imgH,
@@ -185,12 +244,21 @@ export const useGeneTableEffects = ({
     latRange,
     setCityGeneData,
     setTotalCityGeneData,
+    setFormattedCityGeneData, // 監聽 setFormattedCityGeneData
+    onFormattedGenesChange, // 監聽 onFormattedGenesChange
   ]);
 
+
+
+
   useEffect(() => {
-  console.log("filterMode updated to", filterMode);
+  
   // 如果需要，也可以在這裡加入其他過濾邏輯
 }, [filterMode]);  // 這會在 filterMode 改變時觸發
+
+
+
+
 
   // 7️⃣ eDNA Mapping
   useEffect(() => {
@@ -293,4 +361,5 @@ export const useGeneTableEffects = ({
     const match = speciesOptions.find((species) => fileName.startsWith(species));
     if (match) setCurrentSpecies(match);
   }, [fileName, speciesOptions, setCurrentSpecies]);
+
 };

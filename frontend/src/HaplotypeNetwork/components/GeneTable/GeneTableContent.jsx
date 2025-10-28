@@ -1,8 +1,8 @@
 import React from "react";
-import FATable from "./FATable";
-import InformationTable from "./InformationTable";
-import CVSTable from "./CVSTable";
-import FormattedGeneFATable from "./FormattedGeneFATable";  // 引入新组件
+import FATable from "./Table/FATable";
+import InformationTable from "./Table/InformationTable";
+import CVSTable from "./Table/CVSTable";
+import FormattedGeneFATable from "./Table/FormattedGeneFATable";  
 
 const GeneTableContent = ({
   viewMode,
@@ -74,6 +74,7 @@ const GeneTableContent = ({
         updateMapData={updateMapData}
 
         onFormattedGenesChange={onFormattedGenesChange}
+
       />
     );
 

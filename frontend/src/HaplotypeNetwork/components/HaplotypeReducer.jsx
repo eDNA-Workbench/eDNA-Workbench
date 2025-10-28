@@ -29,7 +29,7 @@ const HaplotypeReducer = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/reduceHaplotypes", {
+      const response = await fetch("http://localhost:3000/api/files/reduceHaplotypes", {
         method: "POST",
         body: formData,
       });
