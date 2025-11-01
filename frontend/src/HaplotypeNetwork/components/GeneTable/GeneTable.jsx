@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 
-import "/src/HaplotypeNetwork/components/GeneTable/GeneTable.css";
+import "./GeneTable.css";
 
-import GeneTableControls from "./GeneTableControls";
 import GeneTableContent from "./GeneTableContent";
+import GeneTableControls from "./GeneTableControls";
 import { useGeneTableEffects } from "./hooks/useGeneTableEffects";
 
 const GeneTable = ({

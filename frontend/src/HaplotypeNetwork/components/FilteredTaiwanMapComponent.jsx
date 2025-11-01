@@ -1,8 +1,8 @@
-import React, { useMemo, memo, useState, useEffect } from "react";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
-import { mapImages } from "../data/mapImages";
+import { memo, useEffect, useMemo, useState } from "react";
+import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import { generateCityCoordinates } from "../data/cityCoordinates3";
-import "../components/AppStyles.css";
+import { mapImages } from "../data/mapImages";
+import "./AppStyles.css";
 
 // ---------- 子元件：城市圓餅圖 ----------
 const CityPieChart = memo(

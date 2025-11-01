@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from "react";
+import { useState } from "react";
 import { FixedSizeList as List } from "react-window";
-import "../components/AppStyles.css";
+import "./AppStyles.css";
 
 const GeneSelector = ({
   genes,

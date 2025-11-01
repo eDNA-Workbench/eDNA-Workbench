@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import "/src/HaplotypeNetwork/components/GeneTable/GeneTable.css";
+import { useEffect } from "react";
+import "./GeneTable.css";
 
 const FATable = ({
   paginatedGenes,

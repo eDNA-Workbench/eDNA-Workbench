@@ -1,6 +1,5 @@
-import React from "react";
-import "/src/HaplotypeNetwork/components/GeneTable/GeneTable.css";
-import { riverToCityMap } from "/src/HaplotypeNetwork/data/riverToCityMap.js";
+import "./GeneTable.css";
+// import { riverToCityMap } from "../../data/riverToCityMap.js"
 
 // InformationTable.jsx
 
