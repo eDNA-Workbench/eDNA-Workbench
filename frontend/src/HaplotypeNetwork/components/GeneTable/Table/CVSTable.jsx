@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-<<<<<<< Updated upstream
-import "/frontend/src/HaplotypeNetwork/components/GeneTable/GeneTable.css";
-=======
 import "../GeneTable.css";
->>>>>>> Stashed changes
 
 const CVSTable = ({
   displayedHeaders,

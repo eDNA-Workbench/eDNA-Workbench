@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
-import React from "react";
-import { mapImages } from "/frontend/src/HaplotypeNetwork/data/mapImages";
-=======
 import { mapImages } from "../../data/mapImages";
->>>>>>> Stashed changes
 
 const MapControls = ({
   imgW, imgH,
