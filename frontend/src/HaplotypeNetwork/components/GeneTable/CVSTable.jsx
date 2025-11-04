@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import "/src/HaplotypeNetwork/components/GeneTable/GeneTable.css";
+import { useState } from "react";
+import "./GeneTable.css";
 
 const CVSTable = ({
   displayedHeaders,

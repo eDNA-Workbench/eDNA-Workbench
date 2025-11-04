@@ -1,4 +1,4 @@
-import { mapImages } from "../../data/mapImages";
+import { mapImages } from "../../data/mapImages.js";
 
 const MapControls = ({
   imgW, imgH,

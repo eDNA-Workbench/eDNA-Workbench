@@ -1,4 +1,3 @@
-import React from "react";
 import { mapImages } from "../../data/mapImages.js";
 
 const MapControls = ({

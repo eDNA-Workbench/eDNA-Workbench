@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import "/src/HaplotypeNetwork/components/GeneTable/GeneTable.css";
+import { useEffect, useState } from "react";
+import "./GeneTable.css";
 
 // 生成基因的颜色，保证每个基因都有独特的颜色
 const generateColors = (num) =>
