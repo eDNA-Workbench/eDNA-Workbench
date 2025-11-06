@@ -40,14 +40,7 @@ function createWindow() {
   });
 
   if (isDev) {
-    // mainWindow.loadURL("http://localhost:5173");
-    // In dev, clear renderer cache to avoid loading stale built files
-    mainWindow.webContents.session
-      .clearCache()
-      .catch((e) => console.warn("Failed to clear cache:", e))
-      .finally(() => {
-        mainWindow.loadURL("http://localhost:5173");
-      });
+    mainWindow.loadURL("http://localhost:5173");
 
     mainWindow.webContents.openDevTools();
   } else {
@@ -313,6 +306,8 @@ function startVizBackend() {
     const enhancedEnv = createEnhancedEnvironment();
     // ensure different port for viz backend (default 3000)
     enhancedEnv.PORT = "3000";
+
+    enhancedEnv.RESOURCES_PATH = process.resourcesPath;
 
     VizBackendProcess = spawn(nodeBinary, [serverScript], {
       cwd: path.join(process.resourcesPath, "backend-viz"),

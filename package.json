@@ -50,6 +50,20 @@
       {
         "from": "backend-viz/reduce_bin",
         "to": "reduce_bin"
+      },
+      {
+        "from": "backend-viz",
+        "to": "backend-viz",
+        "filter": [
+          "**/*",
+          "!uplaods/**/*",
+          "!outputs/**/*",
+          "!reduce_bin/**/*"
+        ]
+      },
+      {
+        "from": "backend-viz/node_modules",
+        "to": "backend-viz/node_modules"
       }
     ],
     "mac": {

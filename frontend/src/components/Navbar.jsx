@@ -30,7 +30,7 @@ function MainNavbar({ theme, toggleTheme }) {
 
   return (
     <nav className="navbar">
-      <img src="/MEVP_logo.png" alt="MEVP Logo" className="navbar-logo" />
+      <img src="./MEVP_logo.png" alt="MEVP Logo" className="navbar-logo" />
 
       <NavDropdown title="Tools">
         <DropdownLink to="/" header="Analysis Pipeline" />

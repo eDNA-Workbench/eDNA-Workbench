@@ -33,7 +33,8 @@ function getExecutablePath() {
   if (isDev) {
     basePath = path.join(__dirname, "..", "reduce_bin");
   } else {
-    basePath = path.join(process.resourcesPath, "reduce_bin");
+    const resourcesPath = process.env.RESOURCES_PATH;
+    basePath = path.join(resourcesPath || "", "reduce_bin");
   }
 
   return path.join(basePath, platformSubdir, exeName);
