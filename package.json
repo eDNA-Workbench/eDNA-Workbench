@@ -99,5 +99,8 @@
   "devDependencies": {
     "electron": "^38.2.2",
     "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "sass": "^1.94.0"
   }
 }

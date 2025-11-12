@@ -93,6 +93,15 @@ html[data-theme="dark"] {
   margin: 0 auto;
   padding: 30px 15px 15px 15px;
   user-select: none;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  /* background: var(--bg); */
+  color: var(--text);
+  line-height: 1.6;
+  /* height: 100vh; */
+  overflow: hidden;
+  /* margin: 0; */
+  /* padding: 0; */
 }
 
 /* .app-header {

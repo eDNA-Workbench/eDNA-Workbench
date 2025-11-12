@@ -3,7 +3,7 @@
    ======================================== */
 
 /* Buttons */
-.btn {
+.analysis-main .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -18,56 +18,56 @@
   text-decoration: none;
 }
 
-.btn:disabled {
+.analysis-main .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.btn-primary {
+.analysis-main .btn-primary {
   background: var(--primary);
   color: var(--surface);
 }
 
-.btn-primary:hover:not(:disabled) {
+.analysis-main .btn-primary:hover:not(:disabled) {
   background: var(--primary-600);
 }
 
-.btn-secondary {
+.analysis-main .btn-secondary {
   background: var(--detail);
   color: var(--surface);
 }
 
-.btn-secondary:hover:not(:disabled) {
+.analysis-main .btn-secondary:hover:not(:disabled) {
   background: color-mix(in srgb, var(--detail) 80%, black 20%);
 }
 
-.btn-danger {
+.analysis-main .btn-danger {
   background: var(--danger);
   color: var(--surface);
 }
 
-.btn-danger:hover:not(:disabled) {
+.analysis-main .btn-danger:hover:not(:disabled) {
   background: color-mix(in srgb, var(--danger) 85%, black 15%);
 }
 
-.btn-outline {
+.analysis-main .btn-outline {
   background: transparent;
   color: var(--primary);
   border: 2px solid var(--primary);
 }
 
-.btn-outline:hover:not(:disabled) {
+.analysis-main .btn-outline:hover:not(:disabled) {
   background: var(--primary);
   color: var(--surface);
 }
 
-.btn-sm {
+.analysis-main .btn-sm {
   padding: 6px 12px;
   font-size: 14px;
 }
 
 /* Alerts */
-.alert {
+.analysis-main .alert {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -78,13 +78,13 @@
 }
 
 /* Upload Alerts */
-.alert.error {
+.analysis-main .alert.error {
   background: color-mix(in srgb, var(--danger) 10%, var(--surface) 90%);
   color: var(--danger);
   border: 1px solid color-mix(in srgb, var(--danger) 20%, var(--surface) 80%);
 }
 
-.alert button {
+.analysis-main .alert button {
   background: none;
   border: none;
   color: inherit;
@@ -94,7 +94,7 @@
 }
 
 /* Progress Bar */
-.progress-bar {
+.analysis-main .progress-bar {
   width: 100%;
   height: 10px;
   background: var(--border);
@@ -103,7 +103,7 @@
   margin: 10px 0;
 }
 
-.progress-fill {
+.analysis-main .progress-fill {
   height: 100%;
   background: var(--progress-fill);
   /*linear-gradient(90deg, var(--progress-fill), var(--success)); */
@@ -111,7 +111,7 @@
 }
 
 /* Spinner */
-.spinner {
+.analysis-main .spinner {
   width: 20px;
   height: 20px;
   border: 2px solid var(--border);
@@ -131,7 +131,7 @@
 }
 
 /* File Items (通用) */
-.file-item {
+.analysis-main .file-item {
   display: flex;
   align-items: center;
   gap: 15px;
@@ -139,26 +139,26 @@
   border-radius: 8px;
 }
 
-.file-info {
+.analysis-main .file-info {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.file-name {
+.analysis-main .file-name {
   font-weight: 500;
   color: var(--text);
 }
 
-.file-size,
-.file-type {
+.analysis-main .file-size,
+.analysis-main .file-type {
   font-size: 0.9em;
   color: var(--detail);
 }
 
 /* Upload File Remove Button */
-.remove-btn {
+.analysis-main .remove-btn {
   background: var(--danger);
   color: var(--surface);
   border: none;
@@ -171,19 +171,19 @@
   cursor: pointer;
 }
 
-.remove-btn:hover {
+.analysis-main .remove-btn:hover {
   background: color-mix(in srgb, var(--danger) 85%, black 15%);
 }
 
 /* input type = "number" */
-input[type='number'] {
+.analysis-main input[type='number'] {
   padding: 3px 5px;
   border: 1px solid var(--border);
   border-radius: 4px;
   font-size: 1em;
 }
 
-input[type='text'] {
+.analysis-main input[type='text'] {
   padding: 3px 5px;
   border: 1px solid var(--border);
   border-radius: 4px;
