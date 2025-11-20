@@ -131,6 +131,7 @@
 .entry-box:hover .entry-description {
   opacity: 1;
 }
+
 .entry-description ul {
   padding-left: 0;
   text-align: left;

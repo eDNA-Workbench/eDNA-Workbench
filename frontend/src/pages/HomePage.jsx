@@ -39,16 +39,16 @@ export default function HomePage() {
         <h2>Contact Us</h2>
         <div className="contact-list">
           <div className="contact-person">
-            <p className="person-name">uiskskkekekk</p>
-            <a href="mailto:john.doe@example.com">uiskskkekekk@example.com</a>
+            <p className="person-name">Wen-Yu Chung</p>
+            <a href="mailto:wychung@nkust.edu.tw">wychung@nkust.edu.tw</a>
           </div>
           <div className="contact-person">
-            <p className="person-name">uiskskkekekk</p>
-            <a href="mailto:jane.smith@example.com">uiskskkekekk@example.com</a>
+            <p className="person-name">Bo-Lun Wang</p>
+            <a href="mailto:a0903083574@gmail.com">a0903083574@gmail.com</a>
           </div>
           <div className="contact-person">
-            <p className="person-name">uiskskkekekk</p>
-            <a href="mailto:alex.johnson@example.com">uiskskkekekk@example.com</a>
+            <p className="person-name">Yu-Han Lu</p>
+            <a href="mailto:angus.lu0611@gmail.com">angus.lu0611@gmail.com</a>
           </div>
         </div>
       </section>

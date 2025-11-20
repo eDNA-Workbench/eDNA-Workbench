@@ -36,7 +36,7 @@ export const api = {
   // Analysis
   analysis: {
     pipeline: {
-      // 物種檢測 (新增)
+      // 物種檢測
       detectSpecies: (params) =>
         apiClient.post("/analysis/pipeline/detect-species", params),
 

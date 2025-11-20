@@ -11,7 +11,7 @@ import PhylotreePage from './pages/PhylotreePage.jsx';
 import SequenceAlignmentPage from './pages/SequenceAlignmentPage.jsx';
 
 // UI
-import TitleBar from './bar-components/TitleBar.jsx';
+import TitleBar from './components/TitleBar.jsx';
 // import FloatingChatManager from './Chat/FloatingChatManager';
 import Navbar from './components/Navbar.jsx';
 

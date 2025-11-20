@@ -6,6 +6,10 @@
     --text-alt: #7f8c8d;
 }
 
+html, body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
 .main-content {
     display: flex;
     flex-direction: column;
