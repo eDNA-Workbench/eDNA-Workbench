@@ -6,7 +6,7 @@
   margin-top: 31.5px;
   gap: 10vh;
   min-height: calc(100vh - 31.5px);
-  background-image: url('./GenoFlow-Gradient.png');
+  background-image: url('../assets/GenoFlow-Gradient.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 50% 25%;
@@ -22,22 +22,24 @@
   margin-top: 10vh;
   user-select: none;
 }
+
 .title .genoflow-logo {
   height: 100px;
   width: 100px;
 
   background-color: var(--text);
 
-  mask-image: url('./GenoFlow.png');
+  mask-image: url('../assets/GenoFlow.png');
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
 
-  -webkit-mask-image: url('./GenoFlow.png');
+  -webkit-mask-image: url('../assets/GenoFlow.png');
   -webkit-mask-size: contain;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
 }
+
 .title h1 {
   font-size: 4.5em;
   font-weight: 700;
@@ -73,9 +75,10 @@
   overflow: hidden;
   padding: 20px;
 }
+
 .entry-box:hover {
   transform: translateY(-10px) scale(1.03);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .entry .entry-title {
@@ -98,15 +101,18 @@
   z-index: 1;
 
   filter: grayscale(100%);
-  
+
   transition: opacity 0.5s ease;
 }
+
 .analysis-entry .card-image {
-  background-image: url('./DNA.png');
+  background-image: url('../assets/DNA.png');
 }
+
 .visualization-entry .card-image {
-  background-image: url('./VIZ.png');
+  background-image: url('../assets/VIZ.png');
 }
+
 .entry-box:hover .card-image {
   opacity: 0;
 }
@@ -122,12 +128,13 @@
   justify-content: center;
   color: var(--text);
   padding: 20px;
-  
+
   z-index: 2;
-  
-  opacity: 0; 
+
+  opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
+
 .entry-box:hover .entry-description {
   opacity: 1;
 }
@@ -137,6 +144,7 @@
   text-align: left;
   margin: 20px 0 0 20px;
 }
+
 .entry-description li {
   margin-bottom: 15px;
 }
@@ -162,7 +170,7 @@
   font-size: 2.5em;
   font-weight: 700;
   margin-bottom: 20px;
-  
+
   color: var(--text);
 }
 
@@ -184,7 +192,7 @@
 
   border: 1px solid var(--border);
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-  
+
   border-radius: 10px;
   padding: 20px;
   transition: transform 0.5s ease;
@@ -198,7 +206,7 @@
   font-size: 1.2em;
   font-weight: 600;
   margin: 0 0 5px 0;
-  
+
   color: var(--text);
 }
 
@@ -218,8 +226,8 @@
   width: 100%;
   padding: 20px;
   text-align: center;
-  
-  background-color: var(--platform); 
+
+  background-color: var(--platform);
   border-top: 1px solid var(--border);
 }
 
