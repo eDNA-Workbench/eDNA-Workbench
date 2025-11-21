@@ -70,10 +70,32 @@ export default function SideGuide({ guideKey, side = 'right', defaultOpen = fals
     };
   }, [resizerRef, width, side]);
 
+  // Sync state with body classes and CSS variables for layout coordination
+  useEffect(() => {
+    const body = document.body;
+    
+    // Set classes
+    body.classList.add('side-guide-visible');
+    if (side === 'left') {
+      body.classList.add('side-guide-left');
+    } else {
+      body.classList.remove('side-guide-left');
+    }
+
+    // Set width variable
+    const currentWidth = open ? width : (side === 'left' ? 20 : 44); // 20px approx for 1% or closed state
+    body.style.setProperty('--side-guide-width', `${currentWidth}px`);
+
+    return () => {
+      body.classList.remove('side-guide-visible', 'side-guide-left');
+      body.style.removeProperty('--side-guide-width');
+    };
+  }, [open, width, side]);
+
   return (
     <div
       className={`side-guide side-guide--${side} ${open ? 'open' : 'closed'}`}
-      style={{ width: open ? width : 44 }}
+      style={{ width: open ? width : undefined }}
       ref={panelRef}
       aria-hidden={!open}
     >

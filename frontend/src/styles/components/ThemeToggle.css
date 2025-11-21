@@ -1,0 +1,194 @@
+/* ThemeToggle.css */
+
+/* Wrapper for positioning */
+.theme-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    /* Removed background/border/shadow from wrapper as the toggle itself is the main element now */
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin-right: 12%;
+    /* Keep the layout positioning */
+}
+
+.app .theme-toggle-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    transition: left 0.3s ease;
+}
+
+/* Adjust position when SideGuide is on the left */
+body.side-guide-left .app .theme-toggle-container {
+    left: calc(var(--side-guide-width, 0px) + 20px);
+}
+
+/* Switch Body */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 64px;
+    height: 32px;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+/* Slider (Track) */
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #e4e4e7;
+    /* Light Mode Track (Light Gray) */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 32px;
+    overflow: hidden;
+    /* box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); */
+}
+
+/* Knob */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #ffffff;
+    /* Light Mode Knob (White) */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+/* Icons inside the slider */
+.icon-sun,
+.icon-moon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.icon-sun svg,
+.icon-moon svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Sun Icon (Visible in Dark Mode, on Left) */
+.icon-sun {
+    left: 8px;
+    color: #52525b;
+    /* Dark Gray/Black for Sun */
+    opacity: 0;
+    /* Hidden in Light Mode */
+}
+
+/* Moon Icon (Visible in Light Mode, on Right) */
+.icon-moon {
+    right: 8px;
+    color: #71717a;
+    /* Dark Gray for Moon */
+    opacity: 1;
+    /* Visible in Light Mode */
+}
+
+/* ========================================
+   Dark Mode State (Checked)
+   ======================================== */
+
+/* Track becomes White in Dark Mode */
+input:checked+.slider {
+    background-color: #ffffff;
+}
+
+/* Knob moves to Right and becomes Black */
+input:checked+.slider:before {
+    transform: translateX(25px);
+    background-color: #000000;
+}
+
+/* Sun Icon becomes visible */
+input:checked+.slider .icon-sun {
+    opacity: 1;
+}
+
+/* Moon Icon becomes hidden */
+input:checked+.slider .icon-moon {
+    opacity: 0;
+}
+
+/* Hover Effects */
+.toggle-switch:hover .slider:before {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Focus Accessibility */
+.toggle-switch input:focus+.slider {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Active State (Clicking) */
+.toggle-switch:active .slider:before {
+    width: 28px;
+}
+
+input:checked+.slider:active:before {
+    transform: translateX(28px);
+    /* Adjust for wider knob */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .toggle-switch {
+        width: 56px;
+        height: 28px;
+    }
+
+    .slider:before {
+        height: 20px;
+        width: 20px;
+        left: 4px;
+        bottom: 4px;
+    }
+
+    input:checked+.slider:before {
+        transform: translateX(28px);
+    }
+
+    .icon-sun svg,
+    .icon-moon svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+
+    .slider,
+    .slider:before,
+    .icon-sun,
+    .icon-moon,
+    .app .theme-toggle-container {
+        transition: none;
+    }
+}
