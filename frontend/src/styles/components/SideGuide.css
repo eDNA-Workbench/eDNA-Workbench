@@ -7,7 +7,7 @@
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  transition: width 0.18s ease;
+  transition: width 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -80,7 +80,7 @@
 }
 
 .side-guide.closed {
-  width: 1%;
+  width: 3.5%;
 }
 
 .side-guide__error {

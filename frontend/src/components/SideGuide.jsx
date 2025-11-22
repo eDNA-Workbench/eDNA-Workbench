@@ -1,7 +1,7 @@
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 import { useEffect, useRef, useState } from 'react';
-import '../styles/SideGuide.css';
+import '../styles/components/SideGuide.css';
 
 /**
  * SideGuide
