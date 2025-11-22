@@ -2,7 +2,7 @@
 import SideGuide from '../components/SideGuide.jsx';
 import { useFileContext } from '../contexts/FileContext'; // Hook
 import HaplotypeNetworkApp from '../features/HaplotypeNetwork/HaplotypeNetworkApp';
-import '../styles/SideGuide.css';
+import '../styles/components/SideGuide.css';
 
 export default function HaplotypePage() {
   const {

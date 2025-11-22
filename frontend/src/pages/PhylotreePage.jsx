@@ -2,7 +2,7 @@
 import SideGuide from '../components/SideGuide.jsx';
 import { useFileContext } from '../contexts/FileContext'; // Hook
 import PhylotreeApplication from '../features/Phylotree/PhylotreeApplication.jsx';
-import '../styles/SideGuide.css';
+import '../styles/components/SideGuide.css';
 
 export default function PhylotreePage() {
   const { phylotreeContent } = useFileContext();

@@ -1,7 +1,7 @@
 // src/pages/HaplotypePage.jsx
 import SideGuide from '../components/SideGuide.jsx';
 import AnalysisPipelineApp from '../features/AnalysisPipeline/AnalysisPipelineApp.jsx';
-import '../styles/SideGuide.css';
+import '../styles/components/SideGuide.css';
 
 export default function AnalysisPipelinePage() {
   return (

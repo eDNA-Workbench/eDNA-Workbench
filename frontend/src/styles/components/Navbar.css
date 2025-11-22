@@ -3,7 +3,7 @@
   justify-content: flex-start;
   align-items: center;
   background-color: var(--card);
-  padding: 0.4% 4% 0.4% 2%;
+  padding: 0.4% 1.2%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 31.5px;
   border-bottom: 1px solid var(--border);
