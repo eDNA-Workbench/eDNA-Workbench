@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useEffect ,useState } from "react";
 
 import MapControls from "./MapControls";
 import MapMainView from "./MapMainView";
@@ -21,7 +21,8 @@ const TaiwanMapComponent = ({
   onMapSettingsChange
 }) => {
 
-   const [fileName, setFileName] = useState("map"); // 管理檔名狀態
+   const [fileName, setFileName] = useState("Map"); // 管理檔名狀態
+   
 
   // ===== Map Settings =====
   const {
@@ -79,6 +80,8 @@ const TaiwanMapComponent = ({
   useEffect(() => {
     if (FormattedCityGeneData && Object.keys(FormattedCityGeneData).length > 0) setMapPage(2);
   }, [FormattedCityGeneData]);
+
+
 
   const { filteredCityGeneData, selectedCity, setSelectedCity } = useCityGeneData({
     cityGeneData,

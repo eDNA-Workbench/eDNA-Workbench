@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../GeneTable.css";
 
 const FATable = ({
@@ -12,52 +12,58 @@ const FATable = ({
   onEditGeneCount,
   onEditGeneCountBulk,
   updateMapData,
-  genes = [], // 傳進來完整基因列表
+  genes, // full list of genes
+  viewMode,
+  showOnlySelected,
+  setShowOnlySelected,
 }) => {
   const selectedGenesSet = new Set(externalSelectedGenes);
 
-  // === 自動比對基因名與地名 ===
+  // Ref to track if the "Clear" button was clicked
+  const clearClicked = useRef(false);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const genesPerPage = 10;
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // === Filter genes if "Show selected" is checked ===
+  const filteredGenes = showOnlySelected
+    ? genes.filter((gene) => selectedGenesSet.has(gene.name))
+    : genes;
+
+  // === Filter genes based on search query ===
+  const searchFilteredGenes = searchQuery
+    ? filteredGenes.filter((gene) =>
+        gene.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : filteredGenes;
+
+  // === Calculate Genes for Current Page ===
+  const indexOfLastGene = currentPage * genesPerPage;
+  const indexOfFirstGene = indexOfLastGene - genesPerPage;
+  const currentGenes = searchFilteredGenes.slice(indexOfFirstGene, indexOfLastGene);
+
+  // === Automatically Select Genes ===
   useEffect(() => {
-    if (!genes || locations.length === 0) return;
-
-    const updatedGenes = genes.map((gene) => {
-      const newCounts = { ...gene.counts };
-      let modified = false;
-
-      locations.forEach((loc) => {
-        if (gene.name.includes(loc) && !newCounts[loc]) {
-          newCounts[loc] = 1;
-          modified = true;
-        }
-      });
-
-      return modified ? { ...gene, counts: newCounts } : gene;
-    });
-
-    const hasChanges = updatedGenes.some((gene, idx) => gene !== genes[idx]);
-    if (hasChanges) onEditGeneCountBulk?.(updatedGenes);
-  }, [genes, locations, onEditGeneCountBulk]);
-
-  // === 自動全選新進來的 Genes (避免無限循環) ===
-  useEffect(() => {
-    if (genes.length > 0 && externalSelectedGenes.length === 0) {
-      onSelectedGenesChange?.(genes.map((g) => g.name));
+    if ((viewMode === "count" || viewMode === "formatted" || viewMode === "detail") && genes.length > 0) {
+      if (!clearClicked.current) {
+        handleSelectAllGenes(); // Automatically select all genes, but not if "Clear" was clicked
+      }
     }
-    // 只依賴 genes.length 和 onSelectedGenesChange
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [genes.length, onSelectedGenesChange]);
-
+  }, [genes.length, externalSelectedGenes.length, viewMode]);
 
   useEffect(() => {
-  if (locations.length > 0 && Object.keys(selectedLocations).length === 0) {
-    const initialSelected = locations.reduce((acc, loc) => {
-      acc[loc] = true;
-      return acc;
-    }, {});
-    onSelectedLocationsChange?.(initialSelected);
-  }
-}, [locations, selectedLocations, onSelectedLocationsChange]);
-
+    if (locations.length > 0 && Object.keys(selectedLocations).length === 0) {
+      const initialSelected = locations.reduce((acc, loc) => {
+        acc[loc] = true;
+        return acc;
+      }, {});
+      onSelectedLocationsChange?.(initialSelected);
+    }
+  }, [locations, selectedLocations, onSelectedLocationsChange]);
 
   const toggleGeneSelection = (geneName) => {
     const currentSelected = externalSelectedGenes || [];
@@ -73,10 +79,20 @@ const FATable = ({
     onSelectedLocationsChange?.(updated);
   };
 
-  const handleSelectAllGenes = () =>
-    onSelectedGenesChange?.(genes.map((g) => g.name));
+    
+  const handleSelectAllGenes = () => {
+    const genesToSelect = searchFilteredGenes.map((gene) => gene.name);
+    onSelectedGenesChange?.(genesToSelect);
+  };
 
-  const handleClearAllGenes = () => onSelectedGenesChange?.([]);
+  
+  const handleClearAllGenes = () => {
+    clearClicked.current = true; // 標記“Clear”按鈕被點擊過
+    const genesToDeselect = searchFilteredGenes.map((gene) => gene.name);
+    const genesToKeep = externalSelectedGenes.filter((gene) => !genesToDeselect.includes(gene)); // 保留未被搜尋過濾的基因
+    onSelectedGenesChange?.(genesToKeep); // 更新選擇的基因，只保留未被搜尋過濾的基因
+  };
+
 
   const handleSelectAllLocations = () =>
     onSelectedLocationsChange?.(
@@ -94,8 +110,58 @@ const FATable = ({
     setTimeout(() => updateMapData([location]), 0);
   };
 
+  // === Pagination Handlers ===
+  const nextPage = () => {
+    if (currentPage < Math.ceil(searchFilteredGenes.length / genesPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="gene-table-container view-count">
+      {/* Search Box */}
+      <div style={{ marginBottom: "10px", display: "flex", alignItems: "center" }}>
+        <input
+          type="text"
+          placeholder="Search Genes"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1); // Reset pagination to the first page when searching
+          }}
+          style={{
+            padding: "6px",
+            marginRight: "10px",
+            borderRadius: "4px",
+            border: "1px solid #ccc",
+            width: "100%",
+          }}
+        />
+        <div>
+          {viewMode === "count" && (
+            <label style={{fontSize: 20, display: "inline-flex", alignItems: "center" ,whiteSpace: "nowrap"}}>
+              <input
+                type="checkbox"
+                checked={showOnlySelected}
+                onChange={() => {
+                  const next = !showOnlySelected;
+                  if (next && setCurrentPage) setCurrentPage(1); // Reset page to 1 if "Show selected" is toggled
+                  setShowOnlySelected(next);
+                }}
+                style={{ marginRight: 6 }}
+              />
+              Show selected
+            </label>
+          )}
+        </div>
+      </div>
+
       <div
         style={{
           marginBottom: "8px",
@@ -119,7 +185,7 @@ const FATable = ({
           <button onClick={handleClearAllLocations}>Clear</button>
         </div>
       </div>
-
+     
       <div className="gene-table-wrapper">
         <table className="gene-table">
           <thead>
@@ -147,7 +213,7 @@ const FATable = ({
             </tr>
           </thead>
           <tbody>
-            {paginatedGenes.map((gene) => (
+            {currentGenes.map((gene) => (
               <tr key={gene.name}>
                 <td>
                   <input
@@ -179,6 +245,19 @@ const FATable = ({
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="pagination">
+        <button onClick={prevPage} disabled={currentPage === 1}>
+          Prev
+        </button>
+        <span style={{ margin: "0 10px" }} >
+          {currentPage} / {Math.ceil(searchFilteredGenes.length / genesPerPage)}
+        </span>
+        <button onClick={nextPage} disabled={currentPage === Math.ceil(searchFilteredGenes.length / genesPerPage)}>
+          Next
+        </button>
       </div>
     </div>
   );

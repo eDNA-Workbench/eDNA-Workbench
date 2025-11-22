@@ -1,5 +1,5 @@
 // hooks/useGeneSelection.js
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 const useGeneSelection = (genes, selectedGene, activeSimilarityGroup) => {
   const [selectedGenes, setSelectedGenes] = useState([]);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import FATable from "./Table/FATable";
 import InformationTable from "./Table/InformationTable";
 import CVSTable from "./Table/CVSTable";
@@ -12,13 +12,13 @@ const GeneTableContent = ({
   selectedGenesSet,
   selectedLocations,
   externalSelectedGenes,
+  showOnlySelected,
+  setShowOnlySelected,
   onSelectedGenesChange,
   onSelectedLocationsChange,
   onEditGeneCount,
   onEditGeneCountBulk,
-
   onFormattedGenesChange,
-
   updateMapData,
   genes,
   speciesOptions,
@@ -33,7 +33,6 @@ const GeneTableContent = ({
   hapPage,
   totalHapPages,
   onHapPageChange,
-
   filterMode,
   setFilterMode,
   minPercentage,
@@ -42,9 +41,77 @@ const GeneTableContent = ({
   setMaxPercentage,
   
 }) => {
-  if (viewMode === "count")
+
+  const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
+
+  useEffect(() => {
+    // 根據不同的 viewMode 設定所需的檔案是否完成
+    const isAllConfigured = 
+      (viewMode === "count" && Array.isArray(genes) && genes.length > 0 && Array.isArray(locations) && locations.length > 0) ||
+      (viewMode === "formatted" && Array.isArray(locations) && locations.length > 0) ||
+      (viewMode === "detail" && (Array.isArray(genes) && genes.length === 0 || Array.isArray(genes) && genes.length > 0 ) && Array.isArray(locations) && locations.length > 0 && typeof tagMapping === "object" && tagMapping !== null && Object.keys(tagMapping).length > 0) ||
+      (viewMode === "total" && Array.isArray(displayedHeaders) && displayedHeaders.length > 0) && Array.isArray(locations) && locations.length > 0;
+      
+    setIsConfigured(isAllConfigured);
+  }, [paginatedGenes, locations, tagMapping, ednaMapping, displayedHeaders, viewMode]);
+
+
+
+  // 定義顯示資料缺失的提示函式
+  const renderUploadWarning = () => (
+    <div style={{
+      padding: 16, 
+      backgroundColor: "#ffcc00", 
+      color: "#333", 
+      borderRadius: 8, 
+      marginBottom: 16,
+      fontSize: "16px",
+      fontWeight: "bold"
+    }}>
+      <p>⚠️ Complete the following settings：</p>
+      <ul>
+        {viewMode === "" && (
+          <>
+            {(!viewMode) && <li> Select Summary_table or FA_table</li>}
+          </>  
+        )}
+        {viewMode === "count" && (
+          <>
+            {(!genes || Array.isArray(genes) && genes.length === 0) && <li> Upload Fa File</li>}
+            {(!locations || Array.isArray(locations) && locations.length === 0)&& <li> Upload eDNA Sample Station (xlsx)</li>}
+          </>
+        )}
+        {viewMode === "formatted" && (
+          <>
+            {(!locations || Array.isArray(locations) && locations.length === 0)&& <li> Upload eDNA Sample Station (xlsx)</li>}
+          </>
+        )}
+        
+        {viewMode === "detail" && (
+          <>
+            {(!paginatedGenes || Array.isArray(paginatedGenes) && paginatedGenes.length === 0) && <li> Upload Fa File</li>}
+            {(!locations || Array.isArray(locations) && locations.length === 0) && <li> Upload eDNA Sample Station (xlsx)</li>}
+            {(!tagMapping || (typeof tagMapping === "object" && Object.keys(tagMapping).length === 0)) && <li> Upload eDNA_tags (xlsx, cvs)</li>}
+          </>
+        )}
+        {viewMode === "total" && (
+          <>
+            {(!displayedHeaders || Array.isArray(displayedHeaders) && displayedHeaders.length === 0) && <li> Upload Cvs File</li>}
+            {(!locations || Array.isArray(locations) && locations.length === 0)&& <li> Upload eDNA Sample Station (xlsx)</li>}
+          </>
+        )}
+      </ul>
+    </div>
+  );
+
+  // 根據資料檢查來顯示提示
+  if (!isConfigured) {
+    return renderUploadWarning();
+  }
+
+
+  if (viewMode === "count") {
     return (
-       
       <FATable
         paginatedGenes={paginatedGenes}
         geneColors={geneColors}
@@ -58,10 +125,15 @@ const GeneTableContent = ({
         onEditGeneCountBulk={onEditGeneCountBulk}
         updateMapData={updateMapData}
         genes={genes}
+        viewMode={viewMode}
+
+        showOnlySelected={showOnlySelected}
+        setShowOnlySelected={setShowOnlySelected}
       />
     );
+  }
 
-  if (viewMode === "formatted")
+  if (viewMode === "formatted") {
     return (
       <FormattedGeneFATable
         locations={locations}
@@ -72,13 +144,12 @@ const GeneTableContent = ({
         onEditGeneCount={onEditGeneCount}
         onEditGeneCountBulk={onEditGeneCountBulk}
         updateMapData={updateMapData}
-
         onFormattedGenesChange={onFormattedGenesChange}
-
       />
     );
+  }
 
-  if (viewMode === "detail")
+  if (viewMode === "detail") {
     return (
       <InformationTable
         paginatedGenes={paginatedGenes}
@@ -91,8 +162,9 @@ const GeneTableContent = ({
         fileName={fileName}
       />
     );
+  }
 
-  if (viewMode === "total" && displayedTableData.length > 0)
+  if (viewMode === "total" && displayedTableData.length > 0) {
     return (
       <CVSTable
         displayedHeaders={displayedHeaders}
@@ -101,7 +173,6 @@ const GeneTableContent = ({
         hapPage={hapPage}
         totalHapPages={totalHapPages}
         onHapPageChange={onHapPageChange}
-
         filterMode={filterMode}
         setFilterMode={setFilterMode}
         minPercentage={minPercentage}
@@ -110,6 +181,7 @@ const GeneTableContent = ({
         setMaxPercentage={setMaxPercentage}
       />
     );
+  }
 
   return null;
 };

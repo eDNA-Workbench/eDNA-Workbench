@@ -17,12 +17,13 @@ const FormattedGeneFATable = ({
   onEditGeneCountBulk,
   updateMapData,
   onFormattedGenesChange,  // 传递的回调函数，用于将数据传递到父组件
-
+  viewMode // 确保父组件传入了viewMode来决定是否显示搜索框
 }) => {
   const [formattedGenes, setFormattedGenes] = useState([]);
   const [geneColors, setGeneColors] = useState({}); // 存储每个基因的颜色
   const [currentPage, setCurrentPage] = useState(1); // 当前页码
   const [genesPerPage] = useState(10); // 每页显示的基因数量
+  const [searchTerm, setSearchTerm] = useState(""); // 搜索框的内容
   const selectedGenesSet = new Set(externalSelectedGenes);
 
   // Fetch the formatted genes from the backend
@@ -52,51 +53,48 @@ const FormattedGeneFATable = ({
     }
   }, [formattedGenes]);
 
+  // 自动全选所有基因
+  useEffect(() => {
+    if (formattedGenes.length > 0) {
+      handleSelectAllGenes();
+    }
+  }, [formattedGenes]);
 
-// 向父组件传递 formattedGenes, geneColors 和基因数量
-useEffect(() => {
-  if (formattedGenes.length > 0) {
-    // 提取基因数量信息
-    const geneCounts = formattedGenes.map((gene) => {
-      const counts = locations.reduce((acc, loc) => {
-        acc[loc] = gene.cities?.[loc] || 0; // 默认为 0 如果没有该位置的计数
+  // 向父组件传递 formattedGenes, geneColors 和基因数量
+  useEffect(() => {
+    if (formattedGenes.length > 0) {
+      const geneCounts = formattedGenes.map((gene) => {
+        const counts = locations.reduce((acc, loc) => {
+          acc[loc] = gene.cities?.[loc] || 0;
+          return acc;
+        }, {});
+        return { id: gene.id, counts };
+      });
+
+      const geneColorMap = formattedGenes.reduce((acc, gene, index) => {
+        acc[gene.id] = geneColors[gene.id] || "black";
         return acc;
       }, {});
-      return { id: gene.id, counts };  // 以基因 id 为键，保存各位置的计数
-    });
 
-    // 确保 geneColors 已更新
-    const geneColorMap = formattedGenes.reduce((acc, gene, index) => {
-      acc[gene.id] = geneColors[gene.id] || "black"; // 使用已生成的颜色，如果没有就设置为黑色
-      return acc;
-    }, {});
+      onFormattedGenesChange?.(formattedGenes, geneColorMap, geneCounts, locations);
+    }
+  }, [formattedGenes, geneColors, locations, onFormattedGenesChange]);
 
-    // 传递 formattedGenes, geneColors 和 geneCounts 到父组件
-    onFormattedGenesChange?.(formattedGenes, geneColorMap, geneCounts, locations);  // 这里传递所有需要的数据
-  }
-}, [formattedGenes, geneColors, locations, onFormattedGenesChange]);
+  // 搜索处理
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // 搜索时跳转到第一页
+  };
 
+  // 根据搜索关键词筛选基因
+  const filteredGenes = formattedGenes.filter((gene) =>
+    gene.id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // 计算当前页显示的基因数据
   const indexOfLastGene = currentPage * genesPerPage;
   const indexOfFirstGene = indexOfLastGene - genesPerPage;
-  const currentGenes = formattedGenes.slice(indexOfFirstGene, indexOfLastGene);
-
-  // 切换基因选择
-  const toggleGeneSelection = (geneId) => {
-    const currentSelected = externalSelectedGenes || [];
-    const newSelected = selectedGenesSet.has(geneId)
-      ? currentSelected.filter((name) => name !== geneId)
-      : [...currentSelected, geneId];
-    onSelectedGenesChange?.(newSelected);
-  };
-
-  // 切换位置选择
-  const toggleLocationSelection = (loc) => {
-    const updated = { ...selectedLocations };
-    updated[loc] = !updated[loc];
-    onSelectedLocationsChange?.(updated);
-  };
+  const currentGenes = filteredGenes.slice(indexOfFirstGene, indexOfLastGene);
 
   const handleSelectAllGenes = () =>
     onSelectedGenesChange?.(formattedGenes.map((g) => g.id));
@@ -121,7 +119,7 @@ useEffect(() => {
 
   // 分页功能：下一页
   const nextPage = () => {
-    if (currentPage < Math.ceil(formattedGenes.length / genesPerPage)) {
+    if (currentPage < Math.ceil(filteredGenes.length / genesPerPage)) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -135,6 +133,20 @@ useEffect(() => {
 
   return (
     <div className="gene-table-container view-count">
+      {/* 搜尋框 */}
+      
+        <div className="flex" style={{ marginBottom: 15, gap: 15, alignItems: "center" }}>
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="search-input"
+            style={{ width: 200 }}
+          />
+        </div>
+      
+
       <div
         style={{
           marginBottom: "8px",
@@ -226,9 +238,9 @@ useEffect(() => {
           Previous
         </button>
         <span style={{ margin: "0 10px" }}>
-          {currentPage} / {Math.ceil(formattedGenes.length / genesPerPage)}
+          {currentPage} / {Math.ceil(filteredGenes.length / genesPerPage)}
         </span>
-        <button onClick={nextPage} disabled={currentPage === Math.ceil(formattedGenes.length / genesPerPage)}>
+        <button onClick={nextPage} disabled={currentPage === Math.ceil(filteredGenes.length / genesPerPage)}>
           Next
         </button>
       </div>

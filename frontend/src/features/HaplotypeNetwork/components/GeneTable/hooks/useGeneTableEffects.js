@@ -80,7 +80,7 @@ export const useGeneTableEffects = ({
 
   // 4️⃣ Hap 顏色設定
   useEffect(() => {
-    if (viewMode !== "total" || hapHeaders.length === 0) return;
+    if (viewMode == "total" || hapHeaders.length === 0) return;
 
     // 使用 hap 的名稱生成穩定的顏色
     const colors = Array.from({ length: hapHeaders.length }, (_, i) => {
@@ -128,8 +128,6 @@ export const useGeneTableEffects = ({
   }, [genes, locations, onEditGeneCountBulk]);
 
   // 6️⃣ Map 座標計算 & 基因資料
-  // 更新 Map 座標計算 & 基因資料
-
    useEffect(() => {
 
     if (!locations || locations.length === 0) return;
@@ -148,37 +146,7 @@ export const useGeneTableEffects = ({
       cityMap[loc] = { coordinates: { cx, cy }, genes: [] };
     });
 
-    if (viewMode === "formatted") {
-    const formattedCityMap = {}; // 用來儲存格式化後的基因數據
-
-    onFormattedGenesChange.genes.forEach((gene) => {
-     
-
-      locations.forEach((loc) => {
-        const count = gene.cities[loc] || 0; // 從 gene.cities 中獲取對應城市的計數
-       
-
-        if (count > 0) {
-          if (!formattedCityMap[loc]) {
-            // 在這裡加入坐標資料
-            formattedCityMap[loc] = {
-              coordinates: cityMap[loc].coordinates, // 使用之前已設置的城市坐標
-              genes: [],
-            };
-          }
-          formattedCityMap[loc]?.genes.push({
-            name: gene.id,
-            color: onFormattedGenesChange.colors[gene.id] || "#000", // 使用顏色映射
-            value: count,
-          });
-        }
-      });
-    });
-
-    console.log("Formatted City Map:", formattedCityMap);  // 查看填充後的 cityMap
-    setFormattedCityGeneData?.(formattedCityMap); // 傳遞格式化的 cityMap
-  }
-    else if (viewMode === "total" && totalTableData.length > 1) {
+    if (viewMode === "total" && totalTableData.length > 1) {
       // 當 viewMode 是 "total" 時，處理原始的基因數據
       const headers = totalTableData[0];
       const rows = totalTableData.slice(1);
@@ -187,6 +155,7 @@ export const useGeneTableEffects = ({
       rows.forEach((row) => {
         const loc = row[0];
         const total = parseInt(row[1]) || 0;
+
         hapHeaders.forEach((hap, idx) => {
           const value = parseInt(row[idx + 2]) || 0;
           const percent = total > 0 ? (value / total) * 100 : 0;
@@ -208,7 +177,53 @@ export const useGeneTableEffects = ({
       });
 
       setTotalCityGeneData?.(cityMap); // 傳遞過濾後的 cityMap
-    } else {
+
+    } else if (viewMode === "formatted") {
+  const formattedCityMap = {}; // 用來儲存格式化後的基因數據
+
+  onFormattedGenesChange.genes.forEach((gene) => {
+    locations.forEach((loc) => {
+      const count = gene.cities[loc] || 0; // 從 gene.cities 中獲取對應城市的計數
+
+      if (count > 0) {
+        if (!formattedCityMap[loc]) {
+          // 在這裡加入坐標資料
+          formattedCityMap[loc] = {
+            coordinates: cityMap[loc].coordinates, // 使用之前已設置的城市坐標
+            genes: [],
+          };
+        }
+
+        formattedCityMap[loc]?.genes.push({
+          name: gene.id,              // 基因名稱
+          color: onFormattedGenesChange.colors[gene.id] || "#000", // 基因顏色
+          value: count,               // 基因的數量
+        });
+      }
+    });
+  });
+
+  // 傳遞格式化後的 cityMap，格式與 setCityGeneData 一樣
+  setFormattedCityGeneData?.(formattedCityMap); // 傳遞格式化的 cityMap
+
+    } else if (viewMode === "detail") {
+      // 處理詳細模式的基因數據
+      genes.forEach((gene) => {
+        locations.forEach((loc) => {
+          const count = gene.counts?.[loc] || 0;
+          if (count > 0) {
+            cityMap[loc]?.genes.push({
+              name: gene.name,
+              color: geneColors[gene.name] || "#000",
+              value: count,
+            });
+          }
+        });
+      });
+
+      setCityGeneData?.(cityMap); // 傳遞未過濾的 cityMap
+
+    } else if(viewMode === "count"){
       // 如果不是 "formatted" 或 "total"，使用原始的 genes 和 locations 更新 cityMap
       genes.forEach((gene) => {
         locations.forEach((loc) => {
@@ -224,9 +239,7 @@ export const useGeneTableEffects = ({
       });
 
       setCityGeneData?.(cityMap); // 傳遞未過濾的 cityMap
-    }
-
-   
+    }  
   }, [
     viewMode,
     totalTableData,

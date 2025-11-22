@@ -29,8 +29,10 @@ const HaplotypeNetworkApp = ({
   const [isLocationMapVisible, setIsLocationMapVisible] = useState(true);
   const [genes, setGenes] = useState([]);
   const [geneColors, setGeneColors] = useState({});
+  const [hapColors, setHapColors] = useState({});
+  const [formattedGeneColors, setFormattedGeneColors] = useState([]);
 
-   const [isReduced, setIsReduced] = useState(false);
+  const [isReduced, setIsReduced] = useState(false);
   
   const [selectedGene, setSelectedGene] = useState(null);
   const [activeSimilarityGroup, setActiveSimilarityGroup] = useState([]);
@@ -39,11 +41,7 @@ const HaplotypeNetworkApp = ({
   const [totalCityGeneData, setTotalCityGeneData] = useState({});
   const [FormattedCityGeneData, setFormattedCityGeneData] = useState({});
   const [viewMode, setViewMode] = useState("total");
-  const [hapColors, setHapColors] = useState({});
   
- 
-  
-
   const [cityVisibility, setCityVisibility] = useState({});
 
   const [mapSettings, setMapSettings] = useState({ imgW: 465, imgH: 658.5, lonRange: [120, 122], latRange: [21.5, 25.5], });
@@ -171,14 +169,6 @@ const HaplotypeNetworkApp = ({
     }
   }, [initialFileContent]);
 
-useEffect(() => {
- console.log("FormattedCityGeneData:", FormattedCityGeneData); 
-  }, [FormattedCityGeneData]);
-
-  useEffect(() => {
- console.log("cityGeneData:", cityGeneData); 
-  }, [cityGeneData]);
-
   // =======================
   // Render
   // =======================
@@ -187,7 +177,7 @@ useEffect(() => {
       {/* ====== 上方區域：Section 切換按鈕 ====== */}
       <div className="button-group">
         <button onClick={() => { setActiveSection("locationMap"); setIsLocationMapVisible(true); }}>
-          Location Map
+          ***Location Map
         </button>
         <button onClick={() => setActiveSection("haplotypeNetwork")}>
           Haplotype Network
@@ -196,8 +186,8 @@ useEffect(() => {
 
       {/* ====== Location Map 區域的兩個切換按鈕 ====== */}
       {(activeSection === "locationMap" || activeSection === "taiwanMap" || activeSection === "geneComponents") && (
-        <div className="location-map-buttons">
-          <button onClick={() => setActiveSection("taiwanMap")}>Genes Display</button>
+        <div className="button-group">
+          <button onClick={() => setActiveSection("taiwanMap")}>***Genes Display</button>
           <button onClick={() => setActiveSection("geneComponents")}>Genes Sequences Components</button>
         </div>
       )}
@@ -212,7 +202,12 @@ useEffect(() => {
               cityGeneData={cityGeneData}
               totalCityGeneData={totalCityGeneData}
               FormattedCityGeneData={FormattedCityGeneData}
-              geneColors={viewMode === "total" ? hapColors : geneColors}
+              geneColors={
+                viewMode === "total" ? hapColors :
+                viewMode === "count" ? geneColors :
+                viewMode === "formatted" ? formattedGeneColors :
+                {}  // 如果沒有匹配的viewMode，可以返回空對象或其他預設值
+              }
               selectedGenes={selectedGenesTaiwanMap}
               onSelectedGenesChange={setSelectedGenesTaiwanMap}
               cityVisibility={cityVisibility}
@@ -233,12 +228,21 @@ useEffect(() => {
               genes={genes}
 
               updateMapData={updateMapData}
-              geneColors={viewMode === "total" ? hapColors : geneColors}
+              geneColors={
+                viewMode === "total" ? hapColors :
+                viewMode === "count" ? geneColors :
+                viewMode === "detail" ? geneColors :
+                viewMode === "formatted" ? formattedGeneColors :
+                {}  // 如果沒有匹配的viewMode，可以返回空對象或其他預設值
+              }
+              onHapColorsChange={setHapColors}
+              onFormattedGeneColorsChange={setFormattedGeneColors}
+
               setCityGeneData={setCityGeneData}
               setTotalCityGeneData={setTotalCityGeneData}
               setFormattedCityGeneData={setFormattedCityGeneData}
               onViewModeChange={setViewMode}
-              onHapColorsChange={setHapColors}
+              
               onEditGeneCount={handleEditGeneCount}
               onEditGeneCountBulk={handleEditGeneCountBulk}
               selectedGenes={selectedGenesTaiwanMap}
@@ -248,10 +252,7 @@ useEffect(() => {
               imgW={mapSettings.imgW}
               imgH={mapSettings.imgH}
               lonRange={mapSettings.lonRange}
-              latRange={mapSettings.latRange}
-              
-              
-              
+              latRange={mapSettings.latRange}   
             />
           </div>
         </div>
@@ -297,6 +298,7 @@ useEffect(() => {
           {/* --- 下方：Gene Table --- */}
           <div style={{ display: "none" }}>
             <GeneTable
+              activeSection={activeSection}
               fileName={initialFileName}
               eDnaSampleContent={eDnaSampleContent}
               eDnaTagsContent={eDnaTagsContent}
@@ -305,11 +307,19 @@ useEffect(() => {
               genes={genes}
 
               updateMapData={updateMapData}
-              geneColors={viewMode === "total" ? hapColors : geneColors}
+              geneColors={
+                viewMode === "total" ? hapColors :
+                viewMode === "count" ? geneColors :
+                viewMode === "formatted" ? formattedGeneColors :
+                {}  // 如果沒有匹配的viewMode，可以返回空對象或其他預設值
+              }
+              onHapColorsChange={setHapColors}
+              onFormattedGeneColorsChange={setFormattedGeneColors}
+
               setCityGeneData={setCityGeneData}
               setTotalCityGeneData={setTotalCityGeneData}
               onViewModeChange={setViewMode}
-              onHapColorsChange={setHapColors}
+              
               onEditGeneCount={handleEditGeneCount}
               onEditGeneCountBulk={handleEditGeneCountBulk}
               selectedGenes={selectedGenesGeneComponents}
@@ -319,10 +329,7 @@ useEffect(() => {
               imgW={mapSettings.imgW}
               imgH={mapSettings.imgH}
               lonRange={mapSettings.lonRange}
-              latRange={mapSettings.latRange}
-              
-             
-              
+              latRange={mapSettings.latRange} 
             />
           </div>
         </div>
@@ -358,15 +365,11 @@ useEffect(() => {
               imgH={mapSettings.imgH}
               lonRange={mapSettings.lonRange}
               latRange={mapSettings.latRange}
-              
-              
-              
             />
           </div>
         </div>
       )}
-
-      </div>
+      </div>  
   );
 };
 

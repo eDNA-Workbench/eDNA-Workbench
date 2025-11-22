@@ -57,22 +57,16 @@ export const useTaiwanMapState = ({
   const activeCityGeneData = mapPage === 0 ? cityGeneData : totalCityGeneData;
   useEffect(() => {
     if (!activeCityGeneData) return;
-    const initialVisibility = Object.keys(activeCityGeneData).reduce(
-      (acc, city) => {
-        acc[city] = true;
-        return acc;
-      },
-      {}
-    );
+    const initialVisibility = Object.keys(activeCityGeneData).reduce((acc, city) => {
+      acc[city] = true;
+      return acc;
+    }, {});
     onCityVisibilityChange?.(initialVisibility);
   }, [activeCityGeneData, onCityVisibilityChange]);
 
   // 過濾 gene
   const filteredGeneList = useMemo(
-    () =>
-      allGenes.filter((name) =>
-        name.toLowerCase().includes(searchTerm.toLowerCase())
-      ),
+    () => allGenes.filter((name) => name.toLowerCase().includes(searchTerm.toLowerCase())),
     [allGenes, searchTerm]
   );
 
@@ -99,50 +93,28 @@ export const useTaiwanMapState = ({
 
   const offsetX = (conW - imgW) / 2;
   const offsetY = (conH - imgH) / 2;
-  const adjustCoordinatesToContainer = (cx, cy) => ({
-    cx: cx + offsetX,
-    cy: cy + offsetY,
-  });
+  const adjustCoordinatesToContainer = (cx, cy) => ({ cx: cx + offsetX, cy: cy + offsetY });
 
   return {
-    searchTerm,
-    setSearchTerm,
-    currentPage,
-    setCurrentPage,
-    latLon,
-    setLatLon,
-    mapPage,
-    setMapPage,
-    citySearchTerm,
-    setCitySearchTerm,
-    selectedChart,
-    setSelectedChart,
-    selectedCity,
-    setSelectedCity,
-    activeMapId,
-    setActiveMapId,
-    mapImage,
-    setMapImage,
-    mapLoaded,
-    setMapLoaded,
-    imgW,
-    setImgW,
-    imgH,
-    setImgH,
-    lonRange,
-    setLonRange,
-    latRange,
-    setLatRange,
-    lonDirMin,
-    setLonDirMin,
-    lonDirMax,
-    setLonDirMax,
-    latDirMin,
-    setLatDirMin,
-    latDirMax,
-    setLatDirMax,
-    conW,
-    conH,
+    searchTerm, setSearchTerm,
+    currentPage, setCurrentPage,
+    latLon, setLatLon,
+    mapPage, setMapPage,
+    citySearchTerm, setCitySearchTerm,
+    selectedChart, setSelectedChart,
+    selectedCity, setSelectedCity,
+    activeMapId, setActiveMapId,
+    mapImage, setMapImage,
+    mapLoaded, setMapLoaded,
+    imgW, setImgW,
+    imgH, setImgH,
+    lonRange, setLonRange,
+    latRange, setLatRange,
+    lonDirMin, setLonDirMin,
+    lonDirMax, setLonDirMax,
+    latDirMin, setLatDirMin,
+    latDirMax, setLatDirMax,
+    conW, conH,
     filteredGeneList,
     currentGenes,
     totalPages,
@@ -152,6 +124,6 @@ export const useTaiwanMapState = ({
     cityCoordinates3,
     adjustCoordinatesToContainer,
     activeCityGeneData,
-    allGenes,
+    allGenes
   };
 };

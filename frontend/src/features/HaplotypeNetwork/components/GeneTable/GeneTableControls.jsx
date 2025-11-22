@@ -1,4 +1,4 @@
-import React from "react";
+import "./GeneTable.css";
 
 const GeneTableControls = ({
   viewMode,
@@ -7,13 +7,9 @@ const GeneTableControls = ({
   setSearchTerm,
   showOnlySelected,
   setShowOnlySelected,
-  
   csvFileName,
   currentPage,
-  setCurrentPage, 
-
-  
-  
+  setCurrentPage,
 }) => {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -22,55 +18,51 @@ const GeneTableControls = ({
 
   return (
     <div style={{ position: "relative" }}>
-      {/* 表格切換 */}
-      <div style={{ marginBottom: 10, display: 'flex', justifyContent: 'flex-start' }}>
+      {/* 表格切換：上方的兩個按鈕 */}
+      <div className="button-groupS top" style={{ marginBottom: 10, display: "flex", justifyContent: "flex-start" }}>
         <button
           onClick={() => setViewMode("total")}
-          style={{
-            marginRight: 8,
-            padding: "6px 12px", // 調整內邊距來控制按鈕的大小
-            lineHeight: "normal", // 保證文字垂直居中
-          }}
+          className="btn btn-summary"
         >
-          Summary_table
+          ***Summary_table
         </button>
         <button
           onClick={() => setViewMode("count")}
-          style={{
-            marginRight: 8,
-            padding: "6px 12px",
-            lineHeight: "normal",
-          }}
+          className="btn btn-fa"
         >
           FA_table
         </button>
-        <button
-          onClick={() => setViewMode("formatted")}
-          style={{
-            marginRight: 8,
-            padding: "6px 12px",
-            lineHeight: "normal",
-          }}
-        >
-          MergeFA_table
-        </button>
-        <button
-          onClick={() => setViewMode("detail")}
-          style={{
-            marginRight: 8,
-            padding: "6px 12px",
-            lineHeight: "normal",
-          }}
-        >
-          Information_table
-        </button>       
       </div>
 
-
-
+      {/* FA_table 內的三個表格：下方的三個按鈕 */}
+      {(  viewMode === "count" || viewMode === "formatted" || viewMode === "detail") && (
+        <div className="button-groupS bottom" style={{ marginBottom: 10, display: "flex", justifyContent: "flex-start" }}>
+          {/*
+          <button
+            onClick={() => setViewMode("count")}
+            className="btn btn-fa"
+          >
+            FA_table
+          </button>
+          */}
+          
+          <button
+            onClick={() => setViewMode("formatted")}
+            className="btn btn-merge"
+          >
+            MergeFA_table
+          </button>
+          <button
+            onClick={() => setViewMode("detail")}
+            className="btn btn-info1"
+          >
+            Information_table
+          </button>
+        </div>
+      )}
 
       {/* 搜尋 & 篩選：只在 count 和 detail 模式下顯示 */}
-      {(viewMode === "count" || viewMode === "detail" ) && (
+      {( viewMode === "detail") && (
         <div className="flex" style={{ marginBottom: 15, gap: 15, alignItems: "center" }}>
           <input
             type="text"
@@ -82,25 +74,7 @@ const GeneTableControls = ({
           />
         </div>
       )}
-
-      {/* 篩選設定 */}
-      <div>        
-        {viewMode === "count" && (
-          <label style={{ marginLeft: "auto", fontSize: 14 }}>
-            <input
-              type="checkbox"
-              checked={showOnlySelected}
-              onChange={() => {
-                const next = !showOnlySelected;
-                if (next && setCurrentPage) setCurrentPage(1);
-                setShowOnlySelected(next);
-              }}
-              style={{ marginRight: 6 }}
-            />
-            Show selected
-          </label>
-        )}
-      </div>
+      
     </div>
   );
 };

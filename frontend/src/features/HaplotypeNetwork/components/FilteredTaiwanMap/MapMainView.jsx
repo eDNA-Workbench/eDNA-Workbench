@@ -1,4 +1,3 @@
-
 import React from "react";
 import CityPieChart from "./CityPieChart";
 
@@ -185,7 +184,7 @@ const MapMainView = ({
                     chartData={{ data: filteredData, totalCount: chartData.totalCount }}
                     geneColors={geneColors}
                     position={chartData.containerCoordinates}
-                    opacity={cityVisibility[city] ? 1 : 0}
+                    opacity={cityVisibility[city] ? 1 : 0.3}
                     onClick={() => setSelectedCity(city)}
                     isSelected={selectedCity === city}
                   />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 import MapControls from "./MapControls";
 import MapMainView from "./MapMainView";
