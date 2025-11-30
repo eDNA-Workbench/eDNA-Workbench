@@ -130,7 +130,7 @@ function MainNavbar({ theme, toggleTheme }) {
       return (
         <>
           <label className="dropdown-item">
-            {haplotypeFiles.length > 0 ? `Fasta Files: ${haplotypeFiles.length} uploaded` : "Upload Fasta"}
+            {haplotypeFiles.length > 0 ? `MSA Files: ${haplotypeFiles.length} uploaded` : "Upload MSA"}
             <input
               type="file"
               accept=".fa,.fasta,.txt"
@@ -149,7 +149,7 @@ function MainNavbar({ theme, toggleTheme }) {
       return (
         <>
           <label className="dropdown-item">
-            {haplotypeFiles.length > 0 ? `Fasta Files: ${haplotypeFiles.length} uploaded` : "Upload Fasta"}
+            {haplotypeFiles.length > 0 ? `MSA Files: ${haplotypeFiles.length} uploaded` : "Upload MSA"}
             <input
               type="file"
               accept=".fa,.fasta,.txt"

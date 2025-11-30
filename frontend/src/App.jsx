@@ -10,6 +10,8 @@ import HomePage from './pages/HomePage.jsx';
 import PhylotreePage from './pages/PhylotreePage.jsx';
 import SequenceAlignmentPage from './pages/SequenceAlignmentPage.jsx';
 
+import { AnalysisProvider } from './contexts/AnalysisContext';
+
 // UI
 import TitleBar from './components/TitleBar.jsx';
 // import FloatingChatManager from './Chat/FloatingChatManager';
@@ -47,25 +49,27 @@ const AppContent = () => {
   }
 
   return (
-    <FileProvider>
-      <div className="main-content">
-        { isMac && <TitleBar /> }
+    <AnalysisProvider>
+      <FileProvider>
+        <div className="main-content">
+          { isMac && <TitleBar /> }
 
-        { !isHomePage && <Navbar theme={theme} toggleTheme={toggleTheme} /> }
+          { !isHomePage && <Navbar theme={theme} toggleTheme={toggleTheme} /> }
 
-        <main className="app-main">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/analysis" element={<AnalysisPipelinePage />} />
-            <Route path="/phylotree" element={<PhylotreePage />} />
-            <Route path="/haplotype" element={<HaplotypePage />} />
-            <Route path="/sequence-alignment" element={<SequenceAlignmentPage />} />
-          </Routes>
-        </main>
+          <main className="app-main">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/analysis" element={<AnalysisPipelinePage />} />
+              <Route path="/phylotree" element={<PhylotreePage />} />
+              <Route path="/haplotype" element={<HaplotypePage />} />
+              <Route path="/sequence-alignment" element={<SequenceAlignmentPage />} />
+            </Routes>
+          </main>
 
-        {/* <FloatingChatManager /> */}
-      </div>
-    </FileProvider>
+          {/* <FloatingChatManager /> */}
+        </div>
+      </FileProvider>
+    </AnalysisProvider>
   );
 };
 

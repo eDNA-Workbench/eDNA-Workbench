@@ -1,31 +1,47 @@
 // src/components/AnalysisPanel.jsx
 import { CheckCircle2, Circle, Dot, Play, RotateCcw, Terminal } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { useAnalysisContext } from '../../../contexts/AnalysisContext'
 import { api } from '../services/api'
 import '../styles/components/AnalysisPanel.css'
 import { formatFileSize } from '../utils/formatFileSize'
 
 const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
-  const [logs, setLogs] = useState([])
-  const [showLogs, setShowLogs] = useState(false)
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  
-  const [analysisStep, setAnalysisStep] = useState('ready')
-  const [detectedSpecies, setDetectedSpecies] = useState([])
-  const [selectedSpecies, setSelectedSpecies] = useState(null) // 新增：選中的物種
-  const [qualityConfig, setQualityConfig] = useState({}) // 現在只針對單一物種
+  // -- Use Context --
+  const {
+    logs,
+    isAnalyzing,
+    analysisStep,
+    detectedSpecies,
+    selectedSpecies,
+    qualityConfig,
+    showLogs,
+    minLength,
+    maxLength,
+    ncbiFile,
+    keyword,
+    identity,
+    copyNumber,
+    
+    setLogs,
+    setAnalysisStep,
+    setDetectedSpecies,
+    setSelectedSpecies,
+    setQualityConfig,
+    setShowLogs,
+    setMinLength,
+    setMaxLength,
+    setNcbiFile,
+    setKeyword,
+    setIdentity,
+    setCopyNumber,
 
-  const [minLength, setMinLength] = useState(200)
-  const [maxLength, setMaxLength] = useState()
+    startPipeline: startPipelineContext,
+    stopAnalysis,
+    resetAnalysis,
+    addLog
+  } = useAnalysisContext();
 
-  const [ncbiFile, setNcbiFile] = useState(null)
-
-  const [keyword, setKeyword] = useState()
-  const [identity, setIdentity] = useState(98)
-
-  const [copyNumber, setCopyNumber] = useState(2)
-  
-  const eventSourceRef = useRef(null)
   const logContainerRef = useRef(null)
 
   const detectSpecies = async () => {
@@ -65,50 +81,47 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
 
   useEffect(() => {
     // -- check whether detection is complete
+    // IMPORTANT: Do not reset step if we are already analyzing or completed
+    if (isAnalyzing || analysisStep === 'running' || analysisStep === 'completed') {
+        return;
+    }
+
     if (uploadedFiles?.detectedSpecies && uploadedFiles?.defaultQualityConfig) {
       setDetectedSpecies(uploadedFiles.detectedSpecies)
       setAnalysisStep('selecting') // selecting stage
       
       addLog(`Pre-detected projects loaded: ${uploadedFiles.detectedSpecies.join(', ')}`, 'success')
-    } else if (uploadedFiles?.barcode) {
-      detectSpecies()
+    } else if (uploadedFiles?.barcode && analysisStep === 'ready') {
+       // Only auto-detect if we are in ready state (not if we already have results or are running)
+       detectSpecies()
     }
-  }, [uploadedFiles])
+  }, [uploadedFiles, isAnalyzing, analysisStep])
 
-  // Add log entry
-  const addLog = (message, type = 'info') => {
-    const logEntry = {
-      id: Date.now() + Math.random(),
-      message,
-      type,
-      timestamp: new Date().toLocaleTimeString()
+  // Auto scroll logs
+  useEffect(() => {
+    if (showLogs && logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight
     }
-    
-    setLogs(prev => [...prev, logEntry])
-    
-    // Auto scroll to bottom
-    setTimeout(() => {
-      if (logContainerRef.current) {
-        logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight
-      }
-    }, 100)
-  }
+  }, [logs, showLogs])
 
   // -- selecting project
   const selectSpecies = (species) => {
     setSelectedSpecies(species)
     
-    // initialize project configuration
-    setQualityConfig({
-      [species]: 0 // default 0
-    })
+    // initialize project configuration if not set
+    if (!qualityConfig[species]) {
+        setQualityConfig(prev => ({
+            ...prev,
+            [species]: 0 // default 0
+        }))
+    }
     
     // stay in the "selecting" stage
     addLog(`Selected project: ${species}`, 'info')
   }
 
   // -- start analysis
-  const startPipeline = async () => {
+  const handleStartPipeline = async () => {
     // Check if files are complete
     if (!uploadedFiles.R1 || !uploadedFiles.R2 || !uploadedFiles.barcode) {
       alert('Please upload R1, R2, and barcode files to start the pipeline.')
@@ -132,10 +145,7 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
     }
 
     try {
-      setIsAnalyzing(true)
-      setAnalysisStep('running')
       setShowLogs(true)
-
       addLog(`Uploading NCBI reference file: ${ncbiFile.name}...`, 'info')
     
       const formData = new FormData()
@@ -159,37 +169,20 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
         copyNumber: copyNumber
       }
 
-      addLog(`Starting DNA analysis for project: ${selectedSpecies}`, 'info')
-      addLog(`Quality settings: ${JSON.stringify(qualityConfig)}`, 'info')
-      addLog(`Minimum length threshold of ${minLength}bp`, 'info')
-
-      // Call API to start analysis
-      const response = await api.analysis.pipeline.start(params)
-      
-      addLog('Analysis task started successfully', 'success')
-
-      // Call original callback if needed
-      // if (onAnalysisStart) {
-      //   onAnalysisStart('pipeline', params)
-      // }
-
-      // -- Delay starting SSE monitoring to give the backend time to set up the analysis state
-      setTimeout(() => {
-        startSSEMonitoring()
-      }, 1000)
+      // Call context action
+      await startPipelineContext(params);
 
     } catch (error) {
       console.error('Failed to start analysis:', error)
       addLog(`Startup failed: ${error.response?.data?.error || error.message}`, 'error')
-      setIsAnalyzing(false)
-      setAnalysisStep('selecting') // 錯誤時回到選擇階段
     }
   }
 
   const handleQualityChange = (value) => {
-    setQualityConfig({
+    setQualityConfig(prev => ({
+      ...prev,
       [selectedSpecies]: parseInt(value)
-    })
+    }))
   }
 
   const handleMinLengthChange = (value) => {
@@ -261,158 +254,29 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
           maxLengthValid
   }
 
-  const startSSEMonitoring = () => {
-    addLog('Starting SSE connection...', 'info')
-    
-    checkAnalysisExists()
-      .then(() => {
-        // -- If an analysis exists, establish an SSE connection
-        eventSourceRef.current = api.analysis.pipeline.watchProgress({
-          onConnect: () => {
-            addLog('SSE connection established', 'success')
-          },
-
-          onStart: (data) => {
-            addLog(data.message || 'Started monitoring analysis progress...', 'info')
-          },
-
-          onProgress: (data) => {
-            addLog(data.message || 'Analysis in progress...', 'info')
-          },
-
-          onComplete: (data) => {
-            addLog(data.message || 'Analysis completed!', 'success')
-            setIsAnalyzing(false)
-            setAnalysisStep('completed')
-            
-            // Optionally fetch results here
-            fetchAnalysisResults().then(results => {
-              if (onAnalysisComplete && results) {
-                onAnalysisComplete(results)
-              }
-            })
-          },
-
-          onError: (data) => {
-            addLog(`Analysis error: ${data.message || data.error || 'Unknown error'}`, 'error')
-            setIsAnalyzing(false)
-            setAnalysisStep('selecting')
-          },
-
-          onSSEError: (error) => {
-            addLog(`SSE connection error: ${error.message}`, 'warning')
-            // -- try to reconnect
-            setTimeout(() => {
-              if (isAnalyzing && eventSourceRef.current?.readyState === EventSource.CLOSED) {
-                addLog('Attempting to reconnect SSE...', 'info')
-                startSSEMonitoring()
-              }
-            }, 3000)
-          }
-        })
-      })
-      .catch((error) => {
-        addLog(`No active analysis found: ${error.message}`, 'warning')
-        setIsAnalyzing(false)
-        setAnalysisStep('selecting')
-      })
+  // Handle Reset
+  const handleReset = () => {
+      resetAnalysis();
+      onReset();
   }
 
-  // -- Check if there is an ongoing analysis
-  const checkAnalysisExists = async () => {
-    try {
-      const response = await api.analysis.pipeline.getStatus()
-      if (response.data && response.data.status === 'running') {
-        return true
-      } else {
-        throw new Error('No running analysis found')
-      }
-    } catch (error) {
-      throw new Error('No active analysis')
-    }
-  }
-
-  // Fetch analysis results when completed
-  const fetchAnalysisResults = async () => {
-    try {
-      const response = await api.analysis.pipeline.getResults()
-      if (response.data) {
-        addLog(`Analysis completed for ${selectedSpecies}!`, 'success')
-        addLog(`Results ready: ${JSON.stringify(response.data.result, null, 2)}`, 'success')
-        return response.data
-      }
-    } catch (error) {
-      addLog(`Failed to fetch results: ${error.message}`, 'warning')
-    }
-  }
-
-  // Stop analysis (backend still analysising, NEED TO FIX)
-  const stopAnalysis = async () => {
-    try {
-      addLog('Stopping analysis...', 'warning')
-      
-      const response = await api.analysis.pipeline.stop()
-      addLog(`Analysis stopped: ${response.data.message}`, 'warning')
-      
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close()
-        eventSourceRef.current = null
-      }
-      
-      setIsAnalyzing(false)
-      setAnalysisStep('selecting')
-      
-    } catch (error) {
-      console.error('Failed to stop analysis:', error)
-      addLog(`Failed to stop analysis: ${error.response?.data?.error || error.message}`, 'error')
-      
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close()
-        eventSourceRef.current = null
-      }
-      setIsAnalyzing(false)
-      setAnalysisStep('selecting')
-    }
-  }
-
-  // Check for existing analysis on component mount
+  // Fetch results when completed (handled in context mostly, but if we need to trigger parent callback)
   useEffect(() => {
-    const checkExistingAnalysis = async () => {
-      try {
-        const response = await api.analysis.pipeline.getCurrent()
-        if (response.data.hasAnalysis) {
-          const status = response.data.status
-          addLog(`Found existing analysis: ${status}`, 'info')
-          
-          if (status === 'running') {
-            setIsAnalyzing(true)
-            setAnalysisStep('running')
-            setShowLogs(true)
-            addLog('Reconnecting to existing analysis...', 'info')
-            startSSEMonitoring()
-          } else if (status === 'completed') {
-            addLog('Previous analysis completed', 'success')
-            fetchAnalysisResults()
-          } else if (status === 'error') {
-            addLog('Previous analysis failed', 'error')
+      if (analysisStep === 'completed') {
+          const fetchResults = async () => {
+              try {
+                const response = await api.analysis.pipeline.getResults()
+                if (response.data && onAnalysisComplete) {
+                    onAnalysisComplete(response.data)
+                }
+              } catch (e) {
+                  console.error(e)
+              }
           }
-        }
-      } catch (error) {
-        console.log('No existing analysis found')
+          fetchResults();
       }
-    }
+  }, [analysisStep, onAnalysisComplete])
 
-    checkExistingAnalysis()
-  }, [])
-
-  // Close SSE when component unmounts
-  useEffect(() => {
-    return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close()
-      }
-    }
-  }, [])
 
   return (
     <div className="analysis-section">
@@ -543,7 +407,7 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
                     type="text" 
                     id="keyword" 
                     className="keyword-input" 
-                    value={keyword}
+                    value={keyword || ''}
                     onChange={(e) => handleKeywordChange(e.target.value)}
                   />
                   <label>(ex. mitochondrion)</label>
@@ -642,7 +506,7 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
           <>
             <button
                 className="btn btn-primary"
-                onClick={startPipeline}
+                onClick={handleStartPipeline}
                 disabled={!isFormValid()}
               >
                 <Play size={20} />
@@ -662,7 +526,7 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
         
         <button
           className="btn btn-secondary"
-          onClick={onReset}
+          onClick={handleReset}
           disabled={isAnalyzing}
         >
           <RotateCcw size={20} />

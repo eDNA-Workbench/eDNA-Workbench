@@ -1,5 +1,5 @@
 // src/App.jsx
-import { useState } from 'react'
+import { useAnalysisContext } from '../../contexts/AnalysisContext'
 import AnalysisPanel from './components/AnalysisPanel'
 import DockerCheckPanel from './components/DockerCheckPanel'
 import FileUpload from './components/FileUpload'
@@ -8,10 +8,17 @@ import './styles/components.css'
 import './styles/globals.css'
 
 const AnalysisPipelineApp = () => {
-  const [dockerReady, setDockerReady] = useState(false)
-  const [uploadedFiles, setUploadedFiles] = useState(null)
-  const [analysisResult, setAnalysisResult] = useState(null)
-  const [showResults, setShowResults] = useState(false)
+  const {
+    dockerReady,
+    uploadedFiles,
+    analysisResult,
+    showResults,
+    setDockerReady,
+    setUploadedFiles,
+    setAnalysisResult,
+    setShowResults,
+    resetAnalysis // Import reset action from context
+  } = useAnalysisContext();
 
   const handleDockerReady = () => {
     setDockerReady(true)
@@ -29,10 +36,10 @@ const AnalysisPipelineApp = () => {
   }
 
   const resetApp = () => {
-    setDockerReady(false)
     setUploadedFiles(null)
     setAnalysisResult(null)
     setShowResults(false)
+    resetAnalysis() // Reset internal analysis state (logs, step, etc.)
   }
 
   return (
