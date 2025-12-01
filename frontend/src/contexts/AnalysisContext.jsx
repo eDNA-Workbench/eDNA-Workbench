@@ -161,7 +161,13 @@ export function AnalysisProvider({ children }) {
     setDetectedSpecies([]);
     setSelectedSpecies(null);
     setQualityConfig({});
+    setMinLength(200);
+    setMaxLength();
     setIsAnalyzing(false);
+    setNcbiFile(null);
+    setKeyword('');
+    setIdentity(98);
+    setCopyNumber(2);
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
       eventSourceRef.current = null;

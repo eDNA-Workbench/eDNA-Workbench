@@ -157,8 +157,10 @@ export class PythonExecutor {
    */
   async _createQualityConfigFile(qualityConfig) {
     try {
-      const configFileName = `quality_config_${Date.now()}.json`;
+      const configFileName = `quality_config.json`;
       const configFilePath = path.join(this.uploadsDir, configFileName);
+
+      await fs.remove(configFilePath);
 
       await fs.writeJson(configFilePath, qualityConfig, { spaces: 2 });
 

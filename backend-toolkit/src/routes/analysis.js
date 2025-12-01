@@ -185,7 +185,9 @@ const pipelineSchema = Joi.object({
       Joi.string(), // species name
       Joi.number().integer().min(0).max(50) // max mismatch value
     )
-    .optional()
+    .min(1)
+    .max(1)
+    .required()
     .default({}),
   minLength: Joi.number().integer().min(1).max(10000).required().default(200),
   maxLength: Joi.number()

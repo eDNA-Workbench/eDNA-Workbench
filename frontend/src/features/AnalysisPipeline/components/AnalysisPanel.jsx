@@ -155,12 +155,16 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
       const uploadedFilename = uploadResponse.data.filename
       
       addLog(`NCBI file uploaded: ${uploadedFilename}`, 'success')
+
+      const currentRunConfig = {
+        [selectedSpecies]: qualityConfig[selectedSpecies]
+      };
       
       const params = {
         r1File: `uploads/${uploadedFiles.R1.filename}`,
         r2File: `uploads/${uploadedFiles.R2.filename}`,
         barcodeFile: `uploads/${uploadedFiles.barcode.filename}`,
-        qualityConfig: qualityConfig,
+        qualityConfig: currentRunConfig,
         minLength: minLength,
         maxLength: maxLength || null,
         ncbiReferenceFile: `uploads/${uploadedFilename}`,
