@@ -25,11 +25,8 @@ def detect_species(barcode_file: str) -> dict:
                     
                 # 解析 CSV 行
                 fields = line.split(',')
-                if len(fields) >= 5:
-                    location = fields[0]
-                    
-                    # 提取物種前綴（假設格式為 species_location）
-                    species_prefix = location.split('_')[0] if '_' in location else location
+                if len(fields) >= 6:
+                    species_prefix = fields[0].strip()
                     
                     # 添加到物種集合
                     species_set.add(species_prefix)

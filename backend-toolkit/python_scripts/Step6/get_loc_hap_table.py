@@ -21,15 +21,13 @@ def load_location(csv_file, target_species):
                     continue
                 
                 parts = line.split(',')
-                if len(parts) >= 1:
-                    sample_id = parts[0]  # e.g., "ZpDL_Bie"
-                    
-                    if '_' in sample_id:
-                        species_part, location = sample_id.split('_', 1)
+                if len(parts) >= 6:
+                    species_part = parts[0]
+                    location = parts[1]
                         
-                        # Check if this matches our target species
-                        if species_part == target_species:
-                            locations.add(location)
+                    # Check if this matches our target species
+                    if species_part == target_species:
+                        locations.add(location)
         
         locations = sorted(list(locations))
     
@@ -149,7 +147,7 @@ if __name__ == "__main__":
         print(f"  - {species}", flush=True)
     print("-" * 50, flush=True)
 
-    project = str(species_dirs[0].split('_')[0]) 
+    project = str(species_dirs[0].split('_')[0])
     locations = load_location(barcodeFile, project)
 
     # -- Proces each species

@@ -109,17 +109,18 @@ class BarcodeDatabase:
                     continue
                     
                 fields = line.split(',')
-                if len(fields) >= 5:
-                    location = fields[0]
+                if len(fields) >= 6:
+                    species_prefix = fields[0]
+                    location_field = fields[1]
+
                     total_entries += 1
                     
-                    # Extract species prefix
-                    species_prefix = location.split('_')[0] if '_' in location else location
-                    
-                    # 只載入目標物種的條碼
                     if species_prefix == self.target_species:
+                        full_location_id = f"{species_prefix}_{location_field}"
+                        
                         # Store: barcode_f, primer_f, barcode_r, primer_r
-                        self.tags[location] = fields[1:5]
+                        self.tags[full_location_id] = fields[2:6]
+
                         self.species_prefixes.add(species_prefix)
                         filtered_entries += 1
         
