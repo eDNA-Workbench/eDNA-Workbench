@@ -12,6 +12,7 @@ export function AnalysisProvider({ children }) {
   const [selectedSpecies, setSelectedSpecies] = useState(null);
   const [qualityConfig, setQualityConfig] = useState({});
   const [showLogs, setShowLogs] = useState(false);
+  const [activeStep, setActiveStep] = useState(0); // 0 = ready, 1-6 = running steps
   
   // -- App Flow State --
   const [dockerReady, setDockerReady] = useState(false);
@@ -73,6 +74,20 @@ export function AnalysisProvider({ children }) {
       });
   };
 
+  const STEP_MAPPING = {
+    "trim and rename": 1,
+    "pear": 2,
+    "length filter": 2,
+    "blast": 3,
+    "assign species": 3,
+    "species classifier": 3,
+    "MAFFT": 4,
+    "tab formatter": 4,
+    "trim gaps": 4,
+    "separate reads": 5,
+    "generate location-haplotype table": 6
+  };
+
   const connectSSE = () => {
     eventSourceRef.current = api.analysis.pipeline.watchProgress({
       onConnect: () => {
@@ -80,6 +95,18 @@ export function AnalysisProvider({ children }) {
       },
       onStart: (data) => {
         addLog(data.message || 'Started monitoring analysis progress...', 'info');
+        setActiveStep(1);
+      },
+      onStepStart: (data) => {
+        const stepName = data.stepName;
+        if (stepName && STEP_MAPPING[stepName]) {
+          setActiveStep(STEP_MAPPING[stepName]);
+        }
+        addLog(data.message || `Starting step: ${stepName}`, 'info');
+      },
+      onStepComplete: (data) => {
+        // Optional: check if we should advance step, but onStepStart handles it better
+        addLog(data.message || `Completed step: ${data.stepName}`, 'success');
       },
       onProgress: (data) => {
         addLog(data.message || 'Analysis in progress...', 'info');
@@ -88,6 +115,7 @@ export function AnalysisProvider({ children }) {
         addLog(data.message || 'Analysis completed!', 'success');
         setIsAnalyzing(false);
         setAnalysisStep('completed');
+        setActiveStep(7); // All done
         eventSourceRef.current.close();
         eventSourceRef.current = null;
       },
@@ -95,6 +123,7 @@ export function AnalysisProvider({ children }) {
         addLog(`Analysis error: ${data.message || data.error || 'Unknown error'}`, 'error');
         setIsAnalyzing(false);
         setAnalysisStep('selecting');
+        setActiveStep(0);
         eventSourceRef.current.close();
         eventSourceRef.current = null;
       },
@@ -152,12 +181,14 @@ export function AnalysisProvider({ children }) {
       }
       setIsAnalyzing(false);
       setAnalysisStep('selecting');
+      setActiveStep(0);
     }
   };
 
   const resetAnalysis = () => {
     setLogs([]);
     setAnalysisStep('ready');
+    setActiveStep(0);
     setDetectedSpecies([]);
     setSelectedSpecies(null);
     setQualityConfig({});
@@ -253,7 +284,8 @@ export function AnalysisProvider({ children }) {
     startPipeline,
     stopAnalysis,
     resetAnalysis,
-    addLog
+    addLog,
+    activeStep
   };
 
   return <AnalysisContext.Provider value={value}>{children}</AnalysisContext.Provider>;

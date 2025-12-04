@@ -1,0 +1,93 @@
+/* AnalysisProgressBar.css */
+
+.analysis-progress-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Default mode (AnalysisPanel) */
+.analysis-progress-wrapper:not(.compact) {
+    border-top: 1px solid var(--border);
+    flex-direction: column;
+    /* Stack status and bar */
+}
+
+.analysis-progress-wrapper.compact {
+    /* Compact mode for Navbar */
+    gap: 10px;
+    padding: 10px 20px;
+    margin: 0;
+    border: 1px solid var(--text);
+    border-radius: 20px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.steps-track {
+    display: flex;
+    gap: 15px;
+}
+
+.analysis-progress-wrapper.compact .steps-track {
+    gap: 4px;
+    /* Tighter spacing for navbar */
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.step-number {
+    font-weight: 600;
+    font-size: 1.1em;
+    color: var(--foreground);
+}
+
+.step-indicator {
+    width: 50px;
+    height: 12px;
+    border: 1px solid var(--foreground);
+    border-radius: 2px;
+    background-color: var(--card);
+    transition: background-color 0.3s ease;
+}
+
+.analysis-progress-wrapper.compact .step-indicator {
+    /* Smaller width and height for navbar */
+    width: 20px;
+    height: 6px;
+    border-width: 1px;
+}
+
+.step-indicator.completed {
+    /* background-color: #4ade80; */
+    background-color: var(--success);
+    /* border-color: #22c55e; */
+    border-color: var(--success);
+}
+
+.step-indicator.active {
+    /* background-color: #facc15; */
+    background-color: var(--warning);
+    /* border-color: #eab308; */
+    border-color: var(--warning);
+    box-shadow: 0 0 8px rgba(250, 204, 21, 0.4);
+}
+
+.step-indicator.pending {
+    background-color: var(--card);
+    border-color: var(--muted-foreground);
+}

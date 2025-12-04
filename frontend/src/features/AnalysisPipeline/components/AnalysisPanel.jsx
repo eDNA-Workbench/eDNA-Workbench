@@ -5,6 +5,7 @@ import { useAnalysisContext } from '../../../contexts/AnalysisContext'
 import { api } from '../services/api'
 import '../styles/components/AnalysisPanel.css'
 import { formatFileSize } from '../utils/formatFileSize'
+import AnalysisProgressBar from './AnalysisProgressBar'
 
 const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
   // -- Use Context --
@@ -39,7 +40,8 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
     startPipeline: startPipelineContext,
     stopAnalysis,
     resetAnalysis,
-    addLog
+    addLog,
+    activeStep
   } = useAnalysisContext();
 
   const logContainerRef = useRef(null)
@@ -551,10 +553,7 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
       {/* Analysis status */}
       {isAnalyzing && (
         <div className="analysis-status">
-          <div className="status-indicator">
-            <div className="spinner"></div>
-            <span>Analyzing {selectedSpecies}...</span>
-          </div>
+          <AnalysisProgressBar />
         </div>
       )}
 

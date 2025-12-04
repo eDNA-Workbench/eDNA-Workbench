@@ -76,6 +76,12 @@ export const api = {
               case "start":
                 callbacks.onStart?.(data);
                 break;
+              case "step_start":
+                callbacks.onStepStart?.(data);
+                break;
+              case "step_complete":
+                callbacks.onStepComplete?.(data);
+                break;
               case "progress":
                 callbacks.onProgress?.(data);
                 break;

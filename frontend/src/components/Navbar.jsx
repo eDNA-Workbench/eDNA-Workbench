@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../assets/MEVP_logo.png';
 import { useFileContext } from '../contexts/FileContext';
+import AnalysisProgressBar from '../features/AnalysisPipeline/components/AnalysisProgressBar';
 import ThemeToggle from './ThemeToggle.jsx';
 
 function MainNavbar({ theme, toggleTheme }) {
@@ -227,6 +228,12 @@ function MainNavbar({ theme, toggleTheme }) {
             </div>
           </div>
         )}
+      </div>
+
+      <div style={{ marginLeft: 'auto' }}>
+        <Link to='/analysis'>
+          <AnalysisProgressBar compact={true} />
+        </Link>
       </div>
 
       <div className="theme-toggle-container">
