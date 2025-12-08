@@ -102,3 +102,89 @@
   color: var(--primary);
   background-color: var(--secondary);
 }
+
+
+/* Fasta 選擇器容器 */
+.fasta-selector-container {
+  padding: 5px 15px;
+}
+
+/* Fasta 選擇按鈕 (模擬 Select) */
+.fasta-select-btn {
+  padding: 6px 10px;
+  background-color: #e6f0ff;
+  /* 保留你原本的淺藍色，或改成 var(--secondary) */
+  border-radius: 4px;
+  color: #0066cc;
+  /* 保留原本的深藍色 */
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.fasta-select-btn:hover {
+  filter: brightness(0.95);
+}
+
+.fasta-filename {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+}
+
+/* Fasta 下拉選單 */
+.fasta-dropdown-list {
+  border: 1px solid var(--border);
+  margin-top: 4px;
+  border-radius: 4px;
+  background-color: var(--card);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Fasta 選單項目 */
+.fasta-option {
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--foreground);
+}
+
+.fasta-option:hover {
+  background-color: var(--secondary);
+}
+
+.fasta-option.selected {
+  background-color: var(--secondary);
+  /* 或用更明顯的顏色 */
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* 上傳按鈕的 Label */
+.upload-label-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.upload-hint {
+  font-size: 0.75rem;
+  color: var(--muted-foreground, #666);
+  /* 如果沒有 muted-foreground 變數則用 #666 */
+  margin-top: 2px;
+}
+
+/* 讓分析進度條靠右 */
+.navbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}

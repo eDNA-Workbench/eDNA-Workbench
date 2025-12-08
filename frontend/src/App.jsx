@@ -15,7 +15,7 @@ import { AnalysisProvider } from './contexts/AnalysisContext';
 // UI
 import TitleBar from './components/TitleBar.jsx';
 // import FloatingChatManager from './Chat/FloatingChatManager';
-import Navbar from './components/Navbar.jsx';
+import Navbar from './components/MainNavbar.jsx';
 
 // import css
 // import 'bootstrap/dist/css/bootstrap.min.css';

@@ -1,70 +1,74 @@
-// components/Navbar/FileMenuLogic.jsx
 import { useLocation } from 'react-router-dom';
-import { useFileContext } from '../contexts/FileContext';
+import { useFileContext } from '../../contexts/FileContext';
 import { FastaSelector, UploadMenuItem } from './NavComponents';
 
 export const FileMenuContent = ({ closeMenu }) => {
   const location = useLocation();
-  const context = useFileContext(); // 一次取得所有 context
+  const context = useFileContext();
+  const path = location.pathname;
 
-  // 定義每個頁面需要的選單內容 (策略模式)
-  const renderers = {
-    '/phylotree': () => (
+  // Phylotree Page
+  if (path === '/phylotree') {
+    return (
       <UploadMenuItem
-        label="Upload Newick"
-        currentFile={context.phylotreeFileName}
+        label={context.phylotreeFileName ? `Current: ${context.phylotreeFileName}` : "Upload Newick"}
         accept=".nwk,.newick,.txt"
         onChange={(e) => { context.handlePhylotreeFileChange(e); closeMenu(); }}
       />
-    ),
-    '/sequence-alignment': () => (
+    );
+  }
+
+  // Sequence Alignment Page
+  if (path === '/sequence-alignment') {
+    return (
       <>
         <UploadMenuItem
-          label={context.haplotypeFiles.length > 0 ? "Add More Fasta" : "Upload Fasta"}
-          currentFile={context.haplotypeFiles.length > 0 ? `${context.haplotypeFiles.length} uploaded` : null}
+          label="Upload MSA"
+          subLabel={context.haplotypeFiles.length > 0 ? `${context.haplotypeFiles.length} files uploaded` : null}
           accept=".fa,.fasta,.txt"
           onChange={(e) => { context.handleHaplotypeFileChange(e); closeMenu(); }}
         />
         <FastaSelector 
-          files={context.haplotypeFiles} 
+          files={context.haplotypeFiles}
           selectedIndex={context.selectedHaplotypeIndex}
           onSelect={context.setSelectedHaplotypeIndex}
         />
       </>
-    ),
-    '/haplotype': () => (
+    );
+  }
+
+  // Haplotype Network Page
+  if (path === '/haplotype') {
+    return (
       <>
         <UploadMenuItem
-          label="Upload Fasta"
-          currentFile={context.haplotypeFiles.length > 0 ? `${context.haplotypeFiles.length} files` : null}
+          label="Upload MSA"
+          subLabel={context.haplotypeFiles.length > 0 ? `${context.haplotypeFiles.length} files uploaded` : null}
           accept=".fa,.fasta,.txt"
           onChange={(e) => { context.handleHaplotypeFileChange(e); closeMenu(); }}
         />
         <FastaSelector 
-          files={context.haplotypeFiles} 
+          files={context.haplotypeFiles}
           selectedIndex={context.selectedHaplotypeIndex}
           onSelect={context.setSelectedHaplotypeIndex}
         />
-        <div className="border-t my-1"></div> {/* 分隔線 */}
+        
+        <div style={{ borderTop: '1px solid var(--border)', margin: '5px 0' }}></div>
+
         <UploadMenuItem
-          label="Upload CSV"
-          currentFile={context.csvFileName}
+          label={context.csvFileName ? `CSV: ${context.csvFileName}` : "Upload CSV"}
           accept=".csv"
           onChange={(e) => { context.handleCsvFileChange(e); closeMenu(); }}
         />
+
         <UploadMenuItem
-          label="Upload eDNA (XLSX)"
-          currentFile={context.eDnaSampleFileName}
+          label={context.eDnaSampleFileName ? `eDNA: ${context.eDnaSampleFileName}` : "Upload eDNA (XLSX)"}
           accept=".xlsx"
           onChange={(e) => { context.handleEDnaSampleChange(e); closeMenu(); }}
         />
       </>
-    )
-  };
+    );
+  }
 
-  // 根據當前路徑執行對應的 renderer
-  const renderer = renderers[location.pathname];
-  
-  // 如果這個路徑沒有定義 renderer，就不顯示內容
-  return renderer ? renderer() : null;
+  return null;
 };
