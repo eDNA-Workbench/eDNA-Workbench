@@ -55,6 +55,9 @@ function MainNavbar({ theme, toggleTheme }) {
             <FileMenuContent closeMenu={() => setIsFileOpen(false)} />
           </NavDropdown>
         )}
+
+        {/* Portal Target for Page-Specific Actions */}
+        <div id="navbar-action-portal" className="navbar-action-portal"></div>
       </div>
 
       {/* Right Side: Progress Bar + Theme Toggle */}

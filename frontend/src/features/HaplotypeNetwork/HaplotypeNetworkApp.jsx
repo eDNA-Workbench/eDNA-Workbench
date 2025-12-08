@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import TaiwanMapComponent from "./components/TaiwanMap/TaiwanMapComponent";
-import FilteredTaiwanMapComponent from "./components/FilteredTaiwanMap/FilteredTaiwanMapComponent";
 
 import GeneTable from "./components/GeneTable/GeneTable";
 
@@ -27,6 +27,7 @@ const HaplotypeNetworkApp = ({
   // =======================
   const [activeSection, setActiveSection] = useState("taiwanMap");
   const [isLocationMapVisible, setIsLocationMapVisible] = useState(true);
+
   const [genes, setGenes] = useState([]);
   const [geneColors, setGeneColors] = useState({});
   const [hapColors, setHapColors] = useState({});
@@ -61,6 +62,12 @@ const HaplotypeNetworkApp = ({
   const [selectedGenesTaiwanMap, setSelectedGenesTaiwanMap] = useState([]);
   const [selectedGeneGeneComponents, setSelectedGeneGeneComponents] = useState(null);
   const [selectedGenesGeneComponents, setSelectedGenesGeneComponents] = useState([]);
+  
+  const [portalTarget, setPortalTarget] = useState(null);
+
+  useEffect(() => {
+    setPortalTarget(document.getElementById('navbar-action-portal'));
+  }, []);
   
   // =======================
   // Functions
@@ -176,15 +183,18 @@ const HaplotypeNetworkApp = ({
   // =======================
   return (
     <div className="app-container">
-      {/* ====== 上方區域：Section 切換按鈕 ====== */}
-      <div className="button-group">
-        <button onClick={() => { setActiveSection("taiwanMap"); setIsLocationMapVisible(true); }}>
-          ASVs Distribution Map
-        </button>
-        <button onClick={() => setActiveSection("haplotypeNetwork")}>
-          Haplotype Network
-        </button>
-      </div>
+      {/* ====== 上方區域：Section 切換按鈕 (Portal to Navbar) ====== */}
+      {portalTarget && createPortal(
+        <div className="nav-button-group">
+          <button onClick={() => { setActiveSection("taiwanMap"); setIsLocationMapVisible(true); }}>
+            ASVs Distribution Map
+          </button>
+          <button onClick={() => setActiveSection("haplotypeNetwork")}>
+            Haplotype Network
+          </button>
+        </div>,
+        portalTarget
+      )}
 
       {/* ====== 區塊 1：Taiwan Map 區 ====== */}
       {activeSection === "taiwanMap" && (

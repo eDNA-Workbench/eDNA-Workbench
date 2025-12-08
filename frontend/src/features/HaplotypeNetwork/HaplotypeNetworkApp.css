@@ -11,17 +11,14 @@
 }
 
 /* ===== 按鈕群組 ===== */
-.button-group {
+.nav-button-group {
   display: flex;
-  gap: 5px;
-  padding: 12px;
-  background: var(--background);
-  border: 1px solid var(--foreground);
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
-.button-group button {
+.nav-button-group button {
   padding: 8px 16px;
   border: none;
   background-color: var(--primary);
@@ -31,7 +28,7 @@
   transition: background-color 0.3s ease;
 }
 
-.button-group button:hover {
+.nav-button-group button:hover {
   opacity: 0.9;
 }
 
@@ -48,8 +45,7 @@
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
 }
 
-.right-section
-{
+.right-section {
   flex-direction: column;
   display: flex;
   min-width: 40%;
@@ -70,15 +66,17 @@
 }
 
 /* 地圖外框 (左側和過濾地圖) */
-.map-box, .map-Filteredbox {
+.map-box,
+.map-Filteredbox {
   min-width: 55%;
-  
+
   flex: 2;
   overflow: auto;
 }
 
 /* GeneTable 區塊 */
-.gene-section, .geneselector-section {
+.gene-section,
+.geneselector-section {
   flex: 1;
   min-width: 40%;
 
@@ -117,12 +115,15 @@
 
 /* ===== RWD ===== */
 @media (max-width: 768px) {
+
   .flex-container,
   .tables-row {
-    flex-direction: column; /* 小螢幕改為垂直排列 */
+    flex-direction: column;
+    /* 小螢幕改為垂直排列 */
   }
 
-  .gene-section, .haplotype-section {
+  .gene-section,
+  .haplotype-section {
     width: 100%;
     min-width: 0;
   }

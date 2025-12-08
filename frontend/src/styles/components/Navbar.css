@@ -188,3 +188,10 @@
   align-items: center;
   gap: 15px;
 }
+
+.navbar-action-portal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+}
