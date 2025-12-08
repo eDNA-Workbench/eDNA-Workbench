@@ -11,14 +11,11 @@
 }
 
 /* ===== 按鈕群組 ===== */
-.nav-button-group {
+.button-group {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
 }
 
-.nav-button-group button {
+.button-group button {
   padding: 8px 16px;
   border: none;
   background-color: var(--primary);
@@ -28,8 +25,24 @@
   transition: background-color 0.3s ease;
 }
 
-.nav-button-group button:hover {
+.button-group button:hover {
   opacity: 0.9;
+}
+
+.button-group.nav {
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.button-group.app {
+  gap: 5px;
+  padding: 12px;
+  background: var(--background);
+  border: 1px solid var(--foreground);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* ===== 區塊 Section 區隔 ===== */

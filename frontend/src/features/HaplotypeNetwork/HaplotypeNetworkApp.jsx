@@ -185,7 +185,7 @@ const HaplotypeNetworkApp = ({
     <div className="app-container">
       {/* ====== 上方區域：Section 切換按鈕 (Portal to Navbar) ====== */}
       {portalTarget && createPortal(
-        <div className="nav-button-group">
+        <div className="button-group nav">
           <button onClick={() => { setActiveSection("taiwanMap"); setIsLocationMapVisible(true); }}>
             ASVs Distribution Map
           </button>
@@ -222,7 +222,7 @@ const HaplotypeNetworkApp = ({
 
           <div className="right-section">    
             {(activeSection === "locationMap" || activeSection === "taiwanMap" || activeSection === "geneComponents") && (
-                <div className="button-group">
+                <div className="button-group app">
                   <button onClick={() => setActiveSection("taiwanMap")}>Table Components</button>
                   <button onClick={() => setActiveSection("geneComponents")}>Compare Components</button>
                 </div>
@@ -291,7 +291,7 @@ const HaplotypeNetworkApp = ({
 
             <div className="right-section"> 
               {(activeSection === "locationMap" || activeSection === "taiwanMap" || activeSection === "geneComponents") && (
-                <div className="button-group">
+                <div className="button-group app">
                   <button onClick={() => setActiveSection("taiwanMap")}>Table Components</button>
                   <button onClick={() => setActiveSection("geneComponents")}>Compare Components</button>
                 </div>
