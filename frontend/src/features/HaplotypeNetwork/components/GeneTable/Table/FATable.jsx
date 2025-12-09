@@ -18,35 +18,32 @@ const FATable = ({
   setShowOnlySelected,
 }) => {
   const selectedGenesSet = new Set(externalSelectedGenes);
-
-  // Ref to track if the "Clear" button was clicked
   const clearClicked = useRef(false);
 
-  // Pagination state
+  // === Pagination State ===
   const [currentPage, setCurrentPage] = useState(1);
   const genesPerPage = 10;
 
-  // Search state
+  // === Search State ===
   const [searchQuery, setSearchQuery] = useState("");
 
-  // === Filter genes if "Show selected" is checked ===
+  // === Filter Genes ===
   const filteredGenes = showOnlySelected
     ? genes.filter((gene) => selectedGenesSet.has(gene.name))
     : genes;
 
-  // === Filter genes based on search query ===
   const searchFilteredGenes = searchQuery
     ? filteredGenes.filter((gene) =>
         gene.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : filteredGenes;
 
-  // === Calculate Genes for Current Page ===
+  // === Genes for Current Page ===
   const indexOfLastGene = currentPage * genesPerPage;
   const indexOfFirstGene = indexOfLastGene - genesPerPage;
   const currentGenes = searchFilteredGenes.slice(indexOfFirstGene, indexOfLastGene);
 
-  
+  // === Handle Location Selection ===
   useEffect(() => {
     if (locations.length > 0 && Object.keys(selectedLocations).length === 0) {
       const initialSelected = locations.reduce((acc, loc) => {
@@ -57,12 +54,14 @@ const FATable = ({
     }
   }, [locations, selectedLocations, onSelectedLocationsChange]);
 
+  // === Select All Genes on Genes Change ===
   useEffect(() => {
-      if (genes.length > 0) {
-        handleSelectAllGenes();
-      }
-    }, [genes]);
+    if (genes.length > 0) {
+      handleSelectAllGenes();
+    }
+  }, [genes]);
 
+  // === Gene Selection Logic ===
   const toggleGeneSelection = (geneName) => {
     const currentSelected = externalSelectedGenes || [];
     const newSelected = selectedGenesSet.has(geneName)
@@ -71,13 +70,14 @@ const FATable = ({
     onSelectedGenesChange?.(newSelected);
   };
 
+  // === Location Selection Logic ===
   const toggleLocationSelection = (loc) => {
     const updated = { ...selectedLocations };
     updated[loc] = !updated[loc];
     onSelectedLocationsChange?.(updated);
   };
 
-    
+  // === Handle Select All Genes ===
   const handleSelectAllGenes = () => {
     const currentlySelected = new Set(externalSelectedGenes);
     const genesToSelect = searchFilteredGenes.map((gene) => gene.name);
@@ -86,26 +86,27 @@ const FATable = ({
     onSelectedGenesChange?.(uniqueSelectedGenes);
   };
 
-
-  
+  // === Handle Clear All Genes ===
   const handleClearAllGenes = () => {
-    clearClicked.current = true; // 標記“Clear”按鈕被點擊過
+    clearClicked.current = true;
     const genesToDeselect = searchFilteredGenes.map((gene) => gene.name);
-    const genesToKeep = externalSelectedGenes.filter((gene) => !genesToDeselect.includes(gene)); // 保留未被搜尋過濾的基因
-    onSelectedGenesChange?.(genesToKeep); // 更新選擇的基因，只保留未被搜尋過濾的基因
+    const genesToKeep = externalSelectedGenes.filter((gene) => !genesToDeselect.includes(gene));
+    onSelectedGenesChange?.(genesToKeep);
   };
 
-
+  // === Handle Select All Locations ===
   const handleSelectAllLocations = () =>
     onSelectedLocationsChange?.(
       locations.reduce((acc, loc) => ({ ...acc, [loc]: true }), {})
     );
 
+  // === Handle Clear All Locations ===
   const handleClearAllLocations = () =>
     onSelectedLocationsChange?.(
       locations.reduce((acc, loc) => ({ ...acc, [loc]: false }), {})
     );
 
+  // === Edit Gene Count ===
   const handleEditGeneCount = (geneName, location, newValue) => {
     const updatedCount = Math.max(0, Number(newValue) || 0);
     onEditGeneCount(geneName, location, updatedCount);
@@ -130,47 +131,34 @@ const FATable = ({
       {/* Search Box */}
       <div style={{ marginBottom: "10px", display: "flex", alignItems: "center" }}>
         <input
+          className="gene-table-inputbox"
           type="text"
           placeholder="Search Genes"
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
-            setCurrentPage(1); // Reset pagination to the first page when searching
-          }}
-          style={{
-            padding: "6px",
-            marginRight: "10px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-            width: "100%",
+            setCurrentPage(1); 
           }}
         />
-        <div>
-          {viewMode === "count" && (
-            <label style={{fontSize: 20, display: "inline-flex", alignItems: "center" ,whiteSpace: "nowrap"}}>
-              <input
-                type="checkbox"
-                checked={showOnlySelected}
-                onChange={() => {
-                  const next = !showOnlySelected;
-                  if (next && setCurrentPage) setCurrentPage(1); // Reset page to 1 if "Show selected" is toggled
-                  setShowOnlySelected(next);
-                }}
-                style={{ marginRight: 6 }}
-              />
-              Show selected
-            </label>
-          )}
-        </div>
+        {viewMode === "count" && (
+          <label style={{ fontSize: 20, display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}>
+            <input
+              type="checkbox"
+              checked={showOnlySelected}
+              onChange={() => {
+                const next = !showOnlySelected;
+                if (next) setCurrentPage(1); 
+                setShowOnlySelected(next);
+              }}
+              style={{ marginRight: 6 }}
+            />
+            Show selected
+          </label>
+        )}
       </div>
 
-      <div
-        style={{
-          marginBottom: "8px",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+      {/* Select / Clear All Genes and Locations */}
+      <div style={{ marginBottom: "8px", display: "flex", justifyContent: "space-between" }}>
         <div>
           <button onClick={handleSelectAllGenes} style={{ marginRight: "6px" }}>
             All Gene
@@ -178,31 +166,23 @@ const FATable = ({
           <button onClick={handleClearAllGenes}>Clear</button>
         </div>
         <div>
-          <button
-            onClick={handleSelectAllLocations}
-            style={{ marginRight: "6px" }}
-          >
+          <button onClick={handleSelectAllLocations} style={{ marginRight: "6px" }}>
             All Location
           </button>
           <button onClick={handleClearAllLocations}>Clear</button>
         </div>
       </div>
-     
+
+      {/* Gene Table */}
       <div className="gene-table-wrapper">
         <table className="gene-table">
           <thead>
             <tr>
               <th></th>
-              <th>Gene ID</th>
+              <th>Gene</th>
               {locations.map((loc) => (
                 <th key={loc}>
-                  <label
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
+                  <label style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <input
                       type="checkbox"
                       checked={!!selectedLocations[loc]}
@@ -217,6 +197,7 @@ const FATable = ({
           <tbody>
             {currentGenes.map((gene) => (
               <tr key={gene.name}>
+                {/* Gene Selection */}
                 <td>
                   <input
                     type="checkbox"
@@ -231,15 +212,14 @@ const FATable = ({
                   />
                   {gene.name}
                 </td>
+                {/* Location Data */}
                 {locations.map((loc) => (
                   <td key={`${gene.name}-${loc}`}>
                     <input
                       type="number"
                       min="0"
                       value={gene.counts?.[loc] || 0}
-                      onChange={(e) =>
-                        handleEditGeneCount(gene.name, loc, e.target.value)
-                      }
+                      onChange={(e) => handleEditGeneCount(gene.name, loc, e.target.value)}
                     />
                   </td>
                 ))}
@@ -254,7 +234,7 @@ const FATable = ({
         <button onClick={prevPage} disabled={currentPage === 1}>
           Prev
         </button>
-        <span style={{ margin: "0 10px" }} >
+        <span style={{ margin: "0 10px" }}>
           {currentPage} / {Math.ceil(searchFilteredGenes.length / genesPerPage)}
         </span>
         <button onClick={nextPage} disabled={currentPage === Math.ceil(searchFilteredGenes.length / genesPerPage)}>
@@ -266,6 +246,3 @@ const FATable = ({
 };
 
 export default FATable;
-
-
-

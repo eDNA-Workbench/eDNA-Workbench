@@ -57,14 +57,15 @@ const MapMainView = ({
           <p>⚠️ Complete the following settings：</p>
           <ul>
             {!mapImage && <li> Select or Upload a MapImage </li>}
-            {!imgW && <li> Set image Width</li>}
-            {!imgH && <li> Set image Height</li>}
+            {!imgW && <li> Enter image Width</li>}
+            {!imgH && <li> Enter image Height</li>}
             {(!filteredCityGeneData || Object.keys(filteredCityGeneData).length === 0) && (
-              <li> Set FA_table(Set the values ​​in the table)</li>             
+              <li> Enter the values ​​in the FA_table</li>             
             )}
             {(!filteredCityGeneData || Object.keys(filteredCityGeneData).length === 0) && (
-              <li> Set Compare components</li>             
+              <li>  Select Gene ​​in the Compare Components</li>             
             )}
+
           </ul>
         </div>
       )}
@@ -100,14 +101,19 @@ const MapMainView = ({
                     .map((g) => (
                     <li
                       key={g.name}
-                      style={{ display: "flex", alignItems: "center", gap: 3 }}
+                      style={{ 
+                        display: "flex", 
+                        alignItems: "center",
+                        gap: 3,
+                        maxWidth: "100%"
+                      }}
                     >
                       <div
                         style={{  
                           background: geneColors[g.name] || "var(--primary)"
                         }}
                       />
-                      {g.name}: {g.value}
+                       <span style={{ whiteSpace: "nowrap" }}>{g.name}: {g.value}</span>
                     </li>
                   ))}
                 </ul>

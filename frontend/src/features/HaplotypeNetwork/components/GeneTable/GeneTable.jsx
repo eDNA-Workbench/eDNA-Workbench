@@ -93,7 +93,7 @@ const GeneTable = ({
   const hapHeaders = useMemo(() => totalHeaders.slice(0), [totalHeaders]);  // Haplotype表头
 
   
-
+  {/*
   // ====== Gene Filtering & Pagination ======
   const filteredGenes = useMemo(() => {
     let result = genes.filter((g) => g.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -109,7 +109,7 @@ const GeneTable = ({
     if (showOnlySelected) result = result.filter((g) => selectedGenesSet.has(g.name));
     return result;
   }, [genes, searchTerm, showOnlySelected, selectedGenesSet, viewMode, currentSpecies, fileName]);
-
+  */}
   
 
  // Memoize the `handleFormattedGenesChange` callback to avoid infinite loop

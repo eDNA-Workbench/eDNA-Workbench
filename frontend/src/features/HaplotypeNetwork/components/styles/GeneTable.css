@@ -71,6 +71,12 @@
   color: var(--foreground);
 }
 
+.gene-table-inputbox  {
+   padding: 6px;
+   border: 1px solid #ccc;
+   width: 100%;
+}
+
 /* ========================== */
 /* 🎯 詳細資料表固定第一列和第一欄 */
 /* ========================== */
@@ -163,7 +169,6 @@
 }
 
 
-
 /* ============================ */
 /* General container styles */
 .CVSTable-container {
@@ -198,7 +203,7 @@
 }
 
 .CVSTable-button.active {
-   padding: 6px 12px;
+  padding: 6px 12px;
   border: 1px solid var(--primary);
   border-radius: 4px;
   cursor: pointer;
@@ -209,7 +214,6 @@
 
 /* Percentage toggle button */
 .CVSTable-percentage-toggle {
-
   margin-top: 10px;
   display: flex;
   justify-content: space-between;
@@ -261,13 +265,24 @@
   table-layout: auto;
 }
 
+/* ============================ */
+/* Make the first two columns sticky */
 .CVSTable-gene-table thead th {
   position: sticky;
   top: 0;
-  z-index: 0;
+  z-index: 2;
   background: var(--muted);
 }
 
+.CVSTable-gene-table tbody  {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--muted);
+}
+
+
+/* Make Locations and Total columns sticky (first two columns) */
 .CVSTable-gene-table td:first-child,
 .CVSTable-gene-table th:first-child {
   position: sticky;
@@ -275,17 +290,18 @@
   background: var(--secondary);
   min-width: 100px;
   text-align: left;
-  z-index: 1;
+  z-index: 3;
 }
+
+/* Make the second column (Total) sticky */
 .CVSTable-gene-table td:nth-child(2),
 .CVSTable-gene-table th:nth-child(2) {
   position: sticky;
   left: 100px; 
   background: var(--ring); 
   text-align: left;
-  z-index: 1;
+  z-index: 3;
 }
-
 
 
 /* Header haplotype color box */

@@ -56,7 +56,7 @@ export const useGeneTableEffects = ({
     const rawText = csvContent.trim();
     const lines = rawText.split("\n");
     const originalHeaders = lines[0].split(",").map((h) => h.trim());
-    const headers = ["locations", ...originalHeaders.slice(1).map((h) => `hap_${h}`)];
+    const headers = ["locations", ...originalHeaders.slice(1).map((h) => `Asv_${h}`)];
     const rows = lines.slice(1).map((line) => {
       const cells = line.split(",");
       return headers.map((_, idx) => cells[idx] || "");
@@ -76,12 +76,23 @@ export const useGeneTableEffects = ({
 
 
   // 4️⃣ Hap 顏色設定
-  const hapColorsInitialized = useRef(false);
+  const hapColorsRef = useRef({}); // 用來儲存顏色的ref
+  const prevHapHeaders = useRef([]); // 用來儲存上一輪的hapHeaders
 
   useEffect(() => {
-    if (hapHeaders.length === 0 || hapColorsInitialized.current) return;
+    if (hapHeaders.length === 0) return;
 
-    // Generate colors for the hapHeaders if they are updated or when the component first mounts
+    // 當hapHeaders變化時，檢查是否需要重新生成顏色
+    const headersChanged = 
+      hapHeaders.length !== prevHapHeaders.current.length ||
+      hapHeaders.some((hap, idx) => hap !== prevHapHeaders.current[idx]);
+
+    if (!headersChanged && Object.keys(hapColorsRef.current).length > 0) {
+      // 如果沒有變化並且顏色已經初始化過，就直接返回
+      return;
+    }
+
+    // Generate colors for the hapHeaders if they are updated
     const colors = generateColors(hapHeaders.length);
 
     // Map each haplotype to its color
@@ -90,13 +101,16 @@ export const useGeneTableEffects = ({
       colorMapping[hap] = colors[idx];
     });
 
-    // Set hapColors only once
-    setHapColors(colorMapping);  // Set the color mapping for the first time
-    onHapColorsChange?.(colorMapping);  // Trigger external callback if needed
+    // Store the color mapping
+    hapColorsRef.current = colorMapping;
 
-    // Mark that hapColors have been initialized
-    hapColorsInitialized.current = true;
-  }, [hapHeaders, hapColors, onHapColorsChange]);
+    // Set hapColors
+    setHapColors(colorMapping); // Update the color mapping for updated headers
+    onHapColorsChange?.(colorMapping); // Trigger external callback if needed
+
+    // Store the current hapHeaders for future comparison
+    prevHapHeaders.current = hapHeaders;
+  }, [hapHeaders, onHapColorsChange]);
 
 
   // 5️⃣ 更新 genes counts

@@ -162,7 +162,7 @@ router.get("/HaplotypeNetwork", (req, res) => {
     const sequence = geneSequences[name];
     if (!sequence) continue;
     const match = name.match(/_(\d+)_\d+$/);
-    const hapId = match ? `Hap_${match[1]}` : name;
+    const hapId = match ? `Asv_${match[1]}` : name;
     if (!hapMap.has(hapId))
       hapMap.set(hapId, {
         id: hapId,

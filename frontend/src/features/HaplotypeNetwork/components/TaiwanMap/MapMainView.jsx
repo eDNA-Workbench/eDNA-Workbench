@@ -24,6 +24,10 @@ const MapMainView = ({
   const [localFileName, setLocalFileName] = useState("map");
   const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
 
+  useEffect(() => {
+        console.log("cityVisibility:",cityVisibility)
+      }, [cityVisibility]);
+
   // 檢查是否所有設定都已完成
   useEffect(() => {
     const isAllConfigured = conW && conH && mapImage && imgW && imgH && filteredCityGeneData && Object.keys(filteredCityGeneData).length > 0;
@@ -48,11 +52,11 @@ const MapMainView = ({
         <div className="MapMainView-warning-box">
           <p>⚠️ Complete the following settings：</p>
           <ul>
-            {!mapImage && <li> Select or Upload a MapImage </li>}
-            {!imgW && <li> Set image Width</li>}
-            {!imgH && <li> Set image Height</li>}
+            {!mapImage && <li> Select or Upload a Map Image </li>}
+            {!imgW && <li> Enter image Width</li>}
+            {!imgH && <li> Enter image Height</li>}
             {(!filteredCityGeneData || Object.keys(filteredCityGeneData).length === 0) && (
-              <li> Set Summary_table or FA_table</li>
+              <li> Enter Summary_table or FA_table</li>
             )}
           </ul>
         </div>
@@ -84,13 +88,19 @@ const MapMainView = ({
                     .map((g) => (
                       <li
                         key={g.name}
+                        style={{ 
+                          display: "flex", 
+                          alignItems: "center",
+                          gap: 3,
+                          maxWidth: "100%"
+                        }}
                       >
                         <div
                           style={{
-                            background: geneColors[g.name] || "#fff7f7ff"
+                            background: geneColors[g.name] || "var(--primary)"
                           }}
                         />
-                        {g.name}: {g.value}
+                        <span style={{ whiteSpace: "nowrap" }}>{g.name}: {g.value}</span>
                       </li>
                     ))}
                 </ul>

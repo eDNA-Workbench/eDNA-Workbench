@@ -279,6 +279,7 @@
   background: var(--secondary);
   min-width: 100px;
   text-align: left;
+  z-index: 1;
 }
 
 /* Header haplotype color box */

@@ -220,22 +220,29 @@ const filterResults = (results, selectedGene) => {
                   backgroundColor: isReduced ? "var(--chart-1) " : "#d0f0c0",
                 }}
               >
-                {isReduced ? "Cancel reduction" : "Enable reduction"}
+                {isReduced ? "**Cancel reduction" : "Enable reduction"}
               </button>
 
               {/* 渲染基因列表 */}
+              
               {currentGenes.map((gene) => (
                 <div
                   key={gene.name}
                   onClick={() => handleSelect(gene.name)}
-                  className={`gene-list-item ${selectedGene === gene.name ? 'selected' : ''}`}  // 添加選中樣式
-                  style={{ backgroundColor: getGeneColor(gene.name) }}  
+                  className={`gene-list-item ${selectedGene === gene.name ? 'selected' : ''}`}
+                  
                 >
-                  <span className="gene-name">
-                    {reduceGeneName(gene.name)} {/* 顯示縮減後的基因名稱 */}
-                  </span>
+                  <div className="gene-color-box"
+                    style={{
+                      backgroundColor: getGeneColor(gene.name),
+                    }}
+                  ></div>
+                    <span className="gene-name">
+                      {reduceGeneName(gene.name)} {/* 顯示縮減後的基因名稱 */}
+                    </span>
                 </div>
               ))}
+
 
               <div className="pagination-controls">
                 <button onClick={() => handlePageChange("prev")} disabled={currentPage === 0}>Prev</button>

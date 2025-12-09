@@ -24,7 +24,7 @@ const GeneTableControls = ({
           onClick={() => setViewMode("total")}
           className={`GeneTable-button ${viewMode === "total" ? "active" : ""}`}
         >
-          Summary_table
+          Summary_table(by locations)
         </button>
         <button
           onClick={() => setViewMode("count")}
@@ -34,17 +34,17 @@ const GeneTableControls = ({
         </button>
       </div>
 
-      {/* FA_table 內的三個表格：下方的三個按鈕 */}
+      {/* FA_table 內的三個表格：下方的三個按鈕 
       {(  viewMode === "count" || viewMode === "formatted" || viewMode === "detail") && (
         <div className="button-groupS bottom" style={{ marginBottom: 10, display: "flex", justifyContent: "flex-start" }}>
-          {/*
+          
           <button
             onClick={() => setViewMode("count")}
             className="btn btn-fa"
           >
             FA_table
           </button>
-          */}
+         
           
           <button
             onClick={() => setViewMode("formatted")}
@@ -52,6 +52,7 @@ const GeneTableControls = ({
           >
             MergeFA_table
           </button>
+          
           <button
             onClick={() => setViewMode("detail")}
             className="btn btn-info1"
@@ -61,6 +62,7 @@ const GeneTableControls = ({
           </button>
         </div>
       )}
+      */}
 
       {/* 搜尋 & 篩選：只在 count 和 detail 模式下顯示 
       {( viewMode === "detail") && (

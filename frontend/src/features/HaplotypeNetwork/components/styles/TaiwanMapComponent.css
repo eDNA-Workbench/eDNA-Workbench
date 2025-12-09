@@ -203,7 +203,7 @@
   padding: 5px;
   border: 2px solid var(--primary);
   border-radius: 10px;
-  height: 100%; /* Fixed height based on image */
+  max-height: 700px; /* Fixed height based on image */
   overflow-y: auto;
 }
 
@@ -211,14 +211,11 @@
   white-space: nowrap;
 }
 
-.MapMainView-city-info ul {
-  padding: 10;
-}
-
 .MapMainView-city-info li {
   display: flex;
   align-items: center;
   gap: 3px;
+  padding: 5px ;
 }
 
 .MapMainView-city-info li div {

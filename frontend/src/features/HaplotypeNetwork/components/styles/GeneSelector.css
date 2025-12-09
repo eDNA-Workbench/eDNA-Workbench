@@ -48,9 +48,11 @@
   cursor: pointer;
   border-radius: 4px;
   margin: 2px 0;
-  max-width: 250px;
+  align-items: center; 
   word-wrap: break-word;
   white-space: normal;
+  display: flex;  
+  box-shadow: 0 0 5px var(--primary);
 }
 
 /* 选中时基因项的样式 */
@@ -63,6 +65,13 @@
   background-color: var(--background);
   padding: 0 5px;
   border-radius: 4px;
+}
+
+.gene-color-box {
+  width: 20px; 
+  height: 20px; 
+  border-radius: 50%; 
+  margin-right: 8px; 
 }
 
 /* 分頁控制 */

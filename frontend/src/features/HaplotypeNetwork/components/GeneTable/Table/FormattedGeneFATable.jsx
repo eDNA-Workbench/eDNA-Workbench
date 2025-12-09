@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/GeneTable.css";
 
-// 生成基因的颜色，保证每个基因都有独特的颜色
+// Utility function to generate random colors for genes
 const generateColors = (num) =>
-  Array.from({ length: num }, () => 
+  Array.from({ length: num }, () =>
     `hsl(${Math.floor(Math.random() * 360)}, ${Math.floor(Math.random() * 50) + 25}%, ${Math.floor(Math.random() * 50) + 25}%)`
 );
 
@@ -14,19 +14,33 @@ const FormattedGeneFATable = ({
   onSelectedGenesChange,
   onSelectedLocationsChange,
   onEditGeneCount,
-  onEditGeneCountBulk,
   updateMapData,
-  onFormattedGenesChange,  // 传递的回调函数，用于将数据传递到父组件
-  viewMode // 确保父组件传入了viewMode来决定是否显示搜索框
+  onFormattedGenesChange,
+  viewMode,
 }) => {
+  // === State Initialization ===
   const [formattedGenes, setFormattedGenes] = useState([]);
-  const [geneColors, setGeneColors] = useState({}); // 存储每个基因的颜色
-  const [currentPage, setCurrentPage] = useState(1); // 当前页码
-  const [genesPerPage] = useState(10); // 每页显示的基因数量
-  const [searchTerm, setSearchTerm] = useState(""); // 搜索框的内容
-  const selectedGenesSet = new Set(externalSelectedGenes);
+  const [geneColors, setGeneColors] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [genesPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedGenes, setSelectedGenes] = useState(new Set(externalSelectedGenes));
 
-  // Fetch the formatted genes from the backend
+  const [selectedLocationsState, setSelectedLocationsState] = useState(() => {
+    return locations.reduce((acc, loc) => {
+      acc[loc] = true;
+      return acc;
+    }, {});
+  });
+
+  // === Side Effects ===
+
+  // 1. Update selected locations when state changes
+  useEffect(() => {
+    onSelectedLocationsChange?.(selectedLocationsState);
+  }, [selectedLocationsState, onSelectedLocationsChange]);
+
+  // 2. Fetch formatted genes from API on mount
   useEffect(() => {
     const fetchFormattedGenes = async () => {
       try {
@@ -41,7 +55,14 @@ const FormattedGeneFATable = ({
     fetchFormattedGenes();
   }, []);
 
-  // 生成基因颜色并设置
+  // 3. Select all genes when formattedGenes change
+  useEffect(() => {
+    if (formattedGenes.length > 0) {
+      handleSelectAllGenes();
+    }
+  }, [formattedGenes]);
+
+  // 4. Generate colors for genes when formattedGenes change
   useEffect(() => {
     if (formattedGenes.length > 0) {
       const colors = generateColors(formattedGenes.length);
@@ -53,14 +74,7 @@ const FormattedGeneFATable = ({
     }
   }, [formattedGenes]);
 
-  // 自动全选所有基因
-  useEffect(() => {
-    if (formattedGenes.length > 0) {
-      handleSelectAllGenes();
-    }
-  }, [formattedGenes]);
-
-  // 向父组件传递 formattedGenes, geneColors 和基因数量
+  // 5. Update external state when genes or gene colors change
   useEffect(() => {
     if (formattedGenes.length > 0) {
       const geneCounts = formattedGenes.map((gene) => {
@@ -80,51 +94,76 @@ const FormattedGeneFATable = ({
     }
   }, [formattedGenes, geneColors, locations, onFormattedGenesChange]);
 
-  // 搜索处理
+  // === Search Handler ===
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // 搜索时跳转到第一页
+    setCurrentPage(1); // Reset pagination to the first page
   };
 
-  // 根据搜索关键词筛选基因
+  // Filter genes based on search term
   const filteredGenes = formattedGenes.filter((gene) =>
     gene.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 计算当前页显示的基因数据
+  // === Pagination Logic ===
   const indexOfLastGene = currentPage * genesPerPage;
   const indexOfFirstGene = indexOfLastGene - genesPerPage;
   const currentGenes = filteredGenes.slice(indexOfFirstGene, indexOfLastGene);
 
-  const handleSelectAllGenes = () =>
-    onSelectedGenesChange?.(formattedGenes.map((g) => g.id));
+  // === Gene Selection Handlers ===
 
-  const handleClearAllGenes = () => onSelectedGenesChange?.([]);
+  const toggleGeneSelection = (geneId) => {
+    const updatedSelectedGenes = new Set(selectedGenes);
+    if (updatedSelectedGenes.has(geneId)) {
+      updatedSelectedGenes.delete(geneId);
+    } else {
+      updatedSelectedGenes.add(geneId);
+    }
+    setSelectedGenes(updatedSelectedGenes);
+    onSelectedGenesChange?.([...updatedSelectedGenes]);
+  };
 
-  const handleSelectAllLocations = () =>
-    onSelectedLocationsChange?.(
-      locations.reduce((acc, loc) => ({ ...acc, [loc]: true }), {})
+  const handleSelectAllGenes = () => {
+    const filteredGeneIds = filteredGenes.map((gene) => gene.id);
+    const updatedSelectedGenes = new Set([...selectedGenes, ...filteredGeneIds]);
+    setSelectedGenes(updatedSelectedGenes);
+    onSelectedGenesChange?.([...updatedSelectedGenes]);
+  };
+
+  const handleClearAllGenes = () => {
+    const filteredGeneIds = filteredGenes.map((gene) => gene.id);
+    const updatedSelectedGenes = new Set(
+      [...selectedGenes].filter((geneId) => !filteredGeneIds.includes(geneId))
     );
+    setSelectedGenes(updatedSelectedGenes);
+    onSelectedGenesChange?.([...updatedSelectedGenes]);
+  };
 
-  const handleClearAllLocations = () =>
-    onSelectedLocationsChange?.(
-      locations.reduce((acc, loc) => ({ ...acc, [loc]: false }), {})
-    );
+  // === Location Selection Handlers ===
+  const handleSelectAllLocations = () => {
+    const allLocations = locations.reduce((acc, loc) => ({ ...acc, [loc]: true }), {});
+    setSelectedLocationsState(allLocations);
+  };
 
+  const handleClearAllLocations = () => {
+    const allLocations = locations.reduce((acc, loc) => ({ ...acc, [loc]: false }), {});
+    setSelectedLocationsState(allLocations);
+  };
+
+  // === Edit Gene Count Handler ===
   const handleEditGeneCount = (geneId, location, newValue) => {
     const updatedCount = Math.max(0, Number(newValue) || 0);
     onEditGeneCount(geneId, location, updatedCount);
     setTimeout(() => updateMapData([location]), 0);
   };
 
-  // 分页功能：下一页
+  // === Pagination Controls ===
   const nextPage = () => {
     if (currentPage < Math.ceil(filteredGenes.length / genesPerPage)) {
       setCurrentPage(currentPage + 1);
     }
   };
 
-  // 分页功能：上一页
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -133,50 +172,40 @@ const FormattedGeneFATable = ({
 
   return (
     <div className="gene-table-container view-count">
-      {/* 搜尋框 */}
-      
-        <div className="flex" style={{ marginBottom: 15, gap: 15, alignItems: "center" }}>
-          <input
-            type="text"
-            placeholder="Search"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            className="search-input"
-            style={{ width: 200 }}
-          />
-        </div>
-      
+      {/* Search Input */}
+      <div className="flex" style={{ marginBottom: 15, gap: 15, alignItems: "center" }}>
+        <input
+          type="text"
+          placeholder="Search"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="gene-table-inputbox"
+        />
+      </div>
 
-      <div
-        style={{
-          marginBottom: "8px",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
+      {/* Select and Clear Genes and Locations */}
+      <div style={{ marginBottom: "8px", display: "flex", justifyContent: "space-between" }}>
         <div>
           <button onClick={handleSelectAllGenes} style={{ marginRight: "6px" }}>
-            All Gene
+            All Genes
           </button>
-          <button onClick={handleClearAllGenes}>Clear</button>
+          <button onClick={handleClearAllGenes}>Clear </button>
         </div>
         <div>
-          <button
-            onClick={handleSelectAllLocations}
-            style={{ marginRight: "6px" }}
-          >
-            All Location
+          <button onClick={handleSelectAllLocations} style={{ marginRight: "6px" }}>
+            All Locations
           </button>
-          <button onClick={handleClearAllLocations}>Clear</button>
+          <button onClick={handleClearAllLocations}>Clear </button>
         </div>
       </div>
 
+      {/* Gene Table */}
       <div className="gene-table-wrapper">
         <table className="gene-table">
           <thead>
             <tr>
               <th></th>
-              <th>Gene ID</th>
+              <th>Gene</th>
               {locations.map((loc) => (
                 <th key={loc}>
                   <label
@@ -188,7 +217,7 @@ const FormattedGeneFATable = ({
                   >
                     <input
                       type="checkbox"
-                      checked={!!selectedLocations[loc]}
+                      checked={selectedLocationsState[loc] || false}
                       onChange={() => toggleLocationSelection(loc)}
                     />
                     <span>{loc}</span>
@@ -203,7 +232,7 @@ const FormattedGeneFATable = ({
                 <td>
                   <input
                     type="checkbox"
-                    checked={selectedGenesSet.has(gene.id)}
+                    checked={selectedGenes.has(gene.id)}
                     onChange={() => toggleGeneSelection(gene.id)}
                   />
                 </td>
@@ -232,7 +261,7 @@ const FormattedGeneFATable = ({
         </table>
       </div>
 
-      {/* 分页控制 */}
+      {/* Pagination Controls */}
       <div className="pagination">
         <button onClick={prevPage} disabled={currentPage === 1}>
           Previous
