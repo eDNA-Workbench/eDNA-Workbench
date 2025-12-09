@@ -8,6 +8,7 @@ import AnalysisPipelinePage from './pages/AnalysisPipelinePage.jsx';
 import HaplotypePage from './pages/HaplotypeNetworkPage.jsx';
 import HomePage from './pages/HomePage.jsx';
 import PhylotreePage from './pages/PhylotreePage.jsx';
+import PhylotreeV2Page from './pages/PhylotreeV2.jsx';
 import SequenceAlignmentPage from './pages/SequenceAlignmentPage.jsx';
 
 import { AnalysisProvider } from './contexts/AnalysisContext';
@@ -63,6 +64,7 @@ const AppContent = () => {
               <Route path="/phylotree" element={<PhylotreePage />} />
               <Route path="/haplotype" element={<HaplotypePage />} />
               <Route path="/sequence-alignment" element={<SequenceAlignmentPage />} />
+              <Route path="/phylotree-v2" element={<PhylotreeV2Page />} />
             </Routes>
           </main>
 

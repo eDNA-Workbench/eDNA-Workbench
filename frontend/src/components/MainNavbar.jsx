@@ -15,7 +15,7 @@ function MainNavbar({ theme, toggleTheme }) {
   const isActive = (path) => location.pathname === path;
   
   // 判斷是否需要顯示 File Menu
-  const showFileMenu = ['/phylotree', '/sequence-alignment', '/haplotype'].includes(location.pathname);
+  const showFileMenu = ['/phylotree', '/sequence-alignment', '/haplotype', '/phylotree-v2'].includes(location.pathname);
 
   return (
     <nav className="navbar">
@@ -36,6 +36,9 @@ function MainNavbar({ theme, toggleTheme }) {
           </Link>
           <Link to="/phylotree" className={`dropdown-item ${isActive('/phylotree') ? 'active' : ''}`} onClick={() => setIsToolsOpen(false)}>
             Phylotree
+          </Link>
+          <Link to="/phylotree-v2" className={`dropdown-item ${isActive('/phylotree-v2') ? 'active' : ''}`} onClick={() => setIsToolsOpen(false)}>
+            Phylotree V2
           </Link>
           <Link to="/sequence-alignment" className={`dropdown-item ${isActive('/sequence-alignment') ? 'active' : ''}`} onClick={() => setIsToolsOpen(false)}>
             Sequence Alignment
