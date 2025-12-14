@@ -218,7 +218,7 @@ router.get("/download-species/:species", async (req, res, next) => {
       for (const file of tableFiles) {
         const filePath = path.join(tableDir, file);
         archive.file(filePath, { name: file });
-      }ㄡ
+      }
     } catch (error) {
       console.log(`No table files for species: ${species}`);
     }
@@ -226,6 +226,109 @@ router.get("/download-species/:species", async (req, res, next) => {
     await archive.finalize();
   } catch (error) {
     console.error("Download species ZIP error:", error);
+    next(error);
+  }
+});
+
+router.get("/download-all-files", async (req, res, next) => {
+  try {
+    const outputsRoot = getOutputsRoot();
+    
+    // Get project name from query param (e.g. "ZpDL_Candidia_barbatus" -> "ZpDL")
+    const projectParam = req.query.project;
+    let projectPrefix = "all-files";
+    
+    if (projectParam) {
+      const parts = projectParam.split("_");
+      if (parts.length > 0 && parts[0]) {
+        projectPrefix = parts[0];
+      }
+    }
+
+    const zipFilename = `${projectPrefix}.zip`;
+    res.setHeader("Content-Type", "application/zip");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${zipFilename}"`
+    );
+
+    const archive = archiver("zip", {
+      zlib: { level: 9 }, // compression level (0-9, 9 is highest compression)
+    });
+
+    // 錯誤處理
+    archive.on("error", (err) => {
+      console.error("Archive error:", err);
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          error: "Error creating ZIP file",
+        });
+      }
+    });
+
+    // 將 archive 的輸出導向 response
+    archive.pipe(res);
+
+    const separatedRoot = path.join(outputsRoot, "separated");
+    const tableRoot = path.join(outputsRoot, "table");
+
+    try {
+      // 1. Get all species directories from separated folder
+      await fs.access(separatedRoot);
+      const allSpeciesDirs = await fs.readdir(separatedRoot);
+      
+      // 2. Filter species by project prefix
+      const targetSpecies = allSpeciesDirs.filter(dir => 
+        dir.startsWith(projectPrefix) || projectPrefix === "all-files"
+      );
+
+      for (const species of targetSpecies) {
+        // Define source paths
+        const speciesSeparatedDir = path.join(separatedRoot, species);
+        const speciesTableDir = path.join(tableRoot, species);
+
+        // -- Add files from separated directory
+        try {
+          await fs.access(speciesSeparatedDir);
+          const sepFiles = await fs.readdir(speciesSeparatedDir);
+          for (const file of sepFiles) {
+             if (path.extname(file) === ".list") continue;
+             const filePath = path.join(speciesSeparatedDir, file);
+             const stat = await fs.stat(filePath);
+             if (!stat.isDirectory()) {
+                 // Add to archive under species folder: Species/filename
+                 archive.file(filePath, { name: path.join(species, file) });
+             }
+          }
+        } catch (e) {
+           // Ignore if directory doesn't exist or is empty
+        }
+
+        // -- Add files from table directory
+        try {
+          await fs.access(speciesTableDir);
+          const tableFiles = await fs.readdir(speciesTableDir);
+          for (const file of tableFiles) {
+             const filePath = path.join(speciesTableDir, file);
+             const stat = await fs.stat(filePath);
+             if (!stat.isDirectory()) {
+                 // Add to archive under species folder: Species/filename
+                 archive.file(filePath, { name: path.join(species, file) });
+             }
+          }
+        } catch (e) {
+           // Ignore
+        }
+      }
+
+    } catch (error) {
+      console.log(`Error processing directories: ${error.message}`);
+    }
+
+    await archive.finalize();
+  } catch (error) {
+    console.error("Download all files ZIP error:", error);
     next(error);
   }
 });

@@ -142,6 +142,10 @@ export const api = {
     getDownloadAllSpeciesUrl: (species) => {
       return `${API_BASE_URL}/outputs/download-species/${species}`;
     },
+
+    getDownloadAllFilesUrl: (project) => {
+      return `${API_BASE_URL}/outputs/download-all-files?project=${project || ""}`;
+    },
   },
 };
 

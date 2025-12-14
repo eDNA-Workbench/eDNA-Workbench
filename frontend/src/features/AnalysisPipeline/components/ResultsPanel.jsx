@@ -68,6 +68,20 @@ const ResultsPanel = ({ onReset }) => {
     document.body.removeChild(link)
   }
 
+  const downloadAllFiles = () => {
+    const speciesData = organizeDataBySpecies()
+    const firstSpecies = Object.keys(speciesData)[0] || ""
+    
+    const downloadUrl = api.outputs.getDownloadAllFilesUrl(firstSpecies)
+    
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = "all-files.zip" 
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   // 組織資料：合併相同物種的 separated 和 table 檔案
   const organizeDataBySpecies = () => {
     if (!outputData) return {}
@@ -108,7 +122,7 @@ const ResultsPanel = ({ onReset }) => {
               title={`Download all ${species} files`}
             >
               <Download size={16} />
-              Download All
+              Download Species
             </button>
           </div>
         </div>
@@ -237,8 +251,14 @@ const ResultsPanel = ({ onReset }) => {
       {hasResults ? (
         <div className="species-results">
           <div className="results-summary">
-            <Folder size={20} />
-            <span>Found {Object.keys(speciesData).length} species with output files</span>
+            <div className="text-summary">
+              <Folder size={20} />
+              <span>Found {Object.keys(speciesData).length} species with output files</span>
+            </div>
+            <button className="btn btn-primary" onClick={downloadAllFiles}>
+              <Download size={16} />
+              Download All
+            </button>
           </div>
           
           <div className="species-lists">
