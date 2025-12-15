@@ -76,7 +76,7 @@ const ResultsPanel = ({ onReset }) => {
     
     const link = document.createElement('a')
     link.href = downloadUrl
-    link.download = "all-files.zip" 
+    link.download = "all-files.zip"
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)

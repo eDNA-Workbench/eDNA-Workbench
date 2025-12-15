@@ -33,7 +33,7 @@ def asv_generator(t_file, prefix, copy_num):
 
     read_index = 0
     for k in dt.keys():
-        fa_line = '>asv_' + str(read_index) + '_' + str(dt[k][0])
+        fa_line = '>ASV_' + str(read_index) + '_' + str(dt[k][0])
         seq_line = k
         read_id_list = dt[k][1:]	# -- reads name ( >f_616_ZpDL_XwR_R2f )
 
