@@ -31,7 +31,8 @@
     "d3-react-axis": "0.0.3",
     "d3-shape": "^3.2.0",
     "marked": "^5.1.1",
-    "dompurify": "^3.0.5"
+    "dompurify": "^3.0.5",
+    "canvg": "^4.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
