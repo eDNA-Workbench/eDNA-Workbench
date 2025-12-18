@@ -41,13 +41,7 @@ const MapMainView = ({
        setLocalFileName(newFileName); 
        setFileName(newFileName); // 更新父層的檔名
      };
-
-     useEffect(() => {
-  console.log("filteredCityGeneData:", filteredCityGeneData);
-}, [filteredCityGeneData]);
    
-
-
   return (
     <div style={{ flex: 1, display: "flex", gap: 16, flexDirection: "column" }}>
 
@@ -62,10 +56,6 @@ const MapMainView = ({
             {(!filteredCityGeneData || Object.keys(filteredCityGeneData).length === 0) && (
               <li> Enter the values ​​in the FA_table</li>             
             )}
-            {(!filteredCityGeneData || Object.keys(filteredCityGeneData).length === 0) && (
-              <li>  Select Gene ​​in the Compare Components</li>             
-            )}
-
           </ul>
         </div>
       )}

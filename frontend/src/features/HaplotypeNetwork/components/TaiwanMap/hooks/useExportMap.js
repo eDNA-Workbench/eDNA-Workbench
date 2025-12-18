@@ -14,7 +14,7 @@ export default function useExportMap(filteredCityGeneData, geneColors, selectedG
     const font = `${fontSize}px sans-serif`;
     const itemsPerColumn = 30;
 
-    const legendItems = (selectedGenes || []).map((name) => ({ name, color: geneColors[name] || "#000000" }));
+    const legendItems = (selectedGenes || []).map((name) => ({ name, color: geneColors[name] || "block" }));
     const numCols = Math.ceil(legendItems.length / itemsPerColumn);
     const numRows = Math.min(legendItems.length, itemsPerColumn);
     const legendWidth = 180 * numCols;
@@ -25,7 +25,7 @@ export default function useExportMap(filteredCityGeneData, geneColors, selectedG
     canvas.height = Math.max(mapCanvas.height, legendHeight);
 
     const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#f8f8f8ff";
+    ctx.fillStyle = "white";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(mapCanvas, 0, 0);
     ctx.font = font;
@@ -42,7 +42,7 @@ export default function useExportMap(filteredCityGeneData, geneColors, selectedG
       ctx.arc(x + boxSize / 2, y, boxSize / 2, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.fillStyle = "#000";
+      ctx.fillStyle = "black";
       ctx.fillText(item.name, x + boxSize + 8, y);
     });
 

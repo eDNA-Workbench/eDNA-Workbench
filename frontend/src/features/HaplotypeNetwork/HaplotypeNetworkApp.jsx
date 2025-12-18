@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import TaiwanMapComponent from "./components/TaiwanMap/TaiwanMapComponent";
-
+import FilteredTaiwanMapComponent from "./components/FilteredTaiwanMap/FilteredTaiwanMapComponent";
 import GeneTable from "./components/GeneTable/GeneTable";
-
 import GeneSelector from "./components/GeneSelector";
 import HaplotypeNetwork from "./components/HaplotypeNetwork";
 import HaplotypeReducer from "./components/HaplotypeReducer";
@@ -178,6 +177,30 @@ const HaplotypeNetworkApp = ({
     }
   }, [initialFileContent]);
 
+  const prevInitialFileContent = useRef(initialFileContent);
+
+  useEffect(() => {
+    const clearBackendData = async () => {
+      try {
+        await fetch("http://localhost:3000/api/sequences/clear", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log("後端資料已清除");
+      } catch (error) {
+        console.error("無法清除後端資料:", error);
+      }
+    };
+    if (!initialFileContent || initialFileContent !== prevInitialFileContent.current) {
+      clearBackendData(); 
+    }
+
+    prevInitialFileContent.current = initialFileContent; 
+
+  }, [initialFileContent]); 
+  
   // =======================
   // Render
   // =======================
@@ -274,6 +297,8 @@ const HaplotypeNetworkApp = ({
         <div className="section flex-container" >
           
             <div className="map-Filteredbox">
+              HaplotypeNetworkApp.jsx___
+              import FilteredTaiwanMapComponent from "./components/FilteredTaiwanMap/FilteredTaiwanMapComponent";
               <FilteredTaiwanMapComponent
                 genes={genes}
                 cityUpdateFlags={cityUpdateFlags}
@@ -356,7 +381,9 @@ const HaplotypeNetworkApp = ({
       {activeSection === "haplotypeNetwork" && (
         <div className="section">
           <HaplotypeReducer />
-          <HaplotypeNetwork />
+          <HaplotypeNetwork 
+            genes={genes}
+          />
           <div style={{ display: "none" }}>
             <GeneTable
               fileName={initialFileName}
@@ -383,9 +410,11 @@ const HaplotypeNetworkApp = ({
               latRange={mapSettings.latRange}
             />
           </div>
+                  
         </div>
       )}
-      </div>  
+    </div>  
+        
   );
 };
 

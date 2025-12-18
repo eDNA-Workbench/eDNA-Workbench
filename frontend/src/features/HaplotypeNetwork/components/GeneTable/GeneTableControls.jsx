@@ -24,13 +24,13 @@ const GeneTableControls = ({
           onClick={() => setViewMode("total")}
           className={`GeneTable-button ${viewMode === "total" ? "active" : ""}`}
         >
-          Summary_table(by locations)
+          Summary_table(By Location)
         </button>
         <button
           onClick={() => setViewMode("count")}
           className={`GeneTable-button ${viewMode === "count" ? "active" : ""}`}
         >
-          FA_table
+          FA_table(By Sequence)
         </button>
       </div>
 

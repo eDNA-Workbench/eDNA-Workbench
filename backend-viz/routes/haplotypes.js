@@ -154,15 +154,19 @@ router.post(
 );
 
 router.get("/HaplotypeNetwork", (req, res) => {
+  const { min, max } = req.query;
   const geneCounts = storage.getGeneCounts();
   const geneSequences = storage.getSequences();
 
   const hapMap = new Map();
+  let minCount = Infinity;  
+  let maxCount = -Infinity; 
+
   for (const { name, city, count } of geneCounts) {
     const sequence = geneSequences[name];
     if (!sequence) continue;
     const match = name.match(/_(\d+)_\d+$/);
-    const hapId = match ? `Asv_${match[1]}` : name;
+    const hapId = match ? `ASV_${match[1]}` : name;
     if (!hapMap.has(hapId))
       hapMap.set(hapId, {
         id: hapId,
@@ -175,14 +179,18 @@ router.get("/HaplotypeNetwork", (req, res) => {
     hap.totalCount += Number(count) || 0;
     hap.cities[city] = (hap.cities[city] || 0) + (Number(count) || 0);
     hap.members.push({ name, city, count });
+    minCount = Math.min(minCount, hap.totalCount);
+    maxCount = Math.max(maxCount, hap.totalCount);
   }
 
-  const nodes = Array.from(hapMap.values()).map((hap) => ({
-    id: hap.id,
-    sequence: hap.sequence,
-    count: hap.totalCount,
-    cities: hap.cities,
-  }));
+   const nodes = Array.from(hapMap.values())
+    .filter((hap) => hap.totalCount >= min && hap.totalCount <= max) // 篩選符合條件的節點
+    .map((hap) => ({
+      id: hap.id,
+      sequence: hap.sequence,
+      count: hap.totalCount,
+      cities: hap.cities,
+    }));
 
   const distFn = (a, b) => {
     if (!a.sequence || !b.sequence) return Infinity;
@@ -214,7 +222,7 @@ router.get("/HaplotypeNetwork", (req, res) => {
           distance: dist,
           isMST: false,
           style: "dashed",
-          color: "#34b7f1",
+          color: "var(--primary)",
         });
         connectionCount[a.id] = (connectionCount[a.id] || 0) + 1;
         connectionCount[b.id] = (connectionCount[b.id] || 0) + 1;
@@ -222,7 +230,12 @@ router.get("/HaplotypeNetwork", (req, res) => {
     }
   }
 
-  const connectedEdges = [...mst, ...extraEdges];
+  const connectedEdges = [...mst, ...extraEdges].map(edge => ({
+    ...edge,
+    // color: "var(--primary)"  // 統一顏色設定
+     color: "black"
+  }));
+
   const isolatedEdges = [];
   for (const node of nodes) {
     const connected = connectedEdges.some(
@@ -235,14 +248,19 @@ router.get("/HaplotypeNetwork", (req, res) => {
         distance: 0,
         isMST: false,
         style: "dashed",
-        color: "#999",
+        color: "var(--primary)",
       });
   }
 
-  res.json({ nodes, edges: [...mst, ...extraEdges, ...isolatedEdges] });
+  res.json({ 
+    nodes, 
+    edges: [...connectedEdges, ...isolatedEdges] ,
+    countRange: { min: minCount, max: maxCount },
+  });
 });
 
 router.get("/SimplifiedHaplotypeNetwork", (req, res) => {
+  const { min, max } = req.query; // 取得 min 和 max 範圍
   const geneCounts = storage.getGeneCounts();
   const geneSequences = storage.getSequences();
 
@@ -283,19 +301,25 @@ router.get("/SimplifiedHaplotypeNetwork", (req, res) => {
     simplifiedNodes.push({ ...rep, id: prefix });
   }
 
+  // 根據 min 和 max 範圍過濾節點
+  const filteredNodes = simplifiedNodes.filter((node) => {
+    const totalCount = node.count || 0;
+    return totalCount >= (min || 0) && totalCount <= (max || Infinity);
+  });
+
   const distFn = (a, b) => {
     if (!a.sequence || !b.sequence) return Infinity;
     return hammingDistance(a.sequence, b.sequence);
   };
 
-  const { mst } = buildMST(simplifiedNodes, distFn);
+  const { mst } = buildMST(filteredNodes, distFn);
 
   const extraEdges = [];
   const connectionCount = {};
-  for (let i = 0; i < simplifiedNodes.length; i++) {
-    for (let j = i + 1; j < simplifiedNodes.length; j++) {
-      const a = simplifiedNodes[i],
-        b = simplifiedNodes[j];
+  for (let i = 0; i < filteredNodes.length; i++) {
+    for (let j = i + 1; j < filteredNodes.length; j++) {
+      const a = filteredNodes[i],
+        b = filteredNodes[j];
       const dist = distFn(a, b);
       if (dist >= 0 && dist <= 3) {
         const inMST = mst.some(
@@ -312,7 +336,7 @@ router.get("/SimplifiedHaplotypeNetwork", (req, res) => {
           distance: dist,
           isMST: false,
           style: "dashed",
-          color: "#34b7f1",
+          color: "var(--primary)",
         });
         connectionCount[a.id] = (connectionCount[a.id] || 0) + 1;
         connectionCount[b.id] = (connectionCount[b.id] || 0) + 1;
@@ -320,7 +344,50 @@ router.get("/SimplifiedHaplotypeNetwork", (req, res) => {
     }
   }
 
-  res.json({ nodes: simplifiedNodes, edges: [...mst, ...extraEdges] });
+  const allEdges = [...mst, ...extraEdges].map(edge => ({
+    ...edge,
+     // color: "var(--primary)"  // 統一顏色設定
+     color: "black"
+  }));
+
+  res.json({ nodes: filteredNodes, edges: allEdges });
 });
+
+router.get("/HaplotypeCountRange", (req, res) => {
+  const geneCounts = storage.getGeneCounts();
+  const geneSequences = storage.getSequences();
+
+  const hapMap = new Map();
+  let minCount = Infinity;  // 初始化最小值
+  let maxCount = -Infinity; // 初始化最大值
+
+  // 創建 hapMap 並同時計算最小最大 count 值
+  for (const { name, city, count } of geneCounts) {
+    const sequence = geneSequences[name];
+    if (!sequence) continue;
+    const match = name.match(/_(\d+)_\d+$/);
+    const hapId = match ? `ASV_${match[1]}` : name;
+    if (!hapMap.has(hapId))
+      hapMap.set(hapId, {
+        id: hapId,
+        sequence,
+        totalCount: 0,
+        cities: {},
+        members: [],
+      });
+    const hap = hapMap.get(hapId);
+    hap.totalCount += Number(count) || 0;
+    hap.cities[city] = (hap.cities[city] || 0) + (Number(count) || 0);
+    hap.members.push({ name, city, count });
+
+    // 更新最小最大 count
+    minCount = Math.min(minCount, hap.totalCount);
+    maxCount = Math.max(maxCount, hap.totalCount);
+  }
+
+  // 回傳 count 範圍
+  res.json({ countRange: { min: minCount, max: maxCount } });
+});
+
 
 module.exports = router;

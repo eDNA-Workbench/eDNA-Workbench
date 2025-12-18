@@ -141,10 +141,9 @@ const GeneList = ({
      
   // 檢查是否所有設定都已完成
   useEffect(() => {
-    const isAllConfigured =  filteredCityGeneData;
-    setIsConfigured(isAllConfigured);
-  }, [ filteredCityGeneData]);
-
+    const isAllConfigured =  activeSimilarityGroup && activeSimilarityGroup.length > 1;
+    setIsConfigured(isAllConfigured);  
+  }, [filteredCityGeneData, activeSimilarityGroup]); 
 
   return (
     <div style={{ minWidth: "20%" }}>
@@ -152,10 +151,10 @@ const GeneList = ({
       {/* 如果沒有完成設定，顯示提示 */}
       {!isConfigured && (
         <div className="MapMainView-warning-box">
-          <p>⚠️ Complete the following settings：</p>
+          <p style={{ whiteSpace: "nowrap" }}>⚠️ Complete the following settings：</p>
           <ul>
-            {(!filteredCityGeneData || Object.keys(filteredCityGeneData).length === 0) && (
-              <li> Set Compare components</li>
+            {(!activeSimilarityGroup || activeSimilarityGroup.length === 0) && (
+              <li> Select Gene ​​in the Compare Components</li>
             )}
           </ul>
         </div>
@@ -164,9 +163,7 @@ const GeneList = ({
 
       {/* 如果設定完成，顯示原本的內容 */}
       {isConfigured && (
-        <>
-
-
+      <>
         {/* 切換按鈕區 */}
         <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
           <button onClick={() => setShowGenes(true)} style={{ padding: "5px 10px" }}>
