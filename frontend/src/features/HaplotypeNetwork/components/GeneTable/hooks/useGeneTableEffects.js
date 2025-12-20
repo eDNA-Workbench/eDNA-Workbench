@@ -56,7 +56,7 @@ export const useGeneTableEffects = ({
     const rawText = csvContent.trim();
     const lines = rawText.split("\n");
     const originalHeaders = lines[0].split(",").map((h) => h.trim());
-    const headers = ["locations", ...originalHeaders.slice(1).map((h) => `Asv_${h}`)];
+    const headers = ["locations", ...originalHeaders.slice(1).map((h) => `ASV_${h}`)];
     const rows = lines.slice(1).map((line) => {
       const cells = line.split(",");
       return headers.map((_, idx) => cells[idx] || "");
@@ -266,14 +266,8 @@ export const useGeneTableEffects = ({
     setFormattedCityGeneData, // 監聽 setFormattedCityGeneData
     onFormattedGenesChange, // 監聽 onFormattedGenesChange
   ]);
-
-
-
-
-  useEffect(() => {
-  
-  // 如果需要，也可以在這裡加入其他過濾邏輯
-}, [filterMode]);  // 這會在 filterMode 改變時觸發
+    useEffect(() => {
+}, [filterMode]);  
 
 
  

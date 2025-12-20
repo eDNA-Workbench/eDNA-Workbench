@@ -67,12 +67,13 @@ const MapControls = ({
           </label>
         </div>
 
-        {/* 提醒框 */}
+        {/* 提醒框 
         {(activeMapId === "" )&& (
           <div className="warning-box">
             <strong>⚠️ Please select or upload a Map Image.</strong>
           </div>
         )}
+        */}
       </div>
 
       {/* 🖼️ 圖片尺寸設定 */}

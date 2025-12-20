@@ -3,6 +3,16 @@ const router = express.Router();
 const { runWorker } = require("../utils/workerPromise");
 const storage = require("../services/storageService");
 
+// 清除資料的路由
+router.post("/clear", (req, res) => {
+  // 清空 sequences 和 gene counts 的資料
+  storage.clearSequences();
+  storage.clearGeneCounts();
+
+  console.log("資料已清除");
+  res.status(200).json({ message: "資料已成功清除" });
+});
+
 // upload sequences
 router.post("/uploadSequences", (req, res) => {
   
