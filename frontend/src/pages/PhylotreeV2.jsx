@@ -1,7 +1,7 @@
 // src/pages/PhylotreePage.jsx
 import SideGuide from '../components/SideGuide.jsx';
 import { useFileContext } from '../contexts/FileContext'; // Hook
-import PhylotreeApplication from '../features/Phylotree-v2/PhylotreeApplication.jsx';
+import PhylotreeApplication from '../features/Phylotree-v2/PhylotreeApp.jsx';
 import '../styles/components/SideGuide.css';
 
 export default function PhylotreePage() {

@@ -1,9 +1,9 @@
 // HaplotypeNetwork.jsx
 // 使用 D3 建立帶城市分群與連線距離的單倍型網絡圖視覺化
 
-import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import "../components/AppStyles.css";
+import { useEffect, useRef, useState } from "react";
+// import "../components/AppStyles.css";
 import "./styles/HaplotypeNetwork.css";
 
 const HaplotypeNetwork = ({ width = 800, height = 800 }) => {

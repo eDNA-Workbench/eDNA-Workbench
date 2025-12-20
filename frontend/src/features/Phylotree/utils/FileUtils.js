@@ -24,7 +24,7 @@ export class FileUtils {
   static async exportSvgAsImage(svgSelector, filename, scaleFactor = 5) {
     const svgElement = document.querySelector(svgSelector);
     if (!svgElement) {
-      throw new Error("無法找到 SVG 元素");
+      throw new Error("Cannot find SVG element");
     }
 
     return new Promise((resolve, reject) => {
@@ -75,7 +75,7 @@ export class FileUtils {
 
       img.onerror = () => {
         URL.revokeObjectURL(url);
-        reject(new Error("無法從 SVG 創建圖像"));
+        reject(new Error("Cannot create image from SVG"));
       };
 
       img.src = url;
