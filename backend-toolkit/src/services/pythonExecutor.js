@@ -102,7 +102,7 @@ export class PythonExecutor {
         name: "generate location-haplotype table",
         script: "Step6/get_loc_hap_table.py",
         requiredFiles: ["barcode"],
-        outputDirs: ["table"],
+        outputDirs: ["table", "loc_species_table"],
       },
     ];
   }

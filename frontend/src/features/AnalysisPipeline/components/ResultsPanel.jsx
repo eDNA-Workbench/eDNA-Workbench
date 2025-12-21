@@ -260,6 +260,41 @@ const ResultsPanel = ({ onReset }) => {
               Download All
             </button>
           </div>
+
+          {outputData.locSpeciesTable && outputData.locSpeciesTable.length > 0 && (
+            <div className="location-species-table">
+              <div className="line"/>
+              <h3>Location_Species Table</h3>
+              <div className="results-files-summary">
+                <div className="files-list">
+                  {outputData.locSpeciesTable.map((file) => (
+                    <div key={`loc-${file.filename}`} className="file-item">
+                      <div className="result-file-info">
+                        <span className="file-name">{file.filename}</span>
+                        <span className="file-size">({formatFileSize(file.size)})</span>
+                      </div>
+                      <div className="file-actions">
+                        <button
+                          className="btn btn-sm"
+                          onClick={() => previewFile('loc_species_table', 'common', file.filename)}
+                          title="Preview file"
+                        >
+                          <Eye size={14} />
+                        </button>
+                        <button
+                          className="btn btn-sm btn-primary"
+                          onClick={() => downloadFile('loc_species_table', 'common', file.filename)}
+                          title="Download file"
+                        >
+                          <Download size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
           
           <div className="species-lists">
             {Object.entries(speciesData)

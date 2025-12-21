@@ -54,17 +54,44 @@ async function listDirContents(dirPath) {
   }
 }
 
+async function listFlatDirContents(dirPath) {
+  try {
+    const files = await fs.readdir(dirPath);
+    const fileInfos = [];
+
+    for (const f of files) {
+      if (f.startsWith(".")) continue;
+      try {
+        const stat = await fs.stat(safeJoin(dirPath, f));
+        if (!stat.isDirectory()) {
+          fileInfos.push({
+            filename: f,
+            size: stat.size,
+          });
+        }
+      } catch (e) {
+        // skip
+      }
+    }
+    return fileInfos;
+  } catch (error) {
+    return [];
+  }
+}
+
 // GET /api/outputs/list
 router.get("/list", async (req, res, next) => {
   try {
     const outputsRoot = getOutputsRoot();
     const separatedDir = path.join(outputsRoot, "separated");
     const tableDir = path.join(outputsRoot, "table");
+    const locSpeciesDir = path.join(outputsRoot, "loc_species_table");
 
     const separated = await listDirContents(separatedDir);
     const table = await listDirContents(tableDir);
+    const locSpeciesTable = await listFlatDirContents(locSpeciesDir);
 
-    res.json({ success: true, separated, table });
+    res.json({ success: true, separated, table, locSpeciesTable });
   } catch (error) {
     next(error);
   }
@@ -75,10 +102,19 @@ router.post("/preview/:category/:species/:filename", async (req, res, next) => {
     const { category, species, filename } = req.params;
 
     const outputsRoot = getOutputsRoot();
-    const filePath = safeJoin(outputsRoot, category, species, filename);
+    let filePath;
 
-    if (!filePath.startsWith(path.join(outputsRoot, category, species))) {
-      return res.status(400).json({ success: false, error: "Invalid file path" });
+    if (category === "loc_species_table") {
+      // For flat directory, ignore species param (or expect it to be a placeholder like 'common')
+      filePath = safeJoin(outputsRoot, category, filename);
+      if (!filePath.startsWith(path.join(outputsRoot, category))) {
+        return res.status(400).json({ success: false, error: "Invalid file path" });
+      }
+    } else {
+      filePath = safeJoin(outputsRoot, category, species, filename);
+      if (!filePath.startsWith(path.join(outputsRoot, category, species))) {
+        return res.status(400).json({ success: false, error: "Invalid file path" });
+      }
     }
 
     try {
@@ -110,26 +146,30 @@ router.get("/download/:category/:species/:filename", async (req, res, next) => {
   try {
     const { category, species, filename } = req.params;
 
-    // Only allow 'sperated' or 'table' as category
-    if (!["separated", "table"].includes(category)) {
+    // Only allow 'sperated', 'table', 'loc_species_table' as category
+    if (!["separated", "table", "loc_species_table"].includes(category)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid category. Must be "separated" or "table"',
+        error: 'Invalid category. Must be "separated", "table" or "loc_species_table"',
       });
     }
 
     // Build file path
     const outputsRoot = getOutputsRoot();
     const categoryDir = path.join(outputsRoot, category);
-    const speciesDir = path.join(categoryDir, species);
-    const filePath = safeJoin(speciesDir, filename);
-
-    // 安全性檢查：確保檔案路徑在預期的目錄內
-    if (!filePath.startsWith(speciesDir)) {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid file path",
-      });
+    
+    let filePath;
+    if (category === "loc_species_table") {
+       filePath = safeJoin(categoryDir, filename);
+       if (!filePath.startsWith(categoryDir)) {
+          return res.status(400).json({ success: false, error: "Invalid file path" });
+       }
+    } else {
+       const speciesDir = path.join(categoryDir, species);
+       filePath = safeJoin(speciesDir, filename);
+       if (!filePath.startsWith(speciesDir)) {
+          return res.status(400).json({ success: false, error: "Invalid file path" });
+       }
     }
 
     // 檢查檔案是否存在

@@ -22,22 +22,22 @@
   gap: 7px;
 }
 
-/* Species Header */
-.species-summary .line {
+.results-section .line {
   width: 100%;
   border-top: 2px solid var(--border);
   margin: 20px 0;
 }
 
+.results-section h3 {
+  margin: 10px 0px 10px 15px;
+}
+
+/* Species Header */
 .species-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   /* padding-top: 20px; */
-}
-
-.species-header h3 {
-  margin: 10px 0px 10px 15px;
 }
 
 .species-header .species-actions {

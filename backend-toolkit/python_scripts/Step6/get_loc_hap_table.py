@@ -92,6 +92,8 @@ def generate_haplotype_table(input_file, output_file, locations):
     
     # print(f"Found haplotypes: {haplotypes}")
 
+    species_loc_count = {}
+
     with open(output_file, 'w') as outfile:
         header = 'locations,total,' + ','.join(haplotypes) + '\n'
         outfile.write(header)
@@ -111,6 +113,8 @@ def generate_haplotype_table(input_file, output_file, locations):
                 else:
                     tmp.append('0')
 
+            species_loc_count[loc] = total_in_loc
+
             output_line = loc + ',' + str(total_in_loc) + ',' + ','.join(tmp)
             outfile.write(output_line + '\n')
             # print(output_line)
@@ -125,9 +129,55 @@ def generate_haplotype_table(input_file, output_file, locations):
     print(f"Output: {output_file.split('/')[-1]}", flush=True)
     print("-" * 50, flush=True)
 
+    return species_loc_count
+
+
+def generate_loc_species_table(output_file, locations, all_species_data):
+    species_list = list(all_species_data.keys())
+
+    display_names = []
+    for name in species_list:
+        if '_' in name:
+            clean_name = name.split('_', 1)[1]
+            display_names.append(clean_name)
+        else:
+            display_names.append(name)
+
+    with open(output_file, 'w') as f:
+        header = ['locations', 'total'] + display_names
+        f.write(','.join(header) + '\n')
+
+        # -- grand total for each species
+        species_grand_totals = {sp: 0 for sp in species_list}
+        total_of_totals = 0
+
+        for loc in locations:
+            row_total = 0
+            row_data = []
+
+            for sp in species_list:
+                count = all_species_data[sp].get(loc, 0)
+                row_data.append(str(count))
+
+                row_total += count
+                species_grand_totals[sp] += count
+
+            total_of_totals += row_total
+
+            line = [loc, str(row_total)] + row_data
+            f.write(','.join(line) + '\n')
+
+        footer_data = [str(species_grand_totals[sp]) for sp in species_list]
+        footer = ['total count', str(total_of_totals)] + footer_data
+        f.write(','.join(footer) + '\n')
+
+    print(f"Location_Species Table created successfully", flush=True)
+
+            
 if __name__ == "__main__":
     input_dir = "/app/data/outputs/separated"
     output_dir = "/app/data/outputs/table"
+    loc_species_dir = "/app/data/outputs/loc_species_table"
 
     barcodeFile = sys.argv[1]
 
@@ -149,6 +199,8 @@ if __name__ == "__main__":
 
     project = str(species_dirs[0].split('_')[0])
     locations = load_location(barcodeFile, project)
+
+    all_species_data = {}
 
     # -- Proces each species
     for species in species_dirs:
@@ -176,9 +228,18 @@ if __name__ == "__main__":
         
         # -- process species
         try:
-            generate_haplotype_table(input_file, output_file, locations)
+            species_name = species
+
+            counts_dict = generate_haplotype_table(input_file, output_file, locations)
+
+            all_species_data[species_name] = counts_dict
+
         except Exception as e:
             print(f"Error processing {species}: {e}", flush=True)
             continue
+
+    if all_species_data:
+        loc_species_file = os.path.join(loc_species_dir, "Location_Species.tbl.csv")
+        generate_loc_species_table(loc_species_file, locations, all_species_data)
 
     print("All species processed!", flush=True)
