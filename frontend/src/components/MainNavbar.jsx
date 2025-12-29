@@ -35,16 +35,16 @@ function MainNavbar({ theme, toggleTheme }) {
             Analysis Pipeline
           </Link>
           <Link to="/phylotree" className={`dropdown-item ${isActive('/phylotree') ? 'active' : ''}`} onClick={() => setIsToolsOpen(false)}>
-            Phylotree
+            Phylogenetic Tree Viewer
           </Link>
           <Link to="/phylotree-v2" className={`dropdown-item ${isActive('/phylotree-v2') ? 'active' : ''}`} onClick={() => setIsToolsOpen(false)}>
             Phylotree V2
           </Link>
           <Link to="/sequence-alignment" className={`dropdown-item ${isActive('/sequence-alignment') ? 'active' : ''}`} onClick={() => setIsToolsOpen(false)}>
-            Sequence Alignment
+            MSA Viewer
           </Link>
           <Link to="/haplotype" className={`dropdown-item ${isActive('/haplotype') ? 'active' : ''}`} onClick={() => setIsToolsOpen(false)}>
-            Haplotype Network
+            ASV Distribution
           </Link>
         </NavDropdown>
 
