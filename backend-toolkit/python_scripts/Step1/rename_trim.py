@@ -266,12 +266,12 @@ class OutputManager:
             r_record = r1_record.trim_sequence(r_trim_len)
         
         # Write forward read
-        f_header = f"@f_{read_index}_{location}_{orientation}"
+        f_header = f"@{orientation}_{read_index}_{location}"
         self._write_fastq_record(self.file_handles[self.target_species]['F'], 
                                 f_header, f_record.sequence, f_record.quality)
         
         # Write reverse read  
-        r_header = f"@r_{read_index}_{location}_{orientation}"
+        r_header = f"@{orientation}_{read_index}_{location}"
         self._write_fastq_record(self.file_handles[self.target_species]['R'],
                                 r_header, r_record.sequence, r_record.quality)
         
