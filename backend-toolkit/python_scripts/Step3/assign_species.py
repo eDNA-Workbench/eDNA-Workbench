@@ -9,6 +9,7 @@ Modified species assignment script:
 """
 import sys
 import os
+import re
 from pathlib import Path
 
 def species_assignment(keyword, identity_threshold):
@@ -49,6 +50,8 @@ def species_assignment(keyword, identity_threshold):
     # -- read bln+species file
     dt = {}
     total_lines = 0
+
+    species_pattern = re.compile(r'[A-Z][a-z]+-[a-z]+')
     
     with open(blnfile_name, 'r', encoding='utf-8') as file:
         for i, line in enumerate(file):
@@ -65,11 +68,11 @@ def species_assignment(keyword, identity_threshold):
             identity = float(fields[2])
             species = fields[1]
 
-            try:
-                ref_id, ref_rest = species.split('.1:')
-                extracted_species_name = '_'.join(ref_rest.split('_')[1:3])
-            except:
-                extracted_species_name = '_'.join(species.split('_')[1:3])
+            match = species_pattern.search(species)
+            if match:
+                extracted_species_name = match.group(0)
+            else: 
+                extracted_species_name = species.split('-')[0] if '-' in species else species
             
             # -- No longer filter out sp. or china species, keep all hits
             if read_id in dt:
@@ -117,6 +120,10 @@ def species_assignment(keyword, identity_threshold):
     print(f"Species assignment completed! Assigned {assigned_count} reads to {outfile_path}", flush=True)
 
 if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: python assign_species.py <keyword> <identity_threshold>", flush=True)
+        sys.exit(1)
+
     keyword = sys.argv[1]
     identity_threshold = int(sys.argv[2])
 

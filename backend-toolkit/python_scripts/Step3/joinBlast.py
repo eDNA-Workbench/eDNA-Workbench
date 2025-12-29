@@ -88,6 +88,33 @@ class BLASTTools:
         except Exception as e:
             print(f"Error counting sequences in {fasta_file}: {e}", flush=True)
             return 0
+    
+    def sanitize_fasta(self, input_file):
+        """
+        Sanitize FASTA file by replacing spaces with hyphens in headers
+        Returns path to cleaned file
+        """
+        try:
+            output_file = str(input_file) + ".hyphenated"
+            print(f"Sanitizing FASTA file: {input_file} -> {output_file}", flush=True)
+            
+            count = 0
+            with open(input_file, 'r', encoding='utf-8') as infile:
+                with open(output_file, 'w', encoding='utf-8') as outfile:
+                    for line in infile:
+                        if line.startswith('>'):
+                            # Replace spaces with hyphens in header
+                            outfile.write(line.replace(' ', '-'))
+                            count += 1
+                        else:
+                            outfile.write(line)
+            
+            print(f"Sanitized {count} sequences", flush=True)
+            return output_file
+            
+        except Exception as e:
+            print(f"Error sanitizing FASTA file: {e}", flush=True)
+            raise
 
 def BLAST(ncbi_reference):
     tools = BLASTTools()
@@ -106,14 +133,26 @@ def BLAST(ncbi_reference):
     
     print(f"NCBI reference: {ncbi_reference}", flush=True)
     
+    # -- Sanitize NCBI reference (replace spaces with hyphens)
+    try:
+        sanitized_reference = tools.sanitize_fasta(ncbi_reference)
+        # Use sanitized file for subsequent operations
+        print(f"Using sanitized reference: {sanitized_reference}", flush=True)
+        
+        # Determine actual reference to use (switching to sanitized version)
+        blast_db_reference = sanitized_reference
+    except Exception as e:
+        print(f"Failed to sanitize reference: {e}", flush=True)
+        return
+
     # -- check NCBI sequence amount
-    ref_seq_count = tools.count_sequences_in_fasta(ncbi_reference)
+    ref_seq_count = tools.count_sequences_in_fasta(blast_db_reference)
     print(f"NCBI reference sequence amount: {ref_seq_count}", flush=True)
     
     # -- makeblastdb
     print(f"\nProcessing makeblastdb...", flush=True)
     try:
-        db_name = tools.makeblastdb(ncbi_reference)
+        db_name = tools.makeblastdb(blast_db_reference)
         print(f"makeblastdb created successfully: {db_name}", flush=True)
     except Exception as e:
         print(f"makeblastdb creation failed: {e}", flush=True)
@@ -153,7 +192,7 @@ def BLAST(ncbi_reference):
         try:
             blast_result = tools.blastn(
                 query_file=input_file,
-                database=ncbi_reference,
+                database=blast_db_reference,
                 output_file=output_file,
                 outfmt=10,
                 num_alignments=10,
