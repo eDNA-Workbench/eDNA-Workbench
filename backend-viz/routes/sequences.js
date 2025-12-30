@@ -28,6 +28,20 @@ router.get("/Sequences", (req, res) => {
   res.json({ geneNames: Object.keys(sequences), sequences });
 });
 
+router.get("/checkSequenceLengths", (req, res) => {
+  const sequences = storage.getSequences();
+  const sequenceLengths = Object.values(sequences).map(seq => seq.length);
+
+  const areLengthsEqual = sequenceLengths.every(length => length === sequenceLengths[0]);
+
+  if (areLengthsEqual) {
+    res.json({ isConsistent: true });
+  } else {
+    res.json({ isConsistent: false, lengths: sequenceLengths });
+  }
+});
+
+
 router.post("/mergeSequences", (req, res) => {
   const { sequences } = req.body;
   if (!sequences || typeof sequences !== "object")
@@ -113,8 +127,6 @@ router.post("/saveGeneCounts", (req, res) => {
   storage.setGeneCounts(flattened);
   res.json({ message: "Gene counts saved and normalized successfully" });
 });
-
-
 
 router.get("/counts", (req, res) => {
   res.json({ genes: storage.getGeneCounts() });

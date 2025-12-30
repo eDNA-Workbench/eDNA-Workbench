@@ -154,7 +154,7 @@ const GeneList = ({
           <p style={{ whiteSpace: "nowrap" }}>⚠️ Complete the following settings：</p>
           <ul>
             {(!activeSimilarityGroup || activeSimilarityGroup.length === 0) && (
-              <li> Select Gene ​​in the Compare Components</li>
+              <li> Select ASV ​​in the Compare Components</li>
             )}
           </ul>
         </div>
@@ -190,7 +190,7 @@ const GeneList = ({
               style={{ width: "100%", padding: "6px", marginBottom: "8px" }}
             />
 
-            {/* 新增縮減按鈕 */}
+            {/* 新增縮減按鈕 
             <button
               onClick={() => setIsReduced(!isReduced)}
               style={{
@@ -204,6 +204,7 @@ const GeneList = ({
             >
               {isReduced ? "Cancel reduction" : "Enable reduction"}
             </button>
+            */}
 
             {/* Gene Selection Buttons */}
             <div className="flex flex-gap-5" style={{ marginBottom: "8px" }}>

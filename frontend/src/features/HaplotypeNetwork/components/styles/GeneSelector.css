@@ -111,8 +111,21 @@
 .no-results {
   margin-top: 10px;
   color: var(--destructive);
+  border: 1px solid var(--primary);
+  padding: 16px;
+  font-size: 20px;
 }
 
+.range-warning {
+  padding: 16px;
+  background-color: var(--warning);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: bold;
+}
 
 .pagination-controls button{
   padding: 6px 12px;

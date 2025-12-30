@@ -1,7 +1,4 @@
-// HaplotypeNetwork.jsx
-// 使用 D3 建立帶城市分群與連線距離的單倍型網絡圖視覺化
-
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { saveAs } from "file-saver";
 import { Canvg } from 'canvg';
@@ -17,56 +14,47 @@ function oklchToRgb(L, C, H) {
   const g = ref - y;
   const b = ref - x;
   
-  // 返回 RGB 格式的顏色
   return {
     r: Math.min(255, Math.max(0, r * 255)),
     g: Math.min(255, Math.max(0, g * 255)),
-    b: Math.min(255, Math.max(0, b * 255))
+    b: Math.min(255, Math.max(0, b * 255)),
   };
 }
 
-const HaplotypeNetwork = ({ width = 800, height = 800 , genes  }) => {
+const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent }) => {
   const svgRef = useRef();
   const [data, setData] = useState(null);
   const [cityColors, setCityColors] = useState({});
   const [cityColorMap, setCityColorMap] = useState({});
   const [apiPath, setApiPath] = useState("HaplotypeNetwork");
   const [scaleFactor, setScaleFactor] = useState(1); // 控制節點與距離的縮放
-
-  const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
   const [loading, setLoading] = useState(true);
-
   const [countRange, setCountRange] = useState({ min: 0, max: 100 });
   const [fetchedRange, setFetchedRange] = useState({ min: 0, max: 100 });
 
   useEffect(() => {
-  if (genes && genes.length > 0) {
-    const geneName = genes[0].name; 
-
-    if (geneName.includes(",") && geneName.match(/^[a-zA-Z0-9_,-]+(,hap_\d+_\d+)+$/)) {
-      setApiPath("HaplotypeNetwork");
+    if (genes && genes.length > 0) {
+      const geneName = genes[0].name; 
+      if (geneName.includes(",") && geneName.match(/^[a-zA-Z0-9_,-]+(,hap_\d+_\d+)+$/)) {
+        setApiPath("HaplotypeNetwork");
+      }
+      else if (geneName.includes("_") && !geneName.includes(",")) {
+        setApiPath("SimplifiedHaplotypeNetwork");
+      }
+      else {
+        setApiPath("HaplotypeNetwork");
+      }
     }
-    else if (geneName.includes("_") && !geneName.includes(",")) {
-      setApiPath("SimplifiedHaplotypeNetwork");
-    }
-    else {
-      setApiPath("HaplotypeNetwork");
-    }
-  }
-}, [genes]);
+  }, [genes]);
 
-useEffect(() => {
-        console.log("apiPath:",apiPath)
-        console.log("genes:",genes)
-      }, [apiPath,genes]);
-
-  // 載入資料
   useEffect(() => {
     setLoading(true); 
     setData(null); // Clear previous data
 
-    // 發送範圍篩選請求
-    fetch(`http://localhost:3000/api/haplotypes/${apiPath}?min=${countRange.min}&max=${countRange.max}`)
+    const min = countRange.min;
+    const max = countRange.max;
+
+    fetch(`http://localhost:3000/api/haplotypes/${apiPath}?min=${min}&max=${max}`)
       .then((res) => res.json())
       .then((newData) => {
         setData(newData);
@@ -76,7 +64,8 @@ useEffect(() => {
         setData({ error: true });
         setLoading(false); 
       });
-  }, [apiPath, countRange]);
+
+  }, [apiPath, countRange, genes , eDnaSampleContent]);
 
   useEffect(() => {
     if (apiPath) {
@@ -90,9 +79,34 @@ useEffect(() => {
           console.error("Failed to fetch count range");
         });
     }
-  }, [apiPath]);
+  }, [apiPath , genes , eDnaSampleContent]);
+
+  // Reset chart
+  const resetChart = () => {
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();  // Clear SVG content
+
+    setLoading(true); 
+    setData(null); // Clear previous data
+
+    // Re-fetch the data from the API
+    fetch(`http://localhost:3000/api/haplotypes/${apiPath}?min=${countRange.min}&max=${countRange.max}`)
+      .then((res) => res.json())
+      .then((newData) => {
+        setData(newData); // Update the state with the new data
+        setLoading(false); // Set loading to false when data is fetched
+      })
+      .catch(() => {
+        setData({ error: true });
+        setLoading(false); // Set loading to false in case of an error
+      });
+
+    setIsConfigured(false); // Reset the configuration flag if needed
+  };
+
 
   // 初始化圖表
+
   useEffect(() => {
     if (!data?.nodes || !data?.edges) return;
 
@@ -107,50 +121,39 @@ useEffect(() => {
     const g = svg.append("g").attr("class", "zoom-group");
 
     const allCities = new Set();
-validNodes.forEach((node) => {
-  if (node.cities)
-    Object.keys(node.cities).forEach((c) => allCities.add(c));
-});
-const cityList = Array.from(allCities);
+    validNodes.forEach((node) => {
+      if (node.cities)
+        Object.keys(node.cities).forEach((c) => allCities.add(c));
+    });
+    const cityList = Array.from(allCities);
 
-// 用來儲存已生成的顏色
-const usedColors = new Set();
+    // 用來儲存已生成的顏色
+    const usedColors = new Set();
 
-// 使用自訂的 oklch 顏色生成邏輯
-const cityColorScale = d3
-  .scaleOrdinal()
-  .domain(cityList)
-  .range(
-    cityList.map(() => {
-      let color;
+    // 使用自訂的 oklch 顏色生成邏輯
+    const cityColorScale = d3
+      .scaleOrdinal()
+      .domain(cityList)
+      .range(
+        cityList.map(() => {
+          let color;
+          do {
+            const L = 0.1 + Math.random() * 0.2; // 隨機亮度，範圍從 0.4 到 0.6
+            const C = 0.1 + Math.random() * 0.8; // 隨機色度，範圍從 0.2 到 0.5
+            const H = (0.1 + Math.random() * 1.8) * Math.PI; // 隨機色相，範圍 0 到 2π
 
-      // 確保顏色是唯一的，直到生成不重複的顏色
-      do {
-        // 生成隨機的 oklch 顏色
-        const L = 0.1 + Math.random() * 0.2;  // 隨機亮度，範圍從 0.4 到 0.6
-        const C = 0.1 + Math.random() * 0.8;  // 隨機色度，範圍從 0.2 到 0.5
-        const H = ( 0.1 + Math.random() * 1.8 ) * Math.PI;  // 隨機色相，範圍 0 到 2π
+            const { r, g, b } = oklchToRgb(L, C, H);
+            color = `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+          } while (usedColors.has(color));
 
-        // 轉換為 RGB 顏色
-        const { r, g, b } = oklchToRgb(L, C, H);
-        
-        // 生成 RGB 顏色的字串
-        color = `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
+          usedColors.add(color);
+          return color;
+        })
+      );
 
-      } while (usedColors.has(color));  // 如果顏色已經使用過，重新生成
-
-      // 記錄顏色
-      usedColors.add(color);
-
-      // 返回顏色
-      return color;
-    })
-  );
-
-// 將顏色映射儲存到 cityColorMap 中
-const cityColorMap = {};
-cityList.forEach((city) => (cityColorMap[city] = cityColorScale(city)));
-setCityColors(cityColorMap);
+    const cityColorMap = {};
+    cityList.forEach((city) => (cityColorMap[city] = cityColorScale(city)));
+    setCityColors(cityColorMap);
 
     // 群組顏色 + 節點半徑
     const groupIds = Array.from(new Set(validNodes.map((d) => d.groupId)));
@@ -161,9 +164,9 @@ setCityColors(cityColorMap);
     const r = d3
       .scaleSqrt()
       .domain([1, maxCount || 1])
-      .range([10 * scaleFactor, 30 * scaleFactor]); // 半徑隨 scaleFactor 改變
+      .range([10 * scaleFactor, 30 * scaleFactor]);
 
-    // ⚡ 隨機初始位置，避免所有節點一開始擠在中心
+    // ⚡ 隨機初始位置
     data.nodes.forEach((d) => {
       d.x = Math.random() * width;
       d.y = Math.random() * height;
@@ -179,7 +182,6 @@ setCityColors(cityColorMap);
           .id((d) => d.id)
           .distance((d) => {
             if (d.source.groupId === d.target.groupId) return 25 * scaleFactor;
-
             let value = 50 + d.distance * 50;
             if (value > 400) value = 400;
             return value * scaleFactor;
@@ -200,9 +202,7 @@ setCityColors(cityColorMap);
       .join("line")
       .attr("stroke", (d) => d.color || "var(--primary)")
       .attr("stroke-width", 1.5)
-      .attr("stroke-dasharray", (d) =>
-        d.style === "dotted" ? "2,2" : null
-      )
+      .attr("stroke-dasharray", (d) => (d.style === "dotted" ? "2,2" : null))
       .attr("stroke-linecap", "round");
 
     const edgeLabels = linkGroup
@@ -278,9 +278,7 @@ setCityColors(cityColorMap);
       .append("title")
       .text(
         (d) =>
-          `ID: ${d.id}\nCount: ${d.count}\n${Object.entries(
-            d.cities || {}
-          )
+          `ID: ${d.id}\nCount: ${d.count}\n${Object.entries(d.cities || {})
             .map(([c, n]) => `${c}: ${n}`)
             .join("\n")}`
       );
@@ -293,7 +291,8 @@ setCityColors(cityColorMap);
       .attr("fill", "var(--primary)")
       .attr("stroke", "var(--primary)")
       .attr("stroke-width", 0.5)
-      .attr("font-size", 12);
+      .attr("font-size", 12)
+      .style("pointer-events", "none"); // 避免文字遮擋點擊事件
 
     // tick 更新圖形位置
     sim.on("tick", () => {
@@ -308,15 +307,13 @@ setCityColors(cityColorMap);
         .attr("y", (d) => (d.source.y + d.target.y) / 2);
 
       node.attr("transform", (d) => {
-        // 限制節點位置不超出邊界
         d.x = Math.max(r(d.count), Math.min(width - r(d.count), d.x));
         d.y = Math.max(r(d.count), Math.min(height - r(d.count), d.y));
 
         return `translate(${d.x},${d.y})`;
       });
     });
-  }, [data, width, height, scaleFactor, cityColorMap]); // scaleFactor 改變時重新渲染
-
+  }, [data, width, height, scaleFactor, cityColorMap, genes]);
 
   // 手動縮放控制
   const handleResize = (dir) => {
@@ -346,209 +343,202 @@ setCityColors(cityColorMap);
     }
   };
 
+  const exportPNG = async () => {
+    const svgContainer = svgRef.current;
+    const legendContainer = document.querySelector(".HaplotypeNetwork-svg-container");
+    if (!svgContainer || !legendContainer) return;
+
+    const html2canvas = (await import("html2canvas")).default;
+
+    try {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const v = await Canvg.from(ctx, svgContainer.outerHTML);
+      await v.render();
+
+      const legendCanvas = await html2canvas(legendContainer, {
+        ignoreElements: (el) => el.tagName === "IFRAME",
+      });
+
+      if (!legendCanvas) {
+        console.error("Failed to capture legend content");
+        return;
+      }
+
+      const padding = 10;
+      const fontSize = 16;
+      const boxSize = 14;
+      const spacing = 6;
+      const font = `${fontSize}px sans-serif`;
+      const itemsPerColumn = 30;
+
+      const legendItems = Object.entries(cityColors).map(([city, color]) => ({
+        name: city,
+        color: color || "block",
+      }));
+
+      const numCols = Math.ceil(legendItems.length / itemsPerColumn);
+      const numRows = Math.min(legendItems.length, itemsPerColumn);
+      const legendWidth = 180 * numCols + padding;
+      const legendHeight = padding * 2 + numRows * (fontSize + spacing);
+
+      canvas.width = Math.max(svgContainer.width.baseVal.value, legendWidth) + legendWidth;
+      canvas.height = svgContainer.height.baseVal.value;
+
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.drawImage(legendCanvas, 0, 0);
+
+      ctx.font = font;
+      ctx.textBaseline = "middle";
+
+      legendItems.forEach((item, i) => {
+        const col = Math.floor(i / itemsPerColumn);
+        const row = i % itemsPerColumn;
+        const x = svgContainer.width.baseVal.value + col * 180 + padding;
+        const y = padding + row * (fontSize + spacing) + fontSize / 2;
+
+        ctx.fillStyle = item.color;
+        ctx.beginPath();
+        ctx.arc(x + boxSize / 2, y, boxSize / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "black";
+        ctx.fillText(item.name, x + boxSize + 8, y);
+      });
+
+      canvas.toBlob((blob) => {
+        if (blob) saveAs(blob, "haplotype_network_with_legend.png");
+      });
+    } catch (error) {
+      console.error("Error during export:", error);
+    }
+  };
+
+  const [isConfigured, setIsConfigured] = useState(false); 
+  const [isLengthConsistent, setIsLengthConsistent] = useState(true); 
+
+   useEffect(() => {
+       const isAllConfigured = 
+          Array.isArray(genes) && genes.length > 0 && 
+          Array.isArray(eDnaSampleContent) && eDnaSampleContent.length > 0; 
+       setIsConfigured(isAllConfigured);
+     }, [genes, eDnaSampleContent]);
+
   useEffect(() => {
-    if (data && !loading) {
-      const isAllConfigured = data.nodes && data.nodes.length > 0 && data.edges && data.edges.length > 0;
-      setIsConfigured(isAllConfigured);
-    }
-  }, [data, loading]);
+    const checkGeneSequenceLengths = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/sequences/checkSequenceLengths");
+        const data = await res.json();
 
-const exportPNG = async () => {
-  // 确保 SVG 容器和城市图例都存在
-  const svgContainer = svgRef.current;
-  const legendContainer = document.querySelector(".HaplotypeNetwork-svg-container");
-  if (!svgContainer || !legendContainer) return;
+        if (!data.isConsistent) {
+          setIsLengthConsistent(false);
+        } else {
+          setIsLengthConsistent(true);
+        }
+      } catch (err) {
+        console.error("基因序列長度檢查錯誤:", err);
+        setIsLengthConsistent(true); 
+      }
+    };
 
-  const html2canvas = (await import("html2canvas")).default;
-
-  try {
-    // 创建一个 canvas 用来存储最终图像
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    // 使用 canvg 渲染 SVG 到 canvas
-    const v = await Canvg.from(ctx, svgContainer.outerHTML);
-    await v.render(); // 渲染 SVG 图形
-
-    // 使用 html2canvas 渲染城市图例到 canvas
-    const legendCanvas = await html2canvas(legendContainer, {
-      ignoreElements: (el) => el.tagName === "IFRAME",  // 忽略 iframe 元素
-    });
-
-    if (!legendCanvas) {
-      console.error("Failed to capture legend content");
-      return;
-    }
-
-    // 定义一些常数
-    const padding = 10;
-    const fontSize = 16;
-    const boxSize = 14;
-    const spacing = 6;
-    const font = `${fontSize}px sans-serif`;
-    const itemsPerColumn = 30;
-
-    // 构建图例项目
-    const legendItems = Object.entries(cityColors).map(([city, color]) => ({
-      name: city,
-      color: color || "block", // 默认颜色为 "block" (如果没有颜色)
-    }));
-
-    // 计算图例宽度与高度
-    const numCols = Math.ceil(legendItems.length / itemsPerColumn);
-    const numRows = Math.min(legendItems.length, itemsPerColumn);
-    const legendWidth = 180 * numCols + padding;  // 图例区域宽度
-    const legendHeight = padding * 2 + numRows * (fontSize + spacing);  // 图例区域高度
-
-    // 调整 canvas 的宽高
-    canvas.width = Math.max(svgContainer.width.baseVal.value, legendWidth) + + legendWidth;  // 取最大宽度
-    canvas.height = svgContainer.height.baseVal.value ;  // 高度为图表 + 图例
-
-    // 清空画布并填充白色背景
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // 1. 将 SVG 图形绘制到画布上
-    ctx.drawImage(legendCanvas, 0, 0); // 绘制 SVG 图形
-
-
-    // 绘制图例
-    ctx.font = font;
-    ctx.textBaseline = "middle";
-
-    legendItems.forEach((item, i) => {
-      const col = Math.floor(i / itemsPerColumn);
-      const row = i % itemsPerColumn;
-      const x = svgContainer.width.baseVal.value + col * 180 + padding ;
-      const y = padding + row * (fontSize + spacing) + fontSize / 2;
-
-      // 画颜色框
-      ctx.fillStyle = item.color;
-      ctx.beginPath();
-      ctx.arc(x + boxSize / 2, y, boxSize / 2, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 写城市名
-      ctx.fillStyle = "black";
-      ctx.fillText(item.name, x + boxSize + 8, y);
-    });
-
-    // 3. 将画布内容转换为 PNG 并下载
-    canvas.toBlob((blob) => {
-      if (blob) saveAs(blob, "haplotype_network_with_legend.png"); // 使用固定文件名
-    });
-
-  } catch (error) {
-    console.error("Error during export:", error);
-  }
-};
+    checkGeneSequenceLengths();
+  }, [genes]);
 
   return (
     <div className="HaplotypeNetwork-container">
-     
-      <button
-          className={`HaplotypeNetwork-button`}
-          onClick={exportPNG} // Export button
-        >
-          Export as PNG
-        </button>
-          <div>
-            <h2 className="HaplotypeNetwork-title">Haplotype Network</h2>
-            <div style={{ marginBottom: 10 }}>
-              {/* 城市圖例 *
-              <button
-                className={`HaplotypeNetwork-button ${apiPath === "HaplotypeNetwork" ? "active" : ""}`}
-                onClick={() => setApiPath("HaplotypeNetwork")}
-              >
-                All information
-              </button>
-              <button
-                className={`HaplotypeNetwork-button ${apiPath === "SimplifiedHaplotypeNetwork" ? "active" : ""}`}
-                onClick={() => setApiPath("SimplifiedHaplotypeNetwork")}
-              >
-                reduce
-              </button>
-              */}
-              <button
-                className="HaplotypeNetwork-button HaplotypeNetwork-zoom-button"
-                onClick={() => handleResize("in")}
-              >
-                🔍 zoom in
-              </button>
-              <button
-                className="HaplotypeNetwork-button HaplotypeNetwork-zoom-out-button"
-                onClick={() => handleResize("out")}
-              >
-                🔎 zoom out
-              </button>
+      <div className="HaplotypeNetwork-content">
+        <h2 className="HaplotypeNetwork-title">Haplotype Network</h2>
+        <div style={{ marginBottom: 10, position: "relative" }}>
+          {/* Zoom In/Out Buttons */}
+          <button
+            className="HaplotypeNetwork-button HaplotypeNetwork-zoom-button"
+            onClick={() => handleResize("in")}
+          >
+            🔍 zoom in
+          </button>
+          <button
+            className="HaplotypeNetwork-button HaplotypeNetwork-zoom-out-button"
+            onClick={() => handleResize("out")}
+          >
+            🔎 zoom out
+          </button>
 
-              <div>
-                <label>Count range:</label>
-                <input
-                  type="number"
-                  value={countRange.min}
-                  onChange={handleMinChange}
-                  min="0"
-                  max={fetchedRange.max} // 控制最小值範圍
-                />
-                <span> to </span>
-                <input
-                  type="number"
-                  value={countRange.max}
-                  onChange={handleMaxChange}
-                  max={fetchedRange.max} // 控制最大值範圍
-                  onBlur={handleMaxBlur}
-                />
-                ({fetchedRange.min} - {fetchedRange.max})
-              </div>
-            </div>
+          {/* Reset Button */}
+          <button
+            className="HaplotypeNetwork-reset-button"
+            onClick={resetChart}
+          >
+            🔄
+          </button>
 
-                {!isConfigured && (
-                  <div className="MapMainView-warning-box"> 
-                      {(!data  || 
-                        (Object.keys(data).length === 0) || 
-                        (data.nodes && data.nodes.length === 0) || 
-                        (data.edges && data.edges.length === 0) ) && (
-                          <p> ⚠️ Complete the following settings：</p>
-                      )}
-                    <ul>
-                      {(!data || 
-                        (Object.keys(data).length === 0) || 
-                        (data.nodes && data.nodes.length === 0) || 
-                        (data.edges && data.edges.length === 0) ) && (
-                          <li> Enter FA_table(Set the values ​​in the table)</li>
-                      )}
-                    </ul>
-                  </div>
-                )}
-              <div className="HaplotypeNetwork-svg-container">
-                <svg
-                  ref={svgRef}
-                  viewBox={`0 0 ${width} ${height}`}
-                  width={width}
-                  height={height}
-                /> 
-              </div>
-          </div>
-          {/* 城市圖例 */}
-          {Object.keys(cityColors).length > 0 && (
-            <div className="HaplotypeNetwork-city-legend">
-              <h3>Location</h3>
-              <div>
-                <ul className="HaplotypeNetwork-city-list">
-                  {Object.entries(cityColors).map(([city, color]) => (
-                    <li key={city} className="HaplotypeNetwork-city-item">
-                      <div
-                        className="HaplotypeNetwork-city-color-box"
-                        style={{ backgroundColor: color }}
-                      />
-                      {city}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <button
+            className="HaplotypeNetwork-button"
+            onClick={exportPNG}
+          >
+            Export as PNG
+          </button>
+
+          {apiPath === "HaplotypeNetwork" && (
+            <div>
+              <label>Count range:</label>
+              <input
+                type="number"
+                value={countRange.min}
+                onChange={handleMinChange}
+                min="0"
+                max={fetchedRange.max}
+              />
+              <span> to </span>
+              <input
+                type="number"
+                value={countRange.max}
+                onChange={handleMaxChange}
+                max={fetchedRange.max}
+                onBlur={handleMaxBlur}
+              />
+              ({fetchedRange.min} - {fetchedRange.max})
             </div>
           )}
+        </div>
+
+        {/* 顯示基因序列長度不一致的提示 */}
+        {!isLengthConsistent && (
+          <div className="MapMainView-warning-box">
+            <p>⚠️ The gene sequence lengths are different! Please check your data.</p>
+          </div>
+        )}
+
+        <div className="HaplotypeNetwork-svg-container">
+          <svg
+            ref={svgRef}
+            viewBox="0 0 850 850"
+            width={850}
+            height={850}
+          />
+        </div>
+      </div>
+
+      {Object.keys(cityColors).length > 0 && (
+        <div className="HaplotypeNetwork-city-legend">
+          <h3>Location</h3>
+          <div>
+            <ul className="HaplotypeNetwork-city-list">
+              {Object.entries(cityColors).map(([city, color]) => (
+                <li key={city} className="HaplotypeNetwork-city-item">
+                  <div
+                    className="HaplotypeNetwork-city-color-box"
+                    style={{ backgroundColor: color }}
+                  />
+                  {city}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

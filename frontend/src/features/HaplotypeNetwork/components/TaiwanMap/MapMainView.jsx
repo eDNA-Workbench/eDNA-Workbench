@@ -24,10 +24,6 @@ const MapMainView = ({
   const [localFileName, setLocalFileName] = useState("map");
   const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
 
-  useEffect(() => {
-        console.log("cityVisibility:",cityVisibility)
-      }, [cityVisibility]);
-
   // 檢查是否所有設定都已完成
   useEffect(() => {
     const isAllConfigured = conW && conH && mapImage && imgW && imgH && filteredCityGeneData && Object.keys(filteredCityGeneData).length > 0;

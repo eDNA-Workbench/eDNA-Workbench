@@ -3,6 +3,12 @@
   display: flex;
   gap: 20px;
   font-family: sans-serif;
+  justify-content: space-between;
+}
+
+.HaplotypeNetwork-content {
+  flex: 1; 
+  padding-right: 20px; 
 }
 
 /* Title for Haplotype Network */
@@ -48,12 +54,30 @@
   color: var(--primary);
 }
 
+.HaplotypeNetwork-reset-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px 10px;
+  color: var(--primary);
+}
+
+
+.HaplotypeNetwork-svg-wrapper {
+  width: 900px;  /* 父容器寬度設定為900 */
+  height: 900px; /* 父容器高度設定為900 */
+  overflow: hidden;  /* 隱藏超出容器範圍的部分 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid  var(--primary);
+}
+
 /* SVG container */
 .HaplotypeNetwork-svg-container {
-  border: 1px solid var(--primary);
   border-radius: 10px;
-  
   background-color:var(--background);
+  border: 1px solid var(--primary);
 }
 
 /* City legend container */

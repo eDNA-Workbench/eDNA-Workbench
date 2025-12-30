@@ -104,10 +104,10 @@ export default function useCityGeneData({
     const adjustLocal = (c) => ({ cx: c.cx + offsetX_local, cy: c.cy + offsetY_local });
 
     return Object.entries(activeCityGeneData).reduce((acc, [city, content]) => {
-      const genesList =
-        mapPage === 1
-          ? content.genes
-          : (content.genes || []).filter((g) => selectedGenes.includes(g.name));
+
+      const genesList = (content.genes || []).filter((g) => selectedGenes.includes(g.name));
+
+
       if (!genesList || genesList.length === 0) return acc;
 
       const totalCount = genesList.reduce((sum, g) => sum + (g.value || 0), 0);

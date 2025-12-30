@@ -281,12 +281,12 @@ export const useGeneTableEffects = ({
     const ids = new Set();
 
     eDnaSampleContent.forEach((row) => {
-      const id = String(row["eDNA_ID"] || row[0]).trim();
+      const id = String(row["Location_ID"] || row[0]).trim();
       if (!id) return;
       ids.add(id);
 
-      const parsedLon = parseFloat(row["Celong1"] || row[2]) || null;
-      const parsedLat = parseFloat(row["Celat2"] || row[1]) || null;
+      const parsedLon = parseFloat(row["Latitude"] || row[2]) || null;
+      const parsedLat = parseFloat(row["Longitude"] || row[1]) || null;
 
       mapping[id] = {
         river: row["river"] || "No information",

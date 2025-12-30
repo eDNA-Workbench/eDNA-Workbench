@@ -25,6 +25,7 @@ const HaplotypeNetworkApp = ({
   // State
   // =======================
   const [activeSection, setActiveSection] = useState("taiwanMap");
+  const [viewMode, setViewMode] = useState("total");
   const [isLocationMapVisible, setIsLocationMapVisible] = useState(true);
 
   const [genes, setGenes] = useState([]);
@@ -40,7 +41,6 @@ const HaplotypeNetworkApp = ({
   const [cityGeneData, setCityGeneData] = useState({});
   const [totalCityGeneData, setTotalCityGeneData] = useState({});
   const [FormattedCityGeneData, setFormattedCityGeneData] = useState({});
-  const [viewMode, setViewMode] = useState("total");
   
   const [cityVisibility, setCityVisibility] = useState([]);
 
@@ -97,6 +97,7 @@ const HaplotypeNetworkApp = ({
   };
 
   const saveGeneCountsToBackend = async (updatedGenes) => {
+    console.log("Sending data to backend:", { genes: updatedGenes });
     try {
       await fetch("http://localhost:3000/api/sequences/saveGeneCounts", {
         method: "POST",
@@ -220,7 +221,7 @@ const HaplotypeNetworkApp = ({
       )}
 
       {/* ====== 區塊 1：Taiwan Map 區 ====== */}
-      {activeSection === "taiwanMap" && (
+      {(activeSection === "taiwanMap" || activeSection === "taiwanMap_total" || activeSection === "taiwanMap_count") && (
         <div className="section flex-container">
           <div className="map-box">
             <TaiwanMapComponent
@@ -244,20 +245,29 @@ const HaplotypeNetworkApp = ({
           </div>
 
           <div className="right-section">    
-            {(activeSection === "locationMap" || activeSection === "taiwanMap" || activeSection === "geneComponents") && (
+            {(activeSection === "locationMap" || 
+              activeSection === "taiwanMap" ||
+              activeSection === "taiwanMap_total" || 
+              activeSection === "taiwanMap_count" ||
+              activeSection === "geneComponents"
+            
+              ) && (
                 <div className="button-group app">
-                  <button onClick={() => setActiveSection("taiwanMap")}>Table Components</button>
+                  <button onClick={() => setActiveSection("taiwanMap_total")}>By Location</button>
+                  <button onClick={() => setActiveSection("taiwanMap_count")}>By Sequence</button>
                   <button onClick={() => setActiveSection("geneComponents")}>Compare Components</button>
                 </div>
-              )}
+            )}
 
             <div className="gene-section">
               <GeneTable
+                activeSection={activeSection}
                 fileName={initialFileName}
                 eDnaSampleContent={eDnaSampleContent}
                 eDnaTagsContent={eDnaTagsContent}
                 csvContent={csvContent}
                 csvFileName={csvFileName}
+                viewMode={viewMode}
                 genes={genes}
 
                 updateMapData={updateMapData}
@@ -295,10 +305,7 @@ const HaplotypeNetworkApp = ({
       {/* ====== 區塊 2：Gene Components 區 ====== */}
       {activeSection === "geneComponents" && (
         <div className="section flex-container" >
-          
             <div className="map-Filteredbox">
-              HaplotypeNetworkApp.jsx___
-              import FilteredTaiwanMapComponent from "./components/FilteredTaiwanMap/FilteredTaiwanMapComponent";
               <FilteredTaiwanMapComponent
                 genes={genes}
                 cityUpdateFlags={cityUpdateFlags}
@@ -315,12 +322,19 @@ const HaplotypeNetworkApp = ({
             </div>
 
             <div className="right-section"> 
-              {(activeSection === "locationMap" || activeSection === "taiwanMap" || activeSection === "geneComponents") && (
+              {(activeSection === "locationMap" || 
+              activeSection === "taiwanMap" ||
+              activeSection === "taiwanMap_total" || 
+              activeSection === "taiwanMap_count" ||
+              activeSection === "geneComponents"
+            
+              ) && (
                 <div className="button-group app">
-                  <button onClick={() => setActiveSection("taiwanMap")}>Table Components</button>
+                  <button onClick={() => setActiveSection("taiwanMap_total")}>By Location</button>
+                  <button onClick={() => setActiveSection("taiwanMap_count")}>By Sequence</button>
                   <button onClick={() => setActiveSection("geneComponents")}>Compare Components</button>
                 </div>
-              )}
+            )}
 
               <div className="geneselector-section">
                 <GeneSelector
@@ -383,31 +397,45 @@ const HaplotypeNetworkApp = ({
           <HaplotypeReducer />
           <HaplotypeNetwork 
             genes={genes}
+            eDnaSampleContent={eDnaSampleContent}
           />
           <div style={{ display: "none" }}>
             <GeneTable
+              activeSection={activeSection}
               fileName={initialFileName}
               eDnaSampleContent={eDnaSampleContent}
               eDnaTagsContent={eDnaTagsContent}
               csvContent={csvContent}
               csvFileName={csvFileName}
+              viewMode={"count"}
               genes={genes}
 
               updateMapData={updateMapData}
-              geneColors={viewMode === "total" ? hapColors : geneColors}
+              geneColors={
+                viewMode === "total" ? hapColors :
+                viewMode === "count" ? geneColors :
+                viewMode === "detail" ? geneColors :
+                viewMode === "formatted" ? formattedGeneColors :
+                {}  
+              }
+              onHapColorsChange={setHapColors}
+              onFormattedGeneColorsChange={setFormattedGeneColors}
+
               setCityGeneData={setCityGeneData}
               setTotalCityGeneData={setTotalCityGeneData}
+              setFormattedCityGeneData={setFormattedCityGeneData}
               onViewModeChange={setViewMode}
-              onHapColorsChange={setHapColors}
+                
               onEditGeneCount={handleEditGeneCount}
               onEditGeneCountBulk={handleEditGeneCountBulk}
-              
+              selectedGenes={selectedGenesTaiwanMap}
+              onSelectedGenesChange={setSelectedGenesTaiwanMap}
               selectedLocations={cityVisibility}
               onSelectedLocationsChange={setCityVisibility}
               imgW={mapSettings.imgW}
               imgH={mapSettings.imgH}
               lonRange={mapSettings.lonRange}
-              latRange={mapSettings.latRange}
+              latRange={mapSettings.latRange}   
             />
           </div>
                   

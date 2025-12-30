@@ -60,7 +60,7 @@ const HaplotypeReducer = () => {
 
   return (
     <div className="HaplotypeReducer-container">
-      <h3> Haplotype Reduce tool</h3>
+      <h3> ASV reduce tool</h3>
       <form onSubmit={handleSubmit}>
         {/* FASTA file */}
         <div className="HaplotypeReducer-input-container">

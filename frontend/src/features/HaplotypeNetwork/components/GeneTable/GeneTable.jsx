@@ -8,6 +8,7 @@ import { usePagination } from "./hooks/pagination";
 
 const GeneTable = ({
   activeSection,
+  
   // ==== Data & Gene Props ====
   genes,
   geneColors,
@@ -49,12 +50,12 @@ const GeneTable = ({
   // ======================================
   const [searchTerm, setSearchTerm] = useState("");  // 搜索框的关键词
   const [showOnlySelected, setShowOnlySelected] = useState(false);  // 是否仅显示已选择的基因
-  const [viewMode, setViewMode] = useState(() => {
+    const [viewMode, setViewMode] = useState(() => {
     if (activeSection === "geneComponents" || activeSection === "haplotypeNetwork") {
       return "count";
     }
     return "total";
-  });  
+  });
   const [currentSpecies, setCurrentSpecies] = useState("");
   const [filterMode, setFilterMode] = useState("all");  // 过滤模式（例如：全部、特定）
   const [currentPage, setCurrentPage] = useState(1);  // 当前页面
@@ -126,7 +127,14 @@ const GeneTable = ({
   useEffect(() => {
     if (activeSection === "geneComponents" || activeSection === "haplotypeNetwork") {
       setViewMode("count");
-    } else {
+    } 
+    else if(activeSection === "taiwanMap_total"){
+      setViewMode("total");
+    }
+    else if(activeSection === "taiwanMap_count"){
+      setViewMode("count");
+    }
+    else {
       setViewMode("total");
     }
   }, [activeSection]);
@@ -173,9 +181,6 @@ const GeneTable = ({
     setCurrentSpecies,
   });
 
- 
-
-  
   // ======================================
   // Render
   // ======================================

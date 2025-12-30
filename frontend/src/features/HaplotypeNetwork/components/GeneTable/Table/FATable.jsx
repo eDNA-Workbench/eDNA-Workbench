@@ -140,28 +140,13 @@ const FATable = ({
             setCurrentPage(1); 
           }}
         />
-        {viewMode === "count" && (
-          <label style={{ fontSize: 20, display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}>
-            <input
-              type="checkbox"
-              checked={showOnlySelected}
-              onChange={() => {
-                const next = !showOnlySelected;
-                if (next) setCurrentPage(1); 
-                setShowOnlySelected(next);
-              }}
-              style={{ marginRight: 6 }}
-            />
-            Show selected
-          </label>
-        )}
       </div>
 
       {/* Select / Clear All Genes and Locations */}
       <div style={{ marginBottom: "8px", display: "flex", justifyContent: "space-between" }}>
         <div>
           <button onClick={handleSelectAllGenes} style={{ marginRight: "6px" }}>
-            All Gene
+            All ASV
           </button>
           <button onClick={handleClearAllGenes}>Clear</button>
         </div>
@@ -178,8 +163,24 @@ const FATable = ({
         <table className="gene-table">
           <thead>
             <tr>
-              <th></th>
-              <th>Gene</th>
+              <th>
+                {viewMode === "count" && (
+                  <label style={{ fontSize: 15, display: "inline-flex", alignItems: "center", whiteSpace: "nowrap" }}>
+                    <input
+                      type="checkbox"
+                      checked={showOnlySelected}
+                      onChange={() => {
+                        const next = !showOnlySelected;
+                        if (next) setCurrentPage(1); 
+                        setShowOnlySelected(next);
+                      }}
+                      style={{ marginRight: 6 }}
+                    />
+                    Show selected
+                  </label>
+                )}
+              </th>
+              <th>ASV</th>
               {locations.map((loc) => (
                 <th key={loc}>
                   <label style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

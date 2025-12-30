@@ -95,7 +95,7 @@ const TaiwanMapComponent = ({
     safeImgH,
     conW,
     conH
-  });
+  });  
 
   // ===== Export Map =====
   const handleExportPNG = useExportMap(filteredCityGeneData, geneColors, selectedGenes, fileName);

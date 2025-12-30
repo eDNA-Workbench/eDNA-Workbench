@@ -17,20 +17,20 @@ const GeneTableControls = ({
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative" , display: "none" }} >
       {/* 表格切換：上方的兩個按鈕 */}
       <div  style={{ marginBottom: 10, display: "flex", justifyContent: "flex-start" }}>
         <button
           onClick={() => setViewMode("total")}
           className={`GeneTable-button ${viewMode === "total" ? "active" : ""}`}
         >
-          Summary_table(By Location)
+          By Location
         </button>
         <button
           onClick={() => setViewMode("count")}
           className={`GeneTable-button ${viewMode === "count" ? "active" : ""}`}
         >
-          FA_table(By Sequence)
+          By Sequence
         </button>
       </div>
 

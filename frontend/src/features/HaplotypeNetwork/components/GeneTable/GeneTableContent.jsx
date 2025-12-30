@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import FATable from "./Table/FATable";
 import InformationTable from "./Table/InformationTable";
 import CVSTable from "./Table/CVSTable";
-import FormattedGeneFATable from "./Table/FormattedGeneFATable";  
+import FormattedGeneFATable from "./Table/FormattedGeneFATable";
 
 const GeneTableContent = ({
   viewMode,
@@ -12,13 +12,13 @@ const GeneTableContent = ({
   selectedGenesSet,
   selectedLocations,
   externalSelectedGenes,
-  showOnlySelected,
-  setShowOnlySelected,
   onSelectedGenesChange,
   onSelectedLocationsChange,
   onEditGeneCount,
   onEditGeneCountBulk,
   onFormattedGenesChange,
+  showOnlySelected,
+  setShowOnlySelected,
   updateMapData,
   genes,
   speciesOptions,
@@ -39,81 +39,107 @@ const GeneTableContent = ({
   maxPercentage,
   setMinPercentage,
   setMaxPercentage,
-  
 }) => {
-
-  const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
+  const [isConfigured, setIsConfigured] = useState(false); // Flag to check configuration completion
+  const [selectedGene_FATable, setSelectedGene_FATable] = useState([]); // FATable selection
+  const [selectedGene_CVSTable, setSelectedGene_CVSTable] = useState([]); // CVSTable selection
 
   useEffect(() => {
-    // 根據不同的 viewMode 設定所需的檔案是否完成
-    const isAllConfigured = 
-      (viewMode === "count" && Array.isArray(genes) && genes.length > 0 && Array.isArray(locations) && locations.length > 0) ||
+    // Check if the configuration is complete based on viewMode
+    const isAllConfigured =
+      (viewMode === "count" &&
+        Array.isArray(genes) &&
+        genes.length > 0 &&
+        Array.isArray(locations) &&
+        locations.length > 0) ||
       (viewMode === "formatted" && Array.isArray(locations) && locations.length > 0) ||
-      (viewMode === "detail" && (Array.isArray(genes) && genes.length === 0 || Array.isArray(genes) && genes.length > 0 ) && Array.isArray(locations) && locations.length > 0 && typeof tagMapping === "object" && tagMapping !== null && Object.keys(tagMapping).length > 0) ||
-      (viewMode === "total" && Array.isArray(displayedHeaders) && displayedHeaders.length > 0) && Array.isArray(locations) && locations.length > 0;
-      
+      (viewMode === "detail" &&
+        (Array.isArray(genes) && genes.length === 0 || Array.isArray(genes) && genes.length > 0) &&
+        Array.isArray(locations) &&
+        locations.length > 0 &&
+        typeof tagMapping === "object" &&
+        tagMapping !== null &&
+        Object.keys(tagMapping).length > 0) ||
+      (viewMode === "total" &&
+        Array.isArray(displayedHeaders) &&
+        displayedHeaders.length > 0 &&
+        Array.isArray(locations) &&
+        locations.length > 0);
+
     setIsConfigured(isAllConfigured);
   }, [genes, locations, tagMapping, ednaMapping, displayedHeaders, viewMode]);
 
-
-
-  // 定義顯示資料缺失的提示函式
   const renderUploadWarning = () => (
-    <div className ="GeneTable-warning-box"
-    >
+    <div className="GeneTable-warning-box">
       <p>⚠️ Complete the following settings：</p>
       <ul>
-        {viewMode === "" && (
-          <>
-            {(!viewMode) && <li> Select Summary_table or FA_table</li>}
-          </>  
-        )}
+        {viewMode === "" && !viewMode && <li> Select Summary_table or FA_table</li>}
         {viewMode === "count" && (
           <>
-            {(!genes || Array.isArray(genes) && genes.length === 0) && <li> Upload Fa File</li>}
-            {(!locations || Array.isArray(locations) && locations.length === 0)&& <li> Upload eDNA Sample Station (xlsx)</li>}
+            {(!genes || !Array.isArray(genes) || genes.length === 0) && <li> Upload Fa File</li>}
+            {(!locations || !Array.isArray(locations) || locations.length === 0) && (
+              <li> Upload eDNA Sample Station (xlsx)</li>
+            )}
           </>
         )}
         {viewMode === "formatted" && (
           <>
-            {(!genes || Array.isArray(genes) && genes.length === 0) && <li> Upload Fa File</li>}
-            {(!locations || Array.isArray(locations) && locations.length === 0)&& <li> Upload eDNA Sample Station (xlsx)</li>}
+            {(!genes || !Array.isArray(genes) || genes.length === 0) && <li> Upload Fa File</li>}
+            {(!locations || !Array.isArray(locations) || locations.length === 0) && (
+              <li> Upload eDNA Sample Station (xlsx)</li>
+            )}
           </>
         )}
-        {/*
-        {viewMode === "detail" && (
+        {/* {viewMode === "detail" && (
           <>
-            {(!paginatedGenes || Array.isArray(paginatedGenes) && paginatedGenes.length === 0) && <li> Upload Fa File</li>}
-            {(!locations || Array.isArray(locations) && locations.length === 0) && <li> Upload eDNA Sample Station (xlsx)</li>}
-            {(!tagMapping || (typeof tagMapping === "object" && Object.keys(tagMapping).length === 0)) && <li> Upload eDNA_tags (xlsx, cvs)</li>}
+            {(!paginatedGenes || !Array.isArray(paginatedGenes) || paginatedGenes.length === 0) && (
+              <li> Upload Fa File</li>
+            )}
+            {(!locations || !Array.isArray(locations) || locations.length === 0) && (
+              <li> Upload eDNA Sample Station (xlsx)</li>
+            )}
+            {(!tagMapping || (typeof tagMapping === "object" && Object.keys(tagMapping).length === 0)) && (
+              <li> Upload eDNA_tags (xlsx, cvs)</li>
+            )}
           </>
-        )}
-        */}
+        )} */}
         {viewMode === "total" && (
           <>
-            {(!displayedHeaders || Array.isArray(displayedHeaders) && displayedHeaders.length === 0) && <li> Upload Cvs File</li>}
-            {(!locations || Array.isArray(locations) && locations.length === 0)&& <li> Upload eDNA Sample Station (xlsx)</li>}
+            {(!displayedHeaders || !Array.isArray(displayedHeaders) || displayedHeaders.length === 0) && (
+              <li> Upload Cvs File</li>
+            )}
+            {(!locations || !Array.isArray(locations) || locations.length === 0) && (
+              <li> Upload eDNA Sample Station (xlsx)</li>
+            )}
           </>
         )}
       </ul>
     </div>
   );
 
-  // 根據資料檢查來顯示提示
+  // If the configuration is not completed, show the warning
   if (!isConfigured) {
     return renderUploadWarning();
   }
 
+  const handleFATableSelectionChange = (newSelectedGenes) => {
+    setSelectedGene_FATable(newSelectedGenes);
+    onSelectedGenesChange(newSelectedGenes);
+  };
 
+  const handleCVSTableSelectionChange = (newSelectedGenes) => {
+    setSelectedGene_CVSTable(newSelectedGenes);
+    onSelectedGenesChange(newSelectedGenes);
+  };
+
+  // Render tables based on viewMode
   if (viewMode === "count") {
     return (
       <FATable
-       
         geneColors={geneColors}
         locations={locations}
-        selectedGenesSet={selectedGenesSet}
-        externalSelectedGenes={externalSelectedGenes}
-        onSelectedGenesChange={onSelectedGenesChange}
+        externalSelectedGenes={selectedGene_FATable}
+        onSelectedGenesChange={handleFATableSelectionChange}
         selectedLocations={selectedLocations}
         onSelectedLocationsChange={onSelectedLocationsChange}
         onEditGeneCount={onEditGeneCount}
@@ -121,7 +147,6 @@ const GeneTableContent = ({
         updateMapData={updateMapData}
         genes={genes}
         viewMode={viewMode}
-
         showOnlySelected={showOnlySelected}
         setShowOnlySelected={setShowOnlySelected}
       />
@@ -144,7 +169,7 @@ const GeneTableContent = ({
     );
   }
 
-  {/*  
+  {/* Uncomment and modify this section if the "detail" view is needed
   if (viewMode === "detail") {
     return (
       <InformationTable
@@ -167,8 +192,10 @@ const GeneTableContent = ({
         displayedHeaders={displayedHeaders}
         displayedTableData={displayedTableData}
         hapColors={hapColors}
+        externalSelectedGenes={selectedGene_CVSTable}
+        onSelectedGenesChange={handleCVSTableSelectionChange}
         selectedLocations={selectedLocations}
-        onSelectedLocationsChange={onSelectedLocationsChange}       
+        onSelectedLocationsChange={onSelectedLocationsChange}
         filterMode={filterMode}
         setFilterMode={setFilterMode}
         minPercentage={minPercentage}
@@ -179,7 +206,7 @@ const GeneTableContent = ({
     );
   }
 
-  return null;
+  return null; // Return null if no viewMode matches
 };
 
 export default GeneTableContent;

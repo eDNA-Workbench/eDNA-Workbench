@@ -87,11 +87,11 @@ print(f"Created {list_file} and {fasta_file} from {original_fa}")
 # Step 2: 從 Excel 取得唯一樣站
 df = pd.read_excel(excel_file)
 df.columns = df.columns.str.strip()
-if 'eDNA_ID' not in df.columns:
-    print("找不到 'eDNA_ID' 欄位，請確認 Excel 檔案格式")
+if 'Location_ID' not in df.columns:
+    print("找不到 'Location_ID' 欄位，請確認 Excel 檔案格式")
     sys.exit(1)
 
-locations = sorted(df['eDNA_ID'].dropna().astype(str).str.strip().unique().tolist())
+locations = sorted(df['Location_ID'].dropna().astype(str).str.strip().unique().tolist())
 print(f"Found {len(locations)} unique locations: {locations}")
 
 # Step 3: 讀取 .list
