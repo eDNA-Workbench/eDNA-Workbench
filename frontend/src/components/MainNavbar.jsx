@@ -44,7 +44,7 @@ function MainNavbar({ theme, toggleTheme }) {
             MSA Viewer
           </Link>
           <Link to="/haplotype" className={`dropdown-item ${isActive('/haplotype') ? 'active' : ''}`} onClick={() => setIsToolsOpen(false)}>
-            ASV Distribution
+            ASV Distribution Map
           </Link>
         </NavDropdown>
 

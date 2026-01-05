@@ -24,20 +24,40 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin: 10px 40px;
-  background: var(--secondary);
+  margin: 10px 0 10px 40px;
+  background: var(--bg-surface-raised);
   padding: 20px;
   border-radius: 8px;
   border: 1px solid var(--border);
   width: fit-content;
+  max-width: calc(100% - 40px);
 }
 
 /* species-selection */
 .species-list {
   display: flex;
   align-items: center;
-  justify-content: left;
+  justify-content: flex-start;
   gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  max-width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--detail) var(--bg-surface);
+}
+
+.species-list::-webkit-scrollbar {
+  height: 6px;
+}
+
+.species-list::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+  border-radius: 3px;
+}
+
+.species-list::-webkit-scrollbar-thumb {
+  background-color: var(--detail);
+  border-radius: 3px;
 }
 
 .species-option {
@@ -45,6 +65,8 @@
   align-items: center;
   gap: 5px;
   margin: 10px 0;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
 .species-checkbox {
@@ -89,7 +111,7 @@
 
 /* Files Summary */
 .files-summary {
-  background: var(--secondary);
+  background: var(--bg-surface-raised);
   padding: 20px;
   border-radius: 8px;
   margin: 30px 0;
@@ -98,7 +120,7 @@
 
 .files-summary h3 {
   margin-bottom: 15px;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 .files-list {
@@ -108,7 +130,7 @@
 }
 
 .files-list .file-item {
-  background: var(--card);
+  background: var(--bg-surface);
   border: 1px solid var(--border);
 }
 
@@ -124,7 +146,8 @@
 .analysis-status {
   text-align: center;
   padding: 40px 30px;
-  background: var(--secondary);
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--border);
   border-radius: 8px;
   margin-bottom: 30px;
 }
@@ -141,21 +164,19 @@
 
 /* Analysis Logs */
 .analysis-logs {
-  background: var(--muted);
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 30px;
-  border: 1px solid var(--border);
 }
 
 .logs-header {
-  background: var(--secondary);
+  background: var(--bg-code-header);
   padding: 10px 20px;
-  border-bottom: 1px solid var(--border);
+  /* border-bottom: 1px solid var(--border); */
 }
 
 .logs-header h3 {
-  color: var(--foreground);
+  color: var(--text-code);
   margin: 0;
   font-size: 1.1em;
 }
@@ -172,7 +193,7 @@
   display: flex;
   gap: 15px;
   padding: 6px 20px;
-  border-bottom: 1px solid var(--border);
+  background-color: var(--bg-code);
   /* color: #ecf0f1; */
 }
 
@@ -181,7 +202,7 @@
 }
 
 .log-timestamp {
-  color: var(--muted-foreground);
+  color: var(--detail);
   font-size: 12px;
   min-width: 80px;
   flex-shrink: 0;
@@ -194,7 +215,7 @@
 
 /* Log Types */
 .log-info .log-message {
-  color: var(--foreground);
+  color: var(--text-code);
 }
 
 .log-success .log-message {

@@ -9,7 +9,7 @@
   font-family: 'Courier New', monospace;
   padding: 5px;
   user-select: none;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 /* 搜尋區塊 */
@@ -23,7 +23,7 @@
   padding: 8px;
   font-size: 16px;
   background-color: var(--input);
-  color: var(--foreground);
+  color: var(--text);
   border: 1px solid var(--border);
 }
 
@@ -31,8 +31,8 @@
   margin-left: 10px;
   padding: 8px;
   cursor: pointer;
-  background-color: var(--secondary);
-  color: var(--foreground);
+  background-color: var(--bg-surface-raised);
+  color: var(--text);
   border: 1px solid var(--border);
 }
 
@@ -49,7 +49,7 @@
   border-right: 1px solid var(--border);
   overflow-x: hidden;
   user-select: none;
-  background-color: var(--card);
+  background-color: var(--bg-surface);
 }
 
 .shared-scroll-wrapper {
@@ -69,7 +69,7 @@
   border-bottom: 1px solid var(--border);
   box-sizing: border-box;
   font-size: 16px;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 /* 右側序列容器 */
@@ -80,7 +80,7 @@
   position: relative;
   scrollbar-width: auto;
   -ms-overflow-style: auto;
-  background-color: var(--background);
+  background-color: var(--bg-page);
 }
 
 .sequence-scroll-wrapper::-webkit-scrollbar {
@@ -89,7 +89,7 @@
 }
 
 .sequence-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: var(--muted-foreground);
+  background: var(--detail);
   border-radius: 5px;
 }
 
@@ -197,8 +197,8 @@
 }
 
 .bg-other {
-  background-color: var(--foreground);
-  color: var(--background);
+  background-color: var(--text);
+  color: var(--bg-page);
 }
 
 /* 基因序列編輯輸入框（保留供擴充） */
@@ -209,7 +209,7 @@
   width: 100%;
   font-size: 16px;
   padding: 0;
-  color: var(--foreground);
+  color: var(--text);
   font-family: 'Courier New', Courier, monospace;
 }
 
@@ -219,8 +219,8 @@
   padding: 2px 4px;
   margin-left: 8px;
   cursor: pointer;
-  background-color: var(--destructive);
-  color: var(--destructive-foreground, white);
+  background-color: var(--danger);
+  color: var(--danger-foreground, white);
   border: none;
   border-radius: 4px;
 }

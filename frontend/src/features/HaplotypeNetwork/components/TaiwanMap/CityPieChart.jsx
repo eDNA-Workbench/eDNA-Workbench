@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Cell, Pie, PieChart } from "recharts";
-import "../styles/TaiwanMapComponent.css"; 
+import "../styles/TaiwanMapComponent.css";
 
 // ---------- 子元件：城市圓餅圖 ----------
 const CityPieChart = memo(
@@ -40,7 +40,7 @@ const CityPieChart = memo(
             top: "-25px",
             width: "50px",
             height: "20px", // 小格子的高度
-            backgroundColor: "var(--background)", // 背景顏色可以根據需要調整
+            backgroundColor: "var(--bg-page)", // 背景顏色可以根據需要調整
             textAlign: "center",
             lineHeight: "20px", // 使文字垂直居中
             fontSize: "10px", // 字體大小

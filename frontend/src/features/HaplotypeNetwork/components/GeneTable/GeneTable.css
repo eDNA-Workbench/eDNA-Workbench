@@ -23,8 +23,9 @@
   font-weight: bold;
 }
 
-.GeneTable-warning-box ul  {
-  padding-left: 50px; /* Adjust this value to move the dot further to the right */
+.GeneTable-warning-box ul {
+  padding-left: 50px;
+  /* Adjust this value to move the dot further to the right */
 }
 
 /* ============================ */
@@ -45,7 +46,7 @@
   font-size: 14px;
   text-align: center;
   z-index: 20;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 /* ========================== */
@@ -62,7 +63,7 @@
 .view-detail .gene-table th:first-child {
   position: sticky;
   left: 0;
-  background: var(--secondary);
+  background: var(--bg-surface-raised);
   z-index: 3;
   text-align: left;
   min-width: 180px;
@@ -81,7 +82,7 @@
   position: sticky;
   top: 0;
   z-index: 2;
-  background: var(--card);
+  background: var(--bg-surface);
 }
 
 .view-count .gene-table th:nth-child(1),
@@ -90,7 +91,7 @@
 .view-count .gene-table td:nth-child(2) {
   position: sticky;
   left: 0;
-  background: var(--card);
+  background: var(--bg-surface);
   z-index: 3;
   min-width: 40px;
   text-align: left;
@@ -120,7 +121,7 @@
   padding: 5px;
   text-align: center;
   background: var(--input);
-  color: var(--foreground);
+  color: var(--text);
   border: 1px solid var(--border);
 }
 
@@ -175,7 +176,7 @@
 .view-total .gene-table th:first-child {
   position: sticky;
   left: 0;
-  background: var(--secondary);
+  background: var(--bg-surface-raised);
   min-width: 100px;
   text-align: left;
 }
@@ -188,7 +189,7 @@
   border-radius: 2px;
   display: inline-block;
   margin-right: 6px;
-  border: 1px solid var(--destructive);
+  border: 1px solid var(--danger);
   display: "inline-block",
 }
 
@@ -276,7 +277,7 @@
 .CVSTable-gene-table th:first-child {
   position: sticky;
   left: 0;
-  background: var(--secondary);
+  background: var(--bg-surface-raised);
   min-width: 100px;
   text-align: left;
   z-index: 1;

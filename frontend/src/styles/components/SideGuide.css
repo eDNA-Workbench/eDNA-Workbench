@@ -3,7 +3,7 @@
   top: 31.5px;
   bottom: 0;
   z-index: 1200;
-  background: var(--card);
+  background: var(--bg-surface);
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -37,8 +37,8 @@
   height: 32px;
   border-radius: 6px;
   border: 1px solid var(--border);
-  background: var(--muted-foreground);
-  color: var(--primary-foreground);
+  background: var(--primary);
+  color: var(--bg-page);
   cursor: pointer;
   font-size: 1.4em;
 }
@@ -56,26 +56,26 @@
 
 .side-guide__title {
   font-weight: 600;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 .side-guide__content {
   overflow: auto;
   padding: 16px;
   flex: 1 1 auto;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 .side-guide__markdown h1,
 .side-guide__markdown h2,
 .side-guide__markdown h3 {
   margin-top: 12px;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 .side-guide__markdown p {
   line-height: 1.5;
-  color: var(--muted-foreground);
+  color: var(--detail);
 }
 
 .side-guide__resizer {
@@ -95,7 +95,7 @@
   content: "";
   width: 4px;
   height: 48px;
-  background-color: var(--ring);
+  background-color: var(--primary);
   border-radius: 2px;
   transition: all 0.2s ease;
 }
@@ -155,7 +155,7 @@
 }
 
 .side-guide__error {
-  color: var(--destructive);
+  color: var(--danger);
   padding: 8px 0;
 }
 

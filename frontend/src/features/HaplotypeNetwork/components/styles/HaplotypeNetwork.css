@@ -7,8 +7,8 @@
 }
 
 .HaplotypeNetwork-content {
-  flex: 1; 
-  padding-right: 20px; 
+  flex: 1;
+  padding-right: 20px;
 }
 
 /* Title for Haplotype Network */
@@ -23,12 +23,12 @@
   border: 1px solid var(--primary);
   border-radius: 4px;
   cursor: pointer;
-  background: var(--background);
+  background: var(--bg-page);
   color: var(--primary);
 }
 
 .HaplotypeNetwork-button.active {
-   padding: 6px 12px;
+  padding: 6px 12px;
   border: 1px solid var(--primary);
   border-radius: 4px;
   cursor: pointer;
@@ -37,11 +37,11 @@
 }
 
 .HaplotypeNetwork-zoom-button {
-   padding: 6px 12px;
+  padding: 6px 12px;
   border: 1px solid var(--primary);
   border-radius: 4px;
   cursor: pointer;
-  background: var(--background);
+  background: var(--bg-page);
   color: var(--primary);
 }
 
@@ -50,7 +50,7 @@
   border: 1px solid var(--primary);
   border-radius: 4px;
   cursor: pointer;
-  background: var(--background);
+  background: var(--bg-page);
   color: var(--primary);
 }
 
@@ -64,29 +64,32 @@
 
 
 .HaplotypeNetwork-svg-wrapper {
-  width: 900px;  /* 父容器寬度設定為900 */
-  height: 900px; /* 父容器高度設定為900 */
-  overflow: hidden;  /* 隱藏超出容器範圍的部分 */
+  width: 900px;
+  /* 父容器寬度設定為900 */
+  height: 900px;
+  /* 父容器高度設定為900 */
+  overflow: hidden;
+  /* 隱藏超出容器範圍的部分 */
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid  var(--primary);
+  border: 1px solid var(--primary);
 }
 
 /* SVG container */
 .HaplotypeNetwork-svg-container {
   border-radius: 10px;
-  background-color:var(--background);
+  background-color: var(--bg-page);
   border: 1px solid var(--primary);
 }
 
 /* City legend container */
 .HaplotypeNetwork-city-legend {
   padding: 50px;
-  border: 1px solid  var(--primary);
+  border: 1px solid var(--primary);
   border-radius: 80px;
-  background-color:  var(--background);
-  
+  background-color: var(--bg-page);
+
   height: fit-content;
   margin-top: 100px;
 }
@@ -100,8 +103,10 @@
   list-style: none;
   padding-left: 0;
   margin: 0;
-  max-height: 600px; /* Set max height */
-  overflow-y: auto; /* Enable scrolling */
+  max-height: 600px;
+  /* Set max height */
+  overflow-y: auto;
+  /* Enable scrolling */
 }
 
 .HaplotypeNetwork-city-item {

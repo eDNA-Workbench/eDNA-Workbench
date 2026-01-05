@@ -24,13 +24,13 @@
 
 .file-drop-zone:hover {
   border-color: var(--primary);
-  background-color: var(--secondary);
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--bg-surface) 85%);
 }
 
 .file-drop-zone:has(.drop-active) {
   color: var(--success);
   border-color: var(--success);
-  background-color: color-mix(in srgb, var(--success) 10%, var(--card) 90%);
+  background-color: color-mix(in srgb, var(--success) 10%, var(--bg-surface) 90%);
 }
 
 .drop-active p {
@@ -45,7 +45,7 @@
 }
 
 .drop-idle {
-  color: var(--muted-foreground);
+  color: var(--detail);
 }
 
 .drop-idle p {
@@ -54,7 +54,7 @@
 }
 
 .drop-idle small {
-  color: var(--muted-foreground);
+  color: var(--detail);
   font-size: 0.9em;
 }
 
@@ -64,7 +64,7 @@
 }
 
 .selected-files .file-item {
-  background: var(--secondary);
+  background: var(--bg-surface-raised);
   border: 1px solid var(--border);
   margin-bottom: 10px;
 }
@@ -73,13 +73,14 @@
 .upload-progress {
   margin-bottom: 20px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 15px;
 }
 
 .upload-progress span {
   font-weight: 500;
-  color: var(--muted-foreground);
+  color: var(--detail);
   min-width: 40px;
 }
 
@@ -111,28 +112,45 @@
   color: var(--success);
   /* background: #d5f4e6;
   border-color: #a9dfbf; */
-  background: color-mix(in srgb, var(--success) 14%, var(--card) 86%);
-  border-color: color-mix(in srgb, var(--success) 50%, var(--card) 50%);
+  background: color-mix(in srgb, var(--success) 14%, var(--bg-surface) 86%);
+  border-color: color-mix(in srgb, var(--success) 50%, var(--bg-surface) 50%);
 }
 
 .file-status .missing {
   color: var(--danger);
-  background: color-mix(in srgb, var(--danger) 20%, var(--card) 80%);
-  border-color: color-mix(in srgb, var(--danger) 50%, var(--card) 50%);
-}
-
-/* Detect Species */
-.upload-progress {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+  background: color-mix(in srgb, var(--danger) 20%, var(--bg-surface) 80%);
+  border-color: color-mix(in srgb, var(--danger) 50%, var(--bg-surface) 50%);
 }
 
 .progress-bar {
-  flex: 1;
-  /* 讓進度條佔據剩餘空間 */
+  width: 100%;
+  height: 8px;
+  background-color: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
   margin: 0;
-  /* 移除上下 margin，因為已經用 gap 控制間距 */
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.progress-fill.detecting {
+  width: 30%;
+  animation: scanning 1.5s infinite linear;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+}
+
+@keyframes scanning {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(400%);
+  }
 }
 
 .detecting-icon {

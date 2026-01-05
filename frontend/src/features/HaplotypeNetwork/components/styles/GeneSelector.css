@@ -27,7 +27,7 @@
 .search-input {
   margin-bottom: 10px;
   padding: 5px;
-  border: 1px solid var(--muted-foreground);
+  border: 1px solid var(--detail);
   border-radius: 4px;
   width: 100%;
 }
@@ -36,7 +36,7 @@
 .reduction-button {
   margin-bottom: 10px;
   padding: 5px 10px;
-  border: 1px solid var(--muted-foreground);
+  border: 1px solid var(--detail);
   border-radius: 5px;
   cursor: pointer;
 }
@@ -48,10 +48,10 @@
   cursor: pointer;
   border-radius: 4px;
   margin: 2px 0;
-  align-items: center; 
+  align-items: center;
   word-wrap: break-word;
   white-space: normal;
-  display: flex;  
+  display: flex;
   box-shadow: 0 0 5px var(--primary);
 }
 
@@ -62,16 +62,16 @@
 
 /* 基因名的背景颜色 */
 .gene-list-item span {
-  background-color: var(--background);
+  background-color: var(--bg-page);
   padding: 0 5px;
   border-radius: 4px;
 }
 
 .gene-color-box {
-  width: 20px; 
-  height: 20px; 
-  border-radius: 50%; 
-  margin-right: 8px; 
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 8px;
 }
 
 /* 分頁控制 */
@@ -110,7 +110,7 @@
 /* 無結果狀態 */
 .no-results {
   margin-top: 10px;
-  color: var(--destructive);
+  color: var(--danger);
   border: 1px solid var(--primary);
   padding: 16px;
   font-size: 20px;
@@ -127,7 +127,7 @@
   font-weight: bold;
 }
 
-.pagination-controls button{
+.pagination-controls button {
   padding: 6px 12px;
   border: none;
   background-color: var(--success);

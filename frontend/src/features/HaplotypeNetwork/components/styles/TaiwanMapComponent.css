@@ -10,12 +10,12 @@
 /* MapControls container */
 .map-controls {
   min-width: 100%;
-  
-  background: var(--background);
+
+  background: var(--bg-page);
   padding: 15px;
   box-shadow: 0 2px 6px var(--primary);
   overflow: auto;
-  border: 2px solid  var(--primary);
+  border: 2px solid var(--primary);
   border-radius: 12px;
 }
 
@@ -23,9 +23,9 @@
 .map-main-view {
   min-width: 100%;
   flex: 2;
-  background: var(--background);
+  background: var(--bg-page);
   padding: 6px;
-  box-shadow: 0 2px 6px var(--background);
+  box-shadow: 0 2px 6px var(--bg-page);
   overflow: auto;
   border: 2px solid var(--primary);
   border-radius: 12px;
@@ -34,19 +34,20 @@
 .map-main-view-Filtered {
   min-width: 70%;
   flex: 2;
-  background: var(--background);
+  background: var(--bg-page);
   padding: 6px;
-  box-shadow: 0 2px 6px var(--background);
+  box-shadow: 0 2px 6px var(--bg-page);
   overflow: auto;
   border: 2px solid var(--primary);
   border-radius: 12px;
 }
+
 .map-main-view-List {
   width: 10%;
   flex: 2;
-  background: var(--background);
+  background: var(--bg-page);
   padding: 6px;
-  box-shadow: 0 2px 6px var(--background);
+  box-shadow: 0 2px 6px var(--bg-page);
   overflow: auto;
   border: 2px solid var(--primary);
   border-radius: 12px;
@@ -64,7 +65,7 @@
 .map-settings-container {
   display: flex;
   flex-direction: row;
-  gap: 12px; 
+  gap: 12px;
   align-items: stretch;
   width: 60%;
 }
@@ -83,16 +84,16 @@
   gap: 6px;
 }
 
-.map-select-container select
-{
-  margin-left: 10px; 
+.map-select-container select {
+  margin-left: 10px;
   width: 40%;
   height: 120%;
   text-align: center;
 }
 
 .map-select-container select option {
-  text-align: center;  /* Centers the text inside each option */
+  text-align: center;
+  /* Centers the text inside each option */
 }
 
 .map-upload-container {
@@ -102,8 +103,8 @@
 }
 
 .map-upload-container input[type="file"] {
-  margin-left: 10px;  
-  
+  margin-left: 10px;
+
 }
 
 .warning-box {
@@ -142,13 +143,12 @@
   gap: 6px;
 }
 
-.range-input-row select
-{
+.range-input-row select {
   width: 50px;
   font-size: 20px;
   padding: 2px 4px;
   background: var(--input);
-  color: var(--foreground);
+  color: var(--text);
   border: 1px solid var(--border);
 }
 
@@ -161,7 +161,7 @@
   font-size: 20px;
   padding: 2px 4px;
   background: var(--input);
-  color: var(--foreground);
+  color: var(--text);
   border: 1px solid var(--border);
 }
 
@@ -189,21 +189,24 @@
   font-weight: bold;
 }
 
-.MapMainView-warning-box ul  {
-  padding-left: 50px; /* Adjust this value to move the dot further to the right */
+.MapMainView-warning-box ul {
+  padding-left: 50px;
+  /* Adjust this value to move the dot further to the right */
 }
 
 
 /* City gene data display */
 .MapMainView-city-info {
   margin-top: 50px;
-  margin-right: 1px; /* Distance between map */
+  margin-right: 1px;
+  /* Distance between map */
   min-width: 25%;
   max-width: 40%;
   padding: 5px;
   border: 2px solid var(--primary);
   border-radius: 10px;
-  max-height: 700px; /* Fixed height based on image */
+  max-height: 700px;
+  /* Fixed height based on image */
   overflow-y: auto;
 }
 
@@ -215,7 +218,7 @@
   display: flex;
   align-items: center;
   gap: 3px;
-  padding: 5px ;
+  padding: 5px;
 }
 
 .MapMainView-city-info li div {
@@ -223,7 +226,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  
+
 }
 
 .MapMainView-city-info .total-count {
@@ -266,6 +269,6 @@
   padding: 6px;
   border: 1px solid var(--primary);
   border-radius: 6px;
-  background: var(--background);
+  background: var(--bg-page);
   font-size: 20px;
 }

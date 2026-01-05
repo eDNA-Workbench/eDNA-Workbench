@@ -4,10 +4,10 @@
   gap: 20px;
   padding: 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--background);
+  background-color: var(--bg-page);
   min-height: 100vh;
   box-sizing: border-box;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 /* ===== 按鈕群組 ===== */
@@ -19,7 +19,7 @@
   padding: 8px 16px;
   border: none;
   background-color: var(--primary);
-  color: var(--primary-foreground);
+  color: var(--bg-surface);
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -39,8 +39,8 @@
 .button-group.app {
   gap: 5px;
   padding: 12px;
-  background: var(--background);
-  border: 1px solid var(--foreground);
+  background: var(--bg-page);
+  border: 1px solid var(--text);
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -51,7 +51,7 @@
   display: flex;
   gap: 20px;
   align-items: flex-start;
-  background: var(--card);
+  background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
@@ -93,7 +93,7 @@
   flex: 1;
   min-width: 40%;
 
-  background: var(--card);
+  background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 15px;

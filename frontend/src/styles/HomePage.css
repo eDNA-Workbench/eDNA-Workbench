@@ -17,7 +17,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--foreground);
+  color: var(--text);
   gap: 10px;
   margin-top: 10vh;
   user-select: none;
@@ -27,7 +27,7 @@
   height: 100px;
   width: 100px;
 
-  background-color: var(--foreground);
+  background-color: var(--text);
 
   mask-image: url('../assets/GenoFlow.png');
   mask-size: contain;
@@ -60,7 +60,7 @@
   align-items: center;
   min-height: 400px;
   max-width: 350px;
-  background-color: var(--card);
+  background-color: var(--bg-surface);
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   flex-basis: 350px;
@@ -86,7 +86,7 @@
   font-size: 1.6em;
   font-weight: 800;
   margin: 20px 0 0 0;
-  color: var(--foreground);
+  color: var(--text);
   z-index: 3;
 }
 
@@ -127,7 +127,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: var(--foreground);
+  color: var(--text);
   padding: 20px;
 
   z-index: 2;
@@ -161,7 +161,7 @@
   width: 100%;
   text-align: center;
   margin-top: 5vh;
-  background-color: var(--card);
+  background-color: var(--bg-surface);
   padding: 40px;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
@@ -172,7 +172,7 @@
   font-weight: 700;
   margin-bottom: 20px;
 
-  color: var(--foreground);
+  color: var(--text);
 }
 
 .contact-list {
@@ -189,7 +189,7 @@
   flex-basis: 300px;
   flex-grow: 1;
 
-  background-color: var(--background);
+  background-color: var(--bg-page);
 
   border: 1px solid var(--border);
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
@@ -208,11 +208,11 @@
   font-weight: 600;
   margin: 0 0 5px 0;
 
-  color: var(--foreground);
+  color: var(--text);
 }
 
 .contact-person a {
-  color: var(--muted-foreground);
+  color: var(--detail);
   text-decoration: none;
   font-size: 1em;
 }
@@ -228,13 +228,13 @@
   padding: 20px;
   text-align: center;
 
-  background-color: var(--card);
+  background-color: var(--bg-surface);
   border-top: 1px solid var(--border);
 }
 
 .home-footer p {
   margin: 0;
   font-size: 1em;
-  color: var(--muted-foreground);
+  color: var(--detail);
   user-select: none;
 }

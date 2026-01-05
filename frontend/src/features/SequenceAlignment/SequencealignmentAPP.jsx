@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FixedSizeList as List } from "react-window";
 import "./SequencealignmentAPP.css";
 
@@ -246,19 +246,19 @@ const CustomInnerElement = React.forwardRef(({ children, ...rest }, ref) => (
       {/* 功能按鈕列 */}
       <div style={{ marginBottom: 10, display: "flex", gap: 10 }}>
         <button onClick={handlePartialEdit} disabled={selectedPositions.size === 0} title="編輯所有選取位置字元">
-          edit
+          Edit
         </button>
         <button onClick={handlePartialDelete} disabled={selectedPositions.size === 0} title="刪除所有選取位置字元">
-          delete
+          Delete
         </button>
         <button onClick={handleUndo} disabled={history.length === 0}>Previous step</button>
-        <button onClick={handleRedo} disabled={redoStack.length === 0}>recover</button>
+        <button onClick={handleRedo} disabled={redoStack.length === 0}>Recover</button>
       </div>
 
       {isEditing && (
   <div style={{ marginBottom: 10 }}>
     <label>
-      Enter new sequence（A/T/C/G/-）：
+      Enter new character(s) (A/T/C/G/-) :
       <input
         type="text"
         value={editInput}
@@ -269,7 +269,7 @@ const CustomInnerElement = React.forwardRef(({ children, ...rest }, ref) => (
       />
     </label>
     <button onClick={applyEditInput} style={{ marginLeft: 10 }}>
-      confirm
+      Confirm
     </button>
     <button onClick={() => setIsEditing(false)} style={{ marginLeft: 5 }}>
       Cancel

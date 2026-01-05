@@ -2,7 +2,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  background-color: var(--card);
+  background-color: var(--bg-surface);
   padding: 0.4% 1.2%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 31.5px;
@@ -25,7 +25,7 @@
 
 .nav-item {
   position: relative;
-  color: var(--foreground);
+  color: var(--text);
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
@@ -37,13 +37,13 @@
 }
 
 .nav-item:hover {
-  background-color: var(--secondary);
-  border-color: var(--muted-foreground);
+  background-color: var(--bg-surface-raised);
+  border-color: var(--detail);
 }
 
 .nav-item.active {
   color: var(--primary);
-  background-color: var(--secondary);
+  background-color: var(--bg-surface-raised);
 }
 
 /* Dropdown */
@@ -55,7 +55,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: var(--card);
+  background-color: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -82,7 +82,7 @@
 
 .dropdown-item {
   padding: 10px 15px;
-  color: var(--foreground);
+  color: var(--text);
   text-decoration: none;
   font-size: 0.9rem;
   transition: background-color 0.2s;
@@ -95,12 +95,12 @@
 }
 
 .dropdown-item:hover {
-  background-color: var(--secondary);
+  background-color: var(--bg-surface-raised);
 }
 
 .dropdown-item.active {
   color: var(--primary);
-  background-color: var(--secondary);
+  background-color: var(--bg-surface-raised);
 }
 
 
@@ -113,7 +113,7 @@
 .fasta-select-btn {
   padding: 6px 10px;
   background-color: #e6f0ff;
-  /* 保留你原本的淺藍色，或改成 var(--secondary) */
+  /* 保留你原本的淺藍色，或改成 var(--bg-surface-raised) */
   border-radius: 4px;
   color: #0066cc;
   /* 保留原本的深藍色 */
@@ -142,7 +142,7 @@
   border: 1px solid var(--border);
   margin-top: 4px;
   border-radius: 4px;
-  background-color: var(--card);
+  background-color: var(--bg-surface);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   max-height: 200px;
   overflow-y: auto;
@@ -153,15 +153,15 @@
   padding: 8px 10px;
   font-size: 0.85rem;
   cursor: pointer;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 .fasta-option:hover {
-  background-color: var(--secondary);
+  background-color: var(--bg-surface-raised);
 }
 
 .fasta-option.selected {
-  background-color: var(--secondary);
+  background-color: var(--bg-surface-raised);
   /* 或用更明顯的顏色 */
   color: var(--primary);
   font-weight: 500;
@@ -176,7 +176,7 @@
 
 .upload-hint {
   font-size: 0.75rem;
-  color: var(--muted-foreground, #666);
+  color: var(--detail, #666);
   /* 如果沒有 muted-foreground 變數則用 #666 */
   margin-top: 2px;
 }

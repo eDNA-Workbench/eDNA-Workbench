@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { Canvg } from 'canvg';
 import * as d3 from "d3";
 import { saveAs } from "file-saver";
-import { Canvg } from 'canvg';
+import { useEffect, useRef, useState } from "react";
 
 import "./styles/HaplotypeNetwork.css";
 
@@ -253,7 +253,7 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
         group
           .append("circle")
           .attr("r", radius)
-          .attr("fill", "var(--muted-foreground)")
+          .attr("fill", "var(--detail)")
           .attr("stroke", "var(--primary)")
           .attr("stroke-width", borderWidth);
         return;
@@ -267,7 +267,7 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
         .attr("d", arc.innerRadius(0).outerRadius(radius))
         .attr(
           "fill",
-          (arcData) => cityColorMap[arcData.data[0]] || "var(--muted-foreground)"
+          (arcData) => cityColorMap[arcData.data[0]] || "var(--detail)"
         )
         .attr("stroke", "var(--primary)")
         .attr("stroke-width", borderWidth);
