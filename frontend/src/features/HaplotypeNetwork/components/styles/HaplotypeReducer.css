@@ -7,19 +7,18 @@
 
 /* Form input container */
 .HaplotypeReducer-input-container {
-  margin-bottom: 10px;
   margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 /* Labels for file inputs */
 .HaplotypeReducer-file-label {
-  background: var(--detail);
-  color: var(--primary);
+  background: var(--primary);
+  color: var(--bg-surface);
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
   margin-left: 8px;
-
 }
 
 /* Display file name next to the input */
@@ -40,8 +39,8 @@
 
 /* Submit button styling */
 .HaplotypeReducer-submit-button {
-  background-color: var(--detail);
-  color: var(--primary);
+  background-color: var(--primary);
+  color: var(--bg-surface);
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -51,13 +50,5 @@
 }
 
 .HaplotypeReducer-submit-button:disabled {
-  background-color: var(--detail);
-}
-
-.HaplotypeReducer-submit-button:hover:not(:disabled) {
-  background-color: var(--chart-3);
-}
-
-.HaplotypeReducer-submit-button:active {
-  background-color: var(--chart-3);
+  background-color: var(--bg-surface);
 }

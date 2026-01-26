@@ -1,85 +1,332 @@
 /* ============================ */
 /* 外層容器，啟用水平滾動 */
 .gene-table-container {
-
   width: 100%;
-  overflow-x: auto;
   margin-bottom: 20px;
+  overflow-x: auto;
 }
-
 
 .gene-table-wrapper {
-
   width: 100%;
   overflow-x: auto;
 }
 
-/* Warning message box */
 .GeneTable-warning-box {
   padding: 16px;
-  background-color: var(--warning);
-  border: 1px solid var(--primary);
-  color: var(--primary);
-  border-radius: 8px;
   margin-bottom: 16px;
   font-size: 16px;
   font-weight: bold;
+  background-color: var(--warning);
+  border: 1px solid var(--primary);
+  color: var(--text);
+  border-radius: 8px;
 }
 
 .GeneTable-warning-box ul {
   padding-left: 50px;
-  /* Adjust this value to move the dot further to the right */
-}
-
-/* Button styling */
-.GeneTable-button {
-  margin-right: 10px;
-  padding: 6px 12px;
-  border: 1px solid var(--primary);
-  border-radius: 4px;
-  cursor: pointer;
-  background: var(--bg-page);
-  color: var(--primary);
-}
-
-.GeneTable-button.active {
-  padding: 6px 12px;
-  border: 1px solid var(--primary);
-  border-radius: 4px;
-  cursor: pointer;
-  background: var(--success);
-  color: var(--primary);
 }
 
 /* ============================ */
-/* 表格展開寬度，必要才能顯示捲軸 */
 .gene-table {
-  border-collapse: collapse;
   width: max-content;
   table-layout: auto;
+  border-collapse: collapse;
 }
 
 /* ============================ */
 /* 基本格線 */
 .gene-table th,
 .gene-table td {
-  border: 3px solid var(--border);
   padding: 6px 12px;
-  white-space: nowrap;
   font-size: 14px;
   text-align: center;
-  z-index: 20;
+  white-space: nowrap;
+  border: 3px solid var(--border);
   color: var(--text);
+  z-index: 20;
 }
 
 .gene-table-inputbox {
+  width: 100%;
   padding: 6px;
   border: 1px solid #ccc;
-  width: 100%;
 }
 
 /* ========================== */
-/* 🎯 詳細資料表固定第一列和第一欄 */
+.fa-table-count-view .gene-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--bg-surface);
+}
+
+.fa-table-count-view .gene-table th:nth-child(1),
+.fa-table-count-view .gene-table th:nth-child(2),
+.fa-table-count-view .gene-table td:nth-child(1),
+.fa-table-count-view .gene-table td:nth-child(2) {
+  position: sticky;
+  left: 0;
+  background: var(--bg-surface);
+  z-index: 3;
+  min-width: 40px;
+  text-align: left;
+}
+
+/* ============================ */
+.fa-table-color-box {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: 1px solid var(--border);
+}
+
+/* ============================ */
+.fa-table-checkbox,
+.fa-table-number-input {
+  width: 20px;
+  height: 20px;
+  margin: 0 auto;
+}
+
+.fa-table-number-input {
+  width: 60px;
+  padding: 5px;
+  text-align: center;
+  background: var(--input);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.fa-table-header,
+.fa-table-cell {
+  padding: 8px 12px;
+}
+
+/* ============================ */
+.fa-table-header:first-child,
+.fa-table-cell:first-child {
+  width: 10px;
+  padding: 5px;
+}
+
+/* ============================ */
+.fa-table-inputbox {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--input);
+  color: var(--text);
+}
+
+/* ============================ */
+.fa-table-button {
+  padding: 6px 12px;
+  margin-right: 6px;
+  background-color: var(--bg-surface-raised);
+  border: 2px solid var(--border);
+  color: var(--text);
+  border: none;
+  border-radius: 4px;
+}
+
+.fa-table-button:disabled {
+  background-color: var(--button-disabled-bg);
+  color: var(--button-disabled-text);
+}
+
+/* ============================ */
+.fa-table-wrapper {
+  overflow-x: auto;
+}
+
+.fa-table-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.fa-table-pagination button {
+  padding: 6px 12px;
+  background-color: var(--bg-surface-raised);
+  border: 2px solid var(--border);
+  color: var(--text);
+  border-radius: 4px;
+}
+
+.fa-table-pagination button:disabled {
+  background-color: var(--bg-surface-raised);
+  border: 2px solid var(--border);
+  color: var(--text);
+}
+
+/* ============================ */
+.CVSTable-search-container {
+  margin-bottom: 10px;
+}
+
+.CVSTable-search-input {
+  padding: 5px;
+  width: 90%;
+}
+
+.CVSTable-filter-buttons {
+  border-radius: 3px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.CVSTable-button {
+  font-size: 20px;
+  margin-left: 8px;
+  margin-right: 8px;
+  padding: 3px 6px;
+  cursor: pointer;
+  background-color: var(--bg-surface-raised);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.CVSTable-button.active {
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: var(--primary);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.CVSTable-button-All-Clear button {
+  background-color: var(--bg-surface-raised);
+  border: 2px solid var(--border);
+  color: var(--text);
+}
+
+.CVSTable-percentage-toggle {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text);
+  background-color: var(--bg-surface-raised);
+}
+
+.CVSTable-toggle-button button {
+  font-size: 15px;
+  width: 150px;
+  height: 40px;
+  cursor: pointer;
+  background-color: var(--bg-surface-raised);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.CVSTable-percentage-range {
+  margin-top: 10px;
+}
+
+.CVSTable-percentage-input {
+  margin-left: 10px;
+  width: 100px;
+  font-size: 20px;
+  padding: 2px 4px;
+  background: var(--input);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.CVSTable-gene-table-container {
+  margin-top: 10px;
+}
+
+.CVSTable-gene-table-wrapper {
+  height: 800px;
+  overflow-y: auto;
+  display: block;
+  max-width: 100%;
+}
+
+.CVSTable-gene-table {
+  width: max-content;
+  min-width: fit-content;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+/* ============================ */
+.CVSTable-gene-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--bg-surface-raised);
+}
+
+.CVSTable-gene-table tbody {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg-surface-raised);
+}
+
+.CVSTable-gene-table td:first-child,
+.CVSTable-gene-table th:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--bg-surface-raised);
+  min-width: 100px;
+  text-align: left;
+  z-index: 3;
+}
+
+.CVSTable-gene-table td:nth-child(2),
+.CVSTable-gene-table th:nth-child(2) {
+  position: sticky;
+  left: 100px;
+  background: var(--bg-surface-raised);
+  text-align: left;
+  z-index: 3;
+}
+
+.CVSTable-header-hap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.CVSTable-color-checkbox {
+  margin-right: 5px;
+}
+
+.CVSTable-color-box {
+  width: 12px;
+  height: 12px;
+  background-color: #101010ff;
+  margin-right: 10px;
+  border-radius: 2px;
+}
+
+/* ============================ */
+/* Table cell styles */
+.CVSTable-gene-table td {
+  text-align: center;
+}
+
+.CVSTable-gene-table td {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid var(--detail);
+}
+
+.CVSTable-gene-table th {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid var(--detail);
+}
+
+/* ========================== */
+/* 詳細資料表固定第一列和第一欄 */
 /* ========================== */
 .view-detail .gene-table thead th {
   position: sticky;
@@ -99,240 +346,6 @@
 }
 
 .view-detail .gene-table-wrapper {
-  min-width: 800;
+  min-width: 800px;
   overflow: auto;
-  /* 同時支援水平與垂直滾動 */
-}
-
-/* ========================== */
-/* 🎯 數量表固定前兩欄 */
-/* ========================== */
-.view-count .gene-table thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: var(--bg-surface);
-}
-
-.view-count .gene-table th:nth-child(1),
-.view-count .gene-table th:nth-child(2),
-.view-count .gene-table td:nth-child(1),
-.view-count .gene-table td:nth-child(2) {
-  position: sticky;
-  left: 0;
-  background: var(--bg-surface);
-  z-index: 3;
-  min-width: 40px;
-  text-align: left;
-}
-
-/* ============================ */
-/* 小顏色方塊 */
-.color-box {
-  display: inline-block;
-  width: 25px;
-  height: 25px;
-  margin-right: 6px;
-  vertical-align: middle;
-  border: 1px solid var(--border);
-}
-
-/* ============================ */
-/* 表格內的輸入框樣式 */
-.gene-table td input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  margin: 0 auto;
-}
-
-.gene-table td input[type="number"] {
-  width: 60px;
-  padding: 5px;
-  text-align: center;
-  background: var(--input);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-.gene-table th,
-.gene-table td {
-  padding: 8px 12px;
-}
-
-/* ============================ */
-/* 第一欄寬度與內邊距 */
-.gene-table th:first-child,
-.gene-table td:first-child {
-  width: 10px;
-  /* 設定勾選框那一列的寬度 */
-  padding: 5px;
-  /* 可以調整內邊距來改變欄位高度 */
-}
-
-
-/* ============================ */
-/* General container styles */
-.CVSTable-container {
-  margin-top: 30px;
-}
-
-.CVSTable-search-container {
-  margin-bottom: 10px;
-}
-
-.CVSTable-search-input {
-  padding: 5px;
-  width: 90%;
-}
-
-/* Button group */
-.CVSTable-filter-buttons {
-  border-radius: 3px;
-  cursor: pointer;
-  color: var(--primary);
-}
-
-.CVSTable-button {
-  font-size: 20px;
-  margin-left: 8px;
-  margin-right: 8px;
-  padding: 3px 6px;
-  cursor: pointer;
-  color: var(--primary);
-  background-color: var(--bg-surface-raised);
-}
-
-.CVSTable-button.active {
-  padding: 6px 12px;
-  border: 1px solid var(--primary);
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: var(--success);
-  color: var(--primary);
-}
-
-
-/* Percentage toggle button */
-.CVSTable-percentage-toggle {
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--primary);
-  background-color: var(---bg-surface-raised);
-}
-
-.CVSTable-toggle-button button {
-  font-size: 15px;
-  width: 150px;
-  height: 40px;
-  cursor: pointer;
-  color: var(--primary);
-  background-color: var(---bg-surface-raised);
-}
-
-/* Percentage range inputs */
-.CVSTable-percentage-range {
-  margin-top: 10px;
-
-}
-
-.CVSTable-percentage-input {
-  margin-left: 10px;
-  width: 100px;
-  font-size: 20px;
-  padding: 2px 4px;
-  background: var(--input);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-/* Gene table container */
-.CVSTable-gene-table-container {
-  margin-top: 10px;
-}
-
-.CVSTable-gene-table-wrapper {
-  height: 800px;
-  overflow-y: auto;
-  display: block;
-  max-width: 100%;
-}
-
-.CVSTable-gene-table {
-  border-collapse: collapse;
-  width: max-content;
-  min-width: fit-content;
-  table-layout: auto;
-}
-
-/* ============================ */
-/* Make the first two columns sticky */
-.CVSTable-gene-table thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: var(--muted);
-}
-
-.CVSTable-gene-table tbody {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: var(--muted);
-}
-
-
-/* Make Locations and Total columns sticky (first two columns) */
-.CVSTable-gene-table td:first-child,
-.CVSTable-gene-table th:first-child {
-  position: sticky;
-  left: 0;
-  background: var(--bg-surface-raised);
-  min-width: 100px;
-  text-align: left;
-  z-index: 3;
-}
-
-/* Make the second column (Total) sticky */
-.CVSTable-gene-table td:nth-child(2),
-.CVSTable-gene-table th:nth-child(2) {
-  position: sticky;
-  left: 100px;
-  background: var(--ring);
-  text-align: left;
-  z-index: 3;
-}
-
-
-/* Header haplotype color box */
-.CVSTable-header-hap {
-  display: inline-flex;
-  align-items: center;
-}
-
-.CVSTable-color-box {
-  width: 12px;
-  height: 12px;
-  background-color: #101010ff;
-  margin-right: 6px;
-  border-radius: 2px;
-}
-
-/* ============================ */
-/* Table cell styles */
-.CVSTable-gene-table td {
-  text-align: center;
-}
-
-.CVSTable-gene-table td {
-  padding: 5px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-}
-
-.CVSTable-gene-table th {
-  padding: 8px;
-  font-size: 16px;
-  background-color: var(--muted);
 }

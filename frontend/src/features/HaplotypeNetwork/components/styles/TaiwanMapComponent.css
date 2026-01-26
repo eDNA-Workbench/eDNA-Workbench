@@ -10,7 +10,6 @@
 /* MapControls container */
 .map-controls {
   min-width: 100%;
-
   background: var(--bg-page);
   padding: 15px;
   box-shadow: 0 2px 6px var(--primary);
@@ -20,7 +19,9 @@
 }
 
 /* MapMainView container */
-.map-main-view {
+.map-main-view,
+.map-main-view-Filtered,
+.map-main-view-List {
   min-width: 100%;
   flex: 2;
   background: var(--bg-page);
@@ -33,24 +34,10 @@
 
 .map-main-view-Filtered {
   min-width: 70%;
-  flex: 2;
-  background: var(--bg-page);
-  padding: 6px;
-  box-shadow: 0 2px 6px var(--bg-page);
-  overflow: auto;
-  border: 2px solid var(--primary);
-  border-radius: 12px;
 }
 
 .map-main-view-List {
   width: 10%;
-  flex: 2;
-  background: var(--bg-page);
-  padding: 6px;
-  box-shadow: 0 2px 6px var(--bg-page);
-  overflow: auto;
-  border: 2px solid var(--primary);
-  border-radius: 12px;
 }
 
 /* PieChart 圓餅圖容器 */
@@ -60,6 +47,12 @@
   pointer-events: none;
 }
 
+.GeneList-button-Select {
+  background-color: var(--bg-surface-raised);
+  border: 2px solid var(--border);
+  color: var(--text);
+  padding: 5px 10px;
+}
 
 /* MapMainView */
 .map-settings-container {
@@ -69,7 +62,6 @@
   align-items: stretch;
   width: 60%;
 }
-
 
 .map-upload-column {
   display: flex;
@@ -93,7 +85,6 @@
 
 .map-select-container select option {
   text-align: center;
-  /* Centers the text inside each option */
 }
 
 .map-upload-container {
@@ -104,9 +95,9 @@
 
 .map-upload-container input[type="file"] {
   margin-left: 10px;
-
 }
 
+/* Warning Box */
 .warning-box {
   margin-top: 10px;
   padding: 10px;
@@ -117,6 +108,7 @@
   font-size: 14px;
 }
 
+/* Map image settings */
 .map-image-settings-column {
   display: flex;
   flex-direction: column;
@@ -124,13 +116,14 @@
   flex: 1;
 }
 
-
+/* Size settings */
 .size-settings {
   display: flex;
   gap: 6px;
   align-items: center;
 }
 
+/* Range settings */
 .range-settings {
   display: flex;
   flex-direction: column;
@@ -165,8 +158,6 @@
   border: 1px solid var(--border);
 }
 
-
-
 /* MapMainView */
 .MapMainView-container {
   flex: 1;
@@ -182,7 +173,7 @@
   padding: 16px;
   background-color: var(--warning);
   border: 1px solid var(--primary);
-  color: var(--primary);
+  color: var(--text);
   border-radius: 8px;
   margin-bottom: 16px;
   font-size: 16px;
@@ -191,22 +182,18 @@
 
 .MapMainView-warning-box ul {
   padding-left: 50px;
-  /* Adjust this value to move the dot further to the right */
 }
-
 
 /* City gene data display */
 .MapMainView-city-info {
   margin-top: 50px;
   margin-right: 1px;
-  /* Distance between map */
   min-width: 25%;
   max-width: 40%;
   padding: 5px;
   border: 2px solid var(--primary);
   border-radius: 10px;
   max-height: 700px;
-  /* Fixed height based on image */
   overflow-y: auto;
 }
 
@@ -226,7 +213,6 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-
 }
 
 .MapMainView-city-info .total-count {
@@ -272,3 +258,24 @@
   background: var(--bg-page);
   font-size: 20px;
 }
+
+.MapMainView-button-File {
+  background-color: var(--primary);
+  color: var(--bg-surface);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.MapMainView-input-File {
+  width: 100px;
+  font-size: 20px;
+  padding: 2px 4px;
+  margin: 5px;
+  background: var(--input);
+  color: var(--text);
+  border: 1px solid var(--border);
+} 
