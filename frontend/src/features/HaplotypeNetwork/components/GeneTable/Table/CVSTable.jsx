@@ -208,7 +208,7 @@ const CVSTable = ({
                     {header === "locations" ? (
                       <>
                         locations
-                        <div>
+                        <div className="CVSTable-button-All-Clear">
                           <button onClick={handleSelectAllLocations}>All</button>
                           <button onClick={handleClearAllLocations}>Clear</button>
                         </div>
@@ -216,7 +216,7 @@ const CVSTable = ({
                     ) : header === "ASV_total" ? (
                       <>
                        total
-                        <div>
+                        <div className="CVSTable-button-All-Clear">
                           <button onClick={handleSelectAllASVs}>All </button>
                           <button onClick={handleClearAllASVs}>Clear</button>
                         </div>
@@ -227,6 +227,7 @@ const CVSTable = ({
                           type="checkbox"
                           checked={selectedASVs.has(header)}
                           onChange={() => handleASVSelection(header)}
+                          className="CVSTable-color-checkbox"
                         />
                         <span
                           className="CVSTable-color-box"
@@ -276,11 +277,11 @@ const CVSTable = ({
                       let bgColor = undefined;
                       if (isHapCol) {
                         if (!showPercentage && rawValue > 0) {
-                          bgColor = "var(--chart-4)";
+                          bgColor = "var(--primary)";
                         } else if (showPercentage && total > 0) {
                           const percent = (rawValue / total) * 100;
                           if (percent >= minPercentage && percent <= maxPercentage) {
-                            bgColor = "var(--chart-4)";
+                            bgColor = "var(--primary)";
                           }
                         }
                       }

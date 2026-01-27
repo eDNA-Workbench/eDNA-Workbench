@@ -285,8 +285,8 @@ export const useGeneTableEffects = ({
       if (!id) return;
       ids.add(id);
 
-      const parsedLon = parseFloat(row["Latitude"] || row[2]) || null;
-      const parsedLat = parseFloat(row["Longitude"] || row[1]) || null;
+      const parsedLon = parseFloat(row["Longitude"] || row[2]) || null;
+      const parsedLat = parseFloat(row["Latitude"] || row[1]) || null;
 
       mapping[id] = {
         river: row["river"] || "No information",

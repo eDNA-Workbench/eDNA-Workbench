@@ -211,7 +211,6 @@
   justify-content: space-between;
   align-items: center;
   color: var(--text);
-  background-color: var(--bg-surface-raised);
 }
 
 .CVSTable-toggle-button button {
@@ -262,6 +261,7 @@
   top: 0;
   z-index: 2;
   background: var(--bg-surface-raised);
+  border: 1px solid var(--detail);
 }
 
 .CVSTable-gene-table tbody {
@@ -269,6 +269,7 @@
   top: 0;
   z-index: 1;
   background: var(--bg-surface-raised);
+  border: 1px solid var(--detail);
 }
 
 .CVSTable-gene-table td:first-child,
@@ -276,6 +277,7 @@
   position: sticky;
   left: 0;
   background: var(--bg-surface-raised);
+  border: 1px solid var(--detail);
   min-width: 100px;
   text-align: left;
   z-index: 3;
@@ -286,6 +288,7 @@
   position: sticky;
   left: 100px;
   background: var(--bg-surface-raised);
+  border: 1px solid var(--detail);
   text-align: left;
   z-index: 3;
 }

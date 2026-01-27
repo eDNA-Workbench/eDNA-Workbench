@@ -127,17 +127,17 @@ const FATable = ({
   };
 
   return (
-    <div className="gene-table-container view-count">
+    <div className="gene-table-container fa-table-count-view">
       {/* Search Box */}
       <div style={{ marginBottom: "10px", display: "flex", alignItems: "center" }}>
         <input
-          className="gene-table-inputbox"
+          className="fa-table-inputbox"
           type="text"
           placeholder="Search Genes"
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
-            setCurrentPage(1); 
+            setCurrentPage(1);
           }}
         />
       </div>
@@ -145,21 +145,25 @@ const FATable = ({
       {/* Select / Clear All Genes and Locations */}
       <div style={{ marginBottom: "8px", display: "flex", justifyContent: "space-between" }}>
         <div>
-          <button onClick={handleSelectAllGenes} style={{ marginRight: "6px" }}>
+          <button className="fa-table-button" onClick={handleSelectAllGenes}>
             All ASV
           </button>
-          <button onClick={handleClearAllGenes}>Clear</button>
+          <button className="fa-table-button" onClick={handleClearAllGenes}>
+            Clear
+          </button>
         </div>
         <div>
-          <button onClick={handleSelectAllLocations} style={{ marginRight: "6px" }}>
+          <button className="fa-table-button" onClick={handleSelectAllLocations}>
             All Location
           </button>
-          <button onClick={handleClearAllLocations}>Clear</button>
+          <button className="fa-table-button" onClick={handleClearAllLocations}>
+            Clear
+          </button>
         </div>
       </div>
 
       {/* Gene Table */}
-      <div className="gene-table-wrapper">
+      <div className="fa-table-wrapper">
         <table className="gene-table">
           <thead>
             <tr>
@@ -171,10 +175,10 @@ const FATable = ({
                       checked={showOnlySelected}
                       onChange={() => {
                         const next = !showOnlySelected;
-                        if (next) setCurrentPage(1); 
+                        if (next) setCurrentPage(1);
                         setShowOnlySelected(next);
                       }}
-                      style={{ marginRight: 6 }}
+                      className="fa-table-checkbox"
                     />
                     Show selected
                   </label>
@@ -188,6 +192,7 @@ const FATable = ({
                       type="checkbox"
                       checked={!!selectedLocations[loc]}
                       onChange={() => toggleLocationSelection(loc)}
+                      className="fa-table-checkbox"
                     />
                     <span>{loc}</span>
                   </label>
@@ -204,11 +209,12 @@ const FATable = ({
                     type="checkbox"
                     checked={selectedGenesSet.has(gene.name)}
                     onChange={() => toggleGeneSelection(gene.name)}
+                    className="fa-table-checkbox"
                   />
                 </td>
                 <td>
                   <span
-                    className="color-box"
+                    className="fa-table-color-box"
                     style={{ backgroundColor: geneColors[gene.name] || "black" }}
                   />
                   {gene.name}
@@ -221,6 +227,7 @@ const FATable = ({
                       min="0"
                       value={gene.counts?.[loc] || 0}
                       onChange={(e) => handleEditGeneCount(gene.name, loc, e.target.value)}
+                      className="fa-table-number-input"
                     />
                   </td>
                 ))}
@@ -231,7 +238,7 @@ const FATable = ({
       </div>
 
       {/* Pagination Controls */}
-      <div className="pagination">
+      <div className="fa-table-pagination">
         <button onClick={prevPage} disabled={currentPage === 1}>
           Prev
         </button>
