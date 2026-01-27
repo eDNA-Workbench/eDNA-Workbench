@@ -25,7 +25,7 @@ const MapMainView = ({
 
    const filteredGenesSet = new Set(filteredGeneList);
 
-   const [localFileName, setLocalFileName] = useState("map");
+   const [localFileName, setLocalFileName] = useState("picture");
    const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
    
      // 檢查是否所有設定都已完成
@@ -70,10 +70,10 @@ const MapMainView = ({
                 value={localFileName}
                 onChange={handleFileNameChange} // 設置檔名
                 placeholder="Enter file name"
-                style={{ marginRight: 10 }}
+                className="MapMainView-input-File"
               />
               <button 
-                
+                className="MapMainView-button-File"
                 onClick={() => handleExportPNG(localFileName)}>Export Map PNG 
               </button>
             </div>

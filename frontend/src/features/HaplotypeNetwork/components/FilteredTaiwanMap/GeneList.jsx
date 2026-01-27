@@ -146,7 +146,7 @@ const GeneList = ({
   }, [filteredCityGeneData, activeSimilarityGroup]); 
 
   return (
-    <div style={{ minWidth: "20%" }}>
+    <div style={{ minWidth: "10%" }}>
 
       {/* 如果沒有完成設定，顯示提示 */}
       {!isConfigured && (
@@ -166,10 +166,10 @@ const GeneList = ({
       <>
         {/* 切換按鈕區 */}
         <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
-          <button onClick={() => setShowGenes(true)} style={{ padding: "5px 10px" }}>
-            Select display Genes
+          <button onClick={() => setShowGenes(true)} className="GeneList-button-Select">
+            Select display ASV
           </button>
-          <button onClick={() => setShowGenes(false)} style={{ padding: "5px 10px" }}>
+          <button onClick={() => setShowGenes(false)} className="GeneList-button-Select">
             Select display City
           </button>
         </div>

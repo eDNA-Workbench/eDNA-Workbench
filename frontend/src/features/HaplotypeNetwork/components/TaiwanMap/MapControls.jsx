@@ -61,11 +61,20 @@ const MapControls = ({
           </label>
         </div>
 
-        <div className="map-upload-container">
-          <label style={{ whiteSpace: "nowrap" }}>Upload Map Image(.png):
-            <input type="file" accept="image/png" onChange={handleImageUpload} />
-          </label>
+        <div className="map-upload-container" style={{ whiteSpace: "nowrap" }}>
+          <label>Upload Map Image (.png):</label>
+          <input
+            id="mapImageFile"
+            type="file"
+            accept="image/png"
+            style={{ display: "none" }}
+            onChange={handleImageUpload}
+          />
+          <label htmlFor="mapImageFile" className="map-file-label">
+            Choose File
+          </label>          
         </div>
+
 
         {/* 提醒框 
         {(activeMapId === "" ) && (

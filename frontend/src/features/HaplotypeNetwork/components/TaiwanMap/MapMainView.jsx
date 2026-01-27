@@ -21,7 +21,7 @@ const MapMainView = ({
   setFileName
 }) => {
 
-  const [localFileName, setLocalFileName] = useState("map");
+  const [localFileName, setLocalFileName] = useState("picture");
   const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
 
   // 檢查是否所有設定都已完成
@@ -61,15 +61,19 @@ const MapMainView = ({
       {/* 如果設定完成，顯示原本的內容 */}
       {isConfigured && (
         <>
-          <div style={{ alignSelf: "flex-start", marginBottom: 8 }}>
+          <div >
             <input
               type="text"
               value={localFileName}
               onChange={handleFileNameChange} // 設置檔名
               placeholder="Enter file name"
-              style={{ marginRight: 10 }}
+              className="MapMainView-input-File"
             />
-            <button onClick={() => handleExportPNG(localFileName)}>Export Map PNG + Haplotype List</button>
+            <button 
+              onClick={() => handleExportPNG(localFileName)}
+              className="MapMainView-button-File"
+            >Export Map PNG + Haplotype List
+            </button>
           </div>
 
           {/* 🗺️ 地圖容器與城市資訊 */}

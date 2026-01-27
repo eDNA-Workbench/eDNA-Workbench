@@ -22,7 +22,7 @@
 .map-main-view,
 .map-main-view-Filtered,
 .map-main-view-List {
-  min-width: 100%;
+  min-width: 25%;
   flex: 2;
   background: var(--bg-page);
   padding: 6px;
@@ -89,12 +89,18 @@
 
 .map-upload-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 6px;
 }
 
-.map-upload-container input[type="file"] {
-  margin-left: 10px;
+.map-file-label {
+  background: var(--primary);
+  color: var(--bg-surface);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 8px;
 }
 
 /* Warning Box */
