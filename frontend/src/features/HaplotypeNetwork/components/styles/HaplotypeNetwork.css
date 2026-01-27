@@ -41,6 +41,16 @@
   color: var(--primary);
 }
 
+.HaplotypeNetwork-export-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: var(--primary);
+  color: var(--bg-surface);
+  margin: 10px 0;
+}
+
 /* SVG Wrapper */
 .HaplotypeNetwork-svg-wrapper {
   width: 850px;

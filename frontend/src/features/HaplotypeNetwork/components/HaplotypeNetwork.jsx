@@ -1,7 +1,7 @@
-import { Canvg } from 'canvg';
+import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { saveAs } from "file-saver";
-import { useEffect, useRef, useState } from "react";
+import { Canvg } from 'canvg';
 
 import "./styles/HaplotypeNetwork.css";
 
@@ -31,6 +31,7 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
   const [loading, setLoading] = useState(true);
   const [countRange, setCountRange] = useState({ min: 0, max: 100 });
   const [fetchedRange, setFetchedRange] = useState({ min: 0, max: 100 });
+  
 
   useEffect(() => {
     if (genes && genes.length > 0) {
@@ -100,13 +101,10 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
         setData({ error: true });
         setLoading(false); // Set loading to false in case of an error
       });
-
-    setIsConfigured(false); // Reset the configuration flag if needed
   };
 
 
   // 初始化圖表
-
   useEffect(() => {
     if (!data?.nodes || !data?.edges) return;
 
@@ -127,10 +125,8 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
     });
     const cityList = Array.from(allCities);
 
-    // 用來儲存已生成的顏色
+    // Use custom color generation
     const usedColors = new Set();
-
-    // 使用自訂的 oklch 顏色生成邏輯
     const cityColorScale = d3
       .scaleOrdinal()
       .domain(cityList)
@@ -138,10 +134,9 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
         cityList.map(() => {
           let color;
           do {
-            const L = 0.1 + Math.random() * 0.2; // 隨機亮度，範圍從 0.4 到 0.6
-            const C = 0.1 + Math.random() * 0.8; // 隨機色度，範圍從 0.2 到 0.5
-            const H = (0.1 + Math.random() * 1.8) * Math.PI; // 隨機色相，範圍 0 到 2π
-
+            const L = 0.1 + Math.random() * 0.2;
+            const C = 0.1 + Math.random() * 0.8;
+            const H = (0.1 + Math.random() * 1.8) * Math.PI;
             const { r, g, b } = oklchToRgb(L, C, H);
             color = `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
           } while (usedColors.has(color));
@@ -155,7 +150,7 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
     cityList.forEach((city) => (cityColorMap[city] = cityColorScale(city)));
     setCityColors(cityColorMap);
 
-    // 群組顏色 + 節點半徑
+    // Group colors and node radii
     const groupIds = Array.from(new Set(validNodes.map((d) => d.groupId)));
     const groupColorScale = d3
       .scaleOrdinal(d3.schemeTableau10)
@@ -166,13 +161,13 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
       .domain([1, maxCount || 1])
       .range([10 * scaleFactor, 30 * scaleFactor]);
 
-    // ⚡ 隨機初始位置
+    // Random initial positions
     data.nodes.forEach((d) => {
       d.x = Math.random() * width;
       d.y = Math.random() * height;
     });
 
-    // 力導向模擬
+    // Force simulation
     const sim = d3
       .forceSimulation(data.nodes)
       .force(
@@ -194,7 +189,7 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
         d3.forceCollide().radius((d) => r(d.count) + 2 * scaleFactor)
       );
 
-    // 繪製邊線與距離文字
+    // Draw links and distance labels
     const linkGroup = g.append("g").attr("class", "links");
     linkGroup
       .selectAll("line")
@@ -214,7 +209,7 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
       .attr("fill", "var(--primary)")
       .attr("text-anchor", "middle");
 
-    // 節點群組
+    // Node groups
     const node = g
       .append("g")
       .selectAll("g")
@@ -238,7 +233,7 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
           })
       );
 
-    // 繪製節點圓餅圖
+    // Draw pie chart slices and add tooltips to them
     const pie = d3.pie().value(([_, value]) => value);
     const arc = d3.arc();
 
@@ -260,7 +255,7 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
       }
 
       const arcs = pie(entries);
-      group
+      const slice = group
         .selectAll("path")
         .data(arcs)
         .join("path")
@@ -271,9 +266,15 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
         )
         .attr("stroke", "var(--primary)")
         .attr("stroke-width", borderWidth);
+
+      // Add tooltips for pie chart slices
+      slice.append("title").text(
+        (arcData) =>
+          `City: ${arcData.data[0]}\nCount: ${arcData.data[1]}`
+      );
     });
 
-    // tooltip 與 label
+    // Add tooltips and labels for nodes (outside the pie chart)
     node
       .append("title")
       .text(
@@ -289,12 +290,12 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
       .attr("y", (d) => -r(d.count) - 5)
       .attr("text-anchor", "middle")
       .attr("fill", "var(--primary)")
-      .attr("stroke", "var(--primary)")
+      .attr("stroke", "var(--text)")
       .attr("stroke-width", 0.5)
       .attr("font-size", 12)
-      .style("pointer-events", "none"); // 避免文字遮擋點擊事件
+      .style("pointer-events", "none"); // Avoid text blocking click events
 
-    // tick 更新圖形位置
+    // Tick updates node and link positions
     sim.on("tick", () => {
       g.selectAll("line")
         .attr("x1", (d) => d.source.x)
@@ -383,7 +384,7 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
       const legendWidth = 180 * numCols + padding;
       const legendHeight = padding * 2 + numRows * (fontSize + spacing);
 
-      canvas.width = Math.max(svgContainer.width.baseVal.value, legendWidth) + legendWidth;
+      canvas.width = Math.max(svgContainer.width.baseVal.value, legendWidth) + legendWidth ;
       canvas.height = svgContainer.height.baseVal.value;
 
       ctx.fillStyle = "white";
@@ -420,12 +421,12 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
   const [isConfigured, setIsConfigured] = useState(false); 
   const [isLengthConsistent, setIsLengthConsistent] = useState(true); 
 
-   useEffect(() => {
-       const isAllConfigured = 
-          Array.isArray(genes) && genes.length > 0 && 
-          Array.isArray(eDnaSampleContent) && eDnaSampleContent.length > 0; 
-       setIsConfigured(isAllConfigured);
-     }, [genes, eDnaSampleContent]);
+  useEffect(() => {
+    const isAllConfigured = 
+      Array.isArray(genes) && genes.length > 0 && 
+      Array.isArray(eDnaSampleContent) && eDnaSampleContent.length > 0; 
+    setIsConfigured(isAllConfigured);
+  }, [genes, eDnaSampleContent ]);
 
   useEffect(() => {
     const checkGeneSequenceLengths = async () => {
@@ -474,13 +475,6 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
             🔄
           </button>
 
-          <button
-            className="HaplotypeNetwork-button"
-            onClick={exportPNG}
-          >
-            Export as PNG
-          </button>
-
           {apiPath === "HaplotypeNetwork" && (
             <div>
               <label>Count range:</label>
@@ -502,41 +496,68 @@ const HaplotypeNetwork = ({ width = 800, height = 800 , genes ,eDnaSampleContent
               ({fetchedRange.min} - {fetchedRange.max})
             </div>
           )}
-        </div>
+
+           <button
+            className="HaplotypeNetwork-export-button"
+            onClick={exportPNG}
+          >
+            Export as PNG
+          </button>
+        </div>    
 
         {/* 顯示基因序列長度不一致的提示 */}
         {!isLengthConsistent && (
-          <div className="MapMainView-warning-box">
+          <div className="HaplotypeNetwork-warning-box">
             <p>⚠️ The gene sequence lengths are different! Please check your data.</p>
           </div>
         )}
 
-        <div className="HaplotypeNetwork-svg-container">
-          <svg
-            ref={svgRef}
-            viewBox="0 0 850 850"
-            width={850}
-            height={850}
-          />
-        </div>
-      </div>
-
-      {Object.keys(cityColors).length > 0 && (
-        <div className="HaplotypeNetwork-city-legend">
-          <h3>Location</h3>
-          <div>
-            <ul className="HaplotypeNetwork-city-list">
-              {Object.entries(cityColors).map(([city, color]) => (
-                <li key={city} className="HaplotypeNetwork-city-item">
-                  <div
-                    className="HaplotypeNetwork-city-color-box"
-                    style={{ backgroundColor: color }}
-                  />
-                  {city}
-                </li>
-              ))}
+        {!isConfigured && (
+          <div className="HaplotypeNetwork-warning-box">
+            <p>⚠️ Complete the following settings：</p>
+            <ul>
+              {(!genes || !Array.isArray(genes) || genes.length === 0) && 
+                <li> Upload Fa File </li>
+              }
+              {(!eDnaSampleContent ) && (
+                <li> Upload eDNA Sample Station (xlsx)</li>
+              )}
             </ul>
           </div>
+        )}
+
+        {(isConfigured || isLengthConsistent) && (
+          <div className="HaplotypeNetwork-svg-container">
+            <svg
+              ref={svgRef}
+              viewBox="0 0 850 850"
+              width={850}
+              height={850}
+            />
+          </div>
+        )}
+      </div>
+
+      {(isConfigured || isLengthConsistent) && (
+        <div className="HaplotypeNetwork-container">
+          {Object.keys(cityColors).length > 0 && (
+            <div className="HaplotypeNetwork-city-legend">
+              <h3>Location</h3>
+              <div>
+                <ul className="HaplotypeNetwork-city-list">
+                  {Object.entries(cityColors).map(([city, color]) => (
+                    <li key={city} className="HaplotypeNetwork-city-item">
+                      <div
+                        className="HaplotypeNetwork-city-color-box"
+                        style={{ backgroundColor: color }}
+                      />
+                      {city}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

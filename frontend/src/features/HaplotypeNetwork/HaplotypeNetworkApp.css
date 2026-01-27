@@ -82,7 +82,6 @@
 .map-box,
 .map-Filteredbox {
   min-width: 55%;
-
   flex: 2;
   overflow: auto;
 }
@@ -92,12 +91,16 @@
 .geneselector-section {
   flex: 1;
   min-width: 40%;
-
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  overflow: auto;
+}
+
+.haplotypeNetwork{
+  min-width: 55%;
+  flex: 2;
   overflow: auto;
 }
 
@@ -112,19 +115,6 @@
   border-top: 1px solid var(--border);
 }
 
-.pagination button {
-  padding: 6px 12px;
-  border: none;
-  background-color: var(--success);
-  color: rgb(246, 246, 246);
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.pagination button:disabled {
-  background-color: var(--muted);
-  cursor: not-allowed;
-}
 
 /* ===== RWD ===== */
 @media (max-width: 768px) {
@@ -132,7 +122,6 @@
   .flex-container,
   .tables-row {
     flex-direction: column;
-    /* 小螢幕改為垂直排列 */
   }
 
   .gene-section,

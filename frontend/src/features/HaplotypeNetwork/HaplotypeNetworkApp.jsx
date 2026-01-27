@@ -97,7 +97,6 @@ const HaplotypeNetworkApp = ({
   };
 
   const saveGeneCountsToBackend = async (updatedGenes) => {
-    console.log("Sending data to backend:", { genes: updatedGenes });
     try {
       await fetch("http://localhost:3000/api/sequences/saveGeneCounts", {
         method: "POST",
@@ -395,10 +394,12 @@ const HaplotypeNetworkApp = ({
       {activeSection === "haplotypeNetwork" && (
         <div className="section">
           <HaplotypeReducer />
-          <HaplotypeNetwork 
-            genes={genes}
-            eDnaSampleContent={eDnaSampleContent}
-          />
+          <div className="haplotypeNetwork">
+            <HaplotypeNetwork 
+              genes={genes}
+              eDnaSampleContent={eDnaSampleContent}
+            />
+          </div>
           <div style={{ display: "none" }}>
             <GeneTable
               activeSection={activeSection}

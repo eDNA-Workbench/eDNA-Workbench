@@ -188,8 +188,22 @@ const GeneSelector = ({
 
       {/* 顯示基因序列長度不一致的提示 */}
       {!isLengthConsistent && (
-        <div className="MapMainView-warning-box">
+        <div className="GeneSelector-warning-box">
           <p>⚠️ The ASV sequence lengths are different! Please check your data.</p>
+        </div>
+      )}
+
+      {!isConfigured && (
+        <div className="GeneSelector-warning-box">
+          <p>⚠️ Complete the following settings：</p>
+          <ul>
+            {(!genes || !Array.isArray(genes) || genes.length === 0) && 
+              <li> Upload Fa File </li>
+            }
+            {(!eDnaSampleContent ) && (
+              <li> Upload eDNA Sample Station (xlsx)</li>
+            )}
+          </ul>
         </div>
       )}
 
