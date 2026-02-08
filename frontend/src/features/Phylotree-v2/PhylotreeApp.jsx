@@ -1,31 +1,30 @@
 import { useEffect } from 'react';
-// import TreeCanvas from './components/canvas/TreeCanvas.jsx';
-// import Controls from './components/controls/Controls.jsx';
-// import { TreeProvider, useTree } from './contexts/TreeContext.jsx';
+import MainLayout from './components/layout/MainLayout';
+import { TreeProvider, useTree } from './context/TreeContext';
+import { UIProvider } from './context/UIContext';
+import './styles/phylotree.css';
 
-const PhylotreeApp = ({ initialNewick }) => {
-  const { dispatch } = useTree();
+function TreeLoader({ data }) {
+  const { loadNewick } = useTree();
 
   useEffect(() => {
-    if (initialNewick) {
-      dispatch({ type: 'LOAD_DATA', payload: initialNewick });
+    if (data) {
+      loadNewick(data);
     }
-  }, [initialNewick, dispatch]);
+  }, [data, loadNewick]);
 
-  return (
-    <div className="app-layout">
-      {/* <Controls />
-      <TreeCanvas /> */}
-    </div>
-  );
-};
+  return null;
+}
 
-export default function App({ initialNewick }) {
+function App({ initialNewick }) {
   return (
-    <>
-      {/* <LeftPanel /> */}
-      <PhylotreeApp initialNewick={initialNewick} />
-      {/* <RightPanel /> */}
-    </>
+    <TreeProvider>
+      <UIProvider>
+        <TreeLoader data={initialNewick} />
+        <MainLayout />
+      </UIProvider>
+    </TreeProvider>
   );
 }
+
+export default App;

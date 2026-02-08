@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/MEVP_logo.png';
+import logo from '../assets/eDNA_logo.png';
 import AnalysisProgressBar from '../features/AnalysisPipeline/components/AnalysisProgressBar.jsx';
 import '../styles/components/Navbar.css';
 import { FileMenuContent } from './Navbar/FIleMenuLogic.jsx';

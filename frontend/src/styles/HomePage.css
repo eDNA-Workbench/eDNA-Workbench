@@ -23,21 +23,21 @@
   user-select: none;
 }
 
-.title .genoflow-logo {
+.title .eDNA-logo {
   height: 100px;
   width: 100px;
 
   background-color: var(--text);
 
-  mask-image: url('../assets/GenoFlow.png');
+  mask-image: url('../assets/eDNA_logo.png');
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
 
-  -webkit-mask-image: url('../assets/GenoFlow.png');
+  /* -webkit-mask-image: url('../assets/eDNA_logo.png');
   -webkit-mask-size: contain;
   -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
+  -webkit-mask-position: center; */
 }
 
 .title h1 {

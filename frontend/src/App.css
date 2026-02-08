@@ -18,33 +18,59 @@
     --warning: #f1c40f;
     --danger: #e74c3c;
 
-    /* --input: oklch(0.922 0 0); */
-
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
+    /* --table-highlight: #f5f5f5; */
 }
 
 [data-theme="dark"] {
-    --bg-page: #222222;
+    /* --bg-page: #222222;
     --text: oklch(0.985 0 0);
     --bg-surface: oklch(0.269 0 0);
 
     --primary: oklch(0.922 0 0);
-    /* --primary: #6FA3E0; */
     --bg-surface-raised: oklch(35.618% 0.00004 271.152);
     --danger: oklch(0.704 0.191 22.216);
     --border: oklch(1 0 0 / 10%);
-    /* --border: #DCE4DA; */
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);
     --chart-1: oklch(0.488 0.243 264.376);
     --chart-2: oklch(0.696 0.17 162.48);
     --chart-3: oklch(0.769 0.188 70.08);
     --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
+    --chart-5: oklch(0.645 0.246 16.439); */
+
+    /* 背景層次：由深到淺體現高度感 */
+    --bg-page: #121212;
+    /* 最底層背景 */
+    --bg-surface: #1e1e1e;
+    /* 卡片、容器背景 */
+    --bg-surface-raised: #2c2c2c;
+    /* 懸浮、提示框背景 */
+
+    /* 品牌色：調整亮度以符合 AAA 對比度 */
+    --primary: #5da9f6;
+    /* 較亮的藍色，確保在黑底上的可讀性 */
+    --border: #333333;
+    /* 細微的邊框 */
+
+    /* 文字顏色 */
+    --text: #e0e0e0;
+    /* 主文字：柔和白 */
+    --detail: #a0a0a0;
+    /* 次要文字：中灰 */
+    --input: #252525;
+    /* 輸入框背景 */
+
+    /* 程式碼區塊：維持原有風格或微調 */
+    --bg-code-header: #2a2a2a;
+    /* 程式碼標題列 */
+    --bg-code: #1a1a1a;
+    /* 程式碼主體 */
+    --text-code: #dcdcdc;
+
+    /* 狀態顏色：降低飽和度避免霓虹感 */
+    --success: #43a047;
+    --warning: #ffb300;
+    --danger: #e53935;
 }
 
 * {

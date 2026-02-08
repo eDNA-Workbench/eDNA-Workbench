@@ -5,13 +5,13 @@ export default function HomePage() {
   return (
     <div className="home-main">
       <div className="title">
-        <div className='genoflow-logo'></div>
-        <h1>GenoFlow</h1>
+        <div className='eDNA-logo'></div>
+        <h1>eDNA Workbench</h1>
       </div>
 
       <div className="entry">
         <Link to="/analysis" className="analysis-entry entry-box">
-          <p className="entry-title">DNA Barcode Toolkit</p>
+          <p className="entry-title">eDNA Barcode Toolkit</p>
           <div className="card-image"></div>
           <div className="entry-description">
             <ul>
@@ -54,7 +54,7 @@ export default function HomePage() {
       </section>
 
       <footer className="home-footer">
-        <p>© 2025 GenoFlow. All rights reserved.</p>
+        <p>© 2026 eDNA Workbench. All rights reserved.</p>
       </footer>
     </div>
   );

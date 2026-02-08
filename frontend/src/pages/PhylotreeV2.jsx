@@ -8,7 +8,7 @@ export default function PhylotreePage() {
   const { phylotreeContent } = useFileContext();
 
   return (
-    <div className="page-with-guide" style={{ maxWidth: 1140, margin: '0 auto' }}>
+    <div className="page-with-guide">
       <PhylotreeApplication initialNewick={phylotreeContent} />
       <SideGuide guideKey="phylotree" side="right" defaultOpen={false} />
     </div>
