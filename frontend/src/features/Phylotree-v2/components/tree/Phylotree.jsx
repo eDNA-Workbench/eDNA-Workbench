@@ -6,8 +6,7 @@ import { useTreeLayout } from '../../hooks/useTreeLayout';
 import Branch from './Branch';
 import Node from './Node'; // 你需要把 InternalNode 和 NodeLabel 整合進這裡
 
-// 從原本的程式碼中提取的輔助函式
-import { collectInternalNodes, getHiddenBranches, shouldHideInternalNode } from '../../utils/tree-utils';
+import { collectInternalNodes, getHiddenBranches, shouldHideInternalNode } from '../../utils/TreeUtils';
 
 const Phylotree = () => {
   const { state: { treeInstance, collapsedNodes, renamedNodes, merged }, toggleCollapse, openContextMenu, renameNode } = useTree();
