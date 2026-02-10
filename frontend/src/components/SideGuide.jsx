@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { marked } from 'marked';
+import MarkdownIt from 'markdown-it';
 import { useEffect, useRef, useState } from 'react';
 import '../styles/components/SideGuide.css';
 
@@ -34,13 +34,24 @@ export default function SideGuide({ guideKey, side = 'right', defaultOpen = fals
   // Fetch content
   useEffect(() => {
     const path = `./guides/${guideKey}.md`;
+    
+    // 2. 建立 MarkdownIt 實例 (通常建議設定一些基本選項)
+    const mdParser = new MarkdownIt({
+        html: true,       // 允許 HTML 標籤 (因為我們會用 DOMPurify 清洗，所以這裡開啟沒關係)
+        linkify: true,    // 自動將網址轉為連結
+        typographer: true, // 優化排版 (例如將 (c) 轉為 ©)
+        breaks: true
+    });
+
     fetch(path)
       .then((res) => {
         if (!res.ok) throw new Error(`Guide not found: ${path}`);
         return res.text();
       })
       .then((md) => {
-        const raw = marked.parse(md || '');
+        const raw = mdParser.render(md || '');
+        
+        // 4. 安全性清洗 (依然非常重要！)
         const clean = DOMPurify.sanitize(raw);
         setContentHtml(clean);
       })
